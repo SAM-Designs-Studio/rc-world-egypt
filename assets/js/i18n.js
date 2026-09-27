@@ -59,6 +59,7 @@ window.VOLT_I18N = {
     'nav.shop': 'المتجر',
     'nav.categories': 'الأقسام',
     'nav.gallery': 'المعرض',
+    'nav.videos': 'فيديو',
     'nav.deals': 'منتج مميّز',
     'nav.levels': 'مستويات المهارة',
     'nav.contact': 'تواصل معنا',
@@ -220,6 +221,11 @@ window.VOLT_I18N = {
 
     /* Gallery */
     'gallery.eyebrow': 'المعرض',
+    'videos.eyebrow': 'فيديو',
+    'videos.title': 'فيديو من المحل',
+    'videos.sub': 'لقطات قصيرة لسيارات من المحل وهي تعمل — اضغط على أي فيديو لمشاهدته كاملًا بالصوت.',
+    'videos.play': 'تشغيل الفيديو: {x}',
+    'videos.viewProduct': 'عرض المنتج',
     'gallery.title': 'من داخل المحل',
     'gallery.sub': 'جولة سريعة بين الموديلات المتوفرة وقطع الغيار والتجهيزات في المحل — اضغط على أي صورة لعرضها بالحجم الكامل.',
     'gallery.filterLabel': 'تصفية الصور',
@@ -423,6 +429,7 @@ window.VOLT_I18N = {
     'nav.shop': 'Shop',
     'nav.categories': 'Categories',
     'nav.gallery': 'Gallery',
+    'nav.videos': 'Videos',
     'nav.deals': 'Featured',
     'nav.levels': 'Skill levels',
     'nav.contact': 'Contact',
@@ -584,6 +591,11 @@ window.VOLT_I18N = {
 
     /* Gallery */
     'gallery.eyebrow': 'Gallery',
+    'videos.eyebrow': 'Videos',
+    'videos.title': 'In action',
+    'videos.sub': 'Short clips of cars from the shop in action — tap any video to watch it in full with sound.',
+    'videos.play': 'Play video: {x}',
+    'videos.viewProduct': 'View product',
     'gallery.title': 'Inside the shop',
     'gallery.sub': 'Take a quick look around the shop: models in stock, parts and gear. Tap any photo to view it full size.',
     'gallery.filterLabel': 'Filter photos',

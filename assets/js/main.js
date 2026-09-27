@@ -47,6 +47,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   const FEATURED = window.VOLT_FEATURED || null;
   const LEVEL_ORDER = window.VOLT_LEVEL_ORDER || {};
   const CREDITS = window.VOLT_PHOTO_CREDITS || {};
+  const VIDEOS = window.VOLT_VIDEOS || [];
   const BRANDS = (window.VOLT_BRANDS || []).slice();
   const SIZES = window.SHOP_PHOTO_SIZES || {};
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
@@ -115,6 +116,12 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     resultsAll: $('#resultsAll'),
     miniToast: $('#miniToast'),
     creditsModal: $('#creditsModal'),
+    videoGrid: $('#videoGrid'),
+    videoModal: $('#videoModal'),
+    vpVideo: $('#vpVideo'),
+    vpTitle: $('#vpTitle'),
+    vpDesc: $('#vpDesc'),
+    vpProduct: $('#vpProduct'),
     creditsList: $('#creditsList'),
     chips: $('#activeChips'),
     loadMore: $('#loadMore'),
@@ -451,7 +458,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
      ====================================================================== */
   const Overlay = (function () {
     let current = null; // { node, trigger, onClose }
-    const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const FOCUSABLE = 'a[href], button:not([disabled]), video[controls], input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
     function focusables(node) {
       return $$(FOCUSABLE, node).filter((f) => f.offsetParent !== null || f.getClientRects().length > 0);
@@ -535,7 +542,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   function initScrollSpy() {
     if (!('IntersectionObserver' in window)) return;
     const links = $$('.nav__link, .mnav a');
-    const ids = ['home', 'categories', 'shop', 'gallery', 'deals', 'levels', 'about', 'contact'];
+    const ids = ['home', 'categories', 'shop', 'gallery', 'videos', 'deals', 'levels', 'about', 'contact'];
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -1493,6 +1500,103 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   }
 
   /* ======================================================================
+     14a. Videos — muted 8-second previews while in view; full player on tap
+     ====================================================================== */
+  const PREVIEW_SECONDS = 8;
+  const vTime = (sec) => Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2);
+  const vDesc = (v) => (v.desc && (v.desc[state.lang] || v.desc.en)) || '';
+  let videoIO = null;
+  let currentVideo = null;
+
+  /** Autoplay previews only when motion is welcome and the connection is not constrained. */
+  function canAutoplayPreviews() {
+    if (reduceMotion.matches) return false;
+    try {
+      const c = window.navigator && window.navigator.connection;
+      if (c && (c.saveData || /(^|-)2g$/.test(String(c.effectiveType || '')))) return false;
+    } catch (e) { /* unknown → allow */ }
+    return true;
+  }
+
+  function videoCardHTML(v) {
+    const label = tt('videos.play', { x: iso(v.title) + ' — ' + vDesc(v) + ' (' + vTime(v.duration) + ')' });
+    return '<li class="vcard">' +
+      '<button type="button" class="vcard__btn" data-video="' + esc(v.id) + '" aria-label="' + esc(label) + '">' +
+        '<span class="vcard__media">' +
+          // no src until the card is on screen: nothing downloads before that (preload="none" + poster)
+          '<video class="vcard__video" muted loop playsinline preload="none" poster="' + esc(v.poster) + '" data-src="' + esc(v.src) + '" aria-hidden="true" tabindex="-1"></video>' +
+          '<span class="vcard__play" aria-hidden="true"><svg class="icon"><use href="#i-play"/></svg></span>' +
+          '<span class="vcard__time" aria-hidden="true">' + vTime(v.duration) + '</span>' +
+        '</span>' +
+        '<span class="vcard__text"><span class="vcard__title">' + bdi(v.title) + '</span><span class="vcard__desc">' + esc(vDesc(v)) + '</span></span>' +
+      '</button></li>';
+  }
+
+  function renderVideos() {
+    if (!el.videoGrid) return;
+    el.videoGrid.innerHTML = VIDEOS.map(videoCardHTML).join('');
+    initVideoPreviews();
+  }
+
+  function pausePreviews() { $$('.vcard__video', el.videoGrid).forEach((vid) => { try { vid.pause(); } catch (e) { /* ignore */ } }); }
+
+  function initVideoPreviews() {
+    if (videoIO && videoIO.disconnect) videoIO.disconnect();
+    videoIO = null;
+    if (!el.videoGrid || !canAutoplayPreviews() || !('IntersectionObserver' in window)) return;
+    videoIO = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const vid = entry.target;
+        if (entry.isIntersecting && Overlay.current !== el.videoModal) {
+          if (!vid.getAttribute('src')) vid.setAttribute('src', vid.dataset.src);
+          const p = vid.play();
+          if (p && p.catch) p.catch(() => { /* autoplay refused → poster stays */ });
+        } else {
+          try { vid.pause(); } catch (e) { /* ignore */ }
+        }
+      });
+    }, { threshold: 0.5 });
+    $$('.vcard__video', el.videoGrid).forEach((vid) => {
+      vid.addEventListener('timeupdate', () => { if (vid.currentTime >= PREVIEW_SECONDS) vid.currentTime = 0; });
+      videoIO.observe(vid);
+    });
+  }
+
+  function renderVideoMeta() {
+    const v = currentVideo;
+    if (!v) return;
+    el.vpTitle.innerHTML = bdi(v.title);
+    el.vpDesc.textContent = vDesc(v) + ' · ' + vTime(v.duration);
+    const p = byId.get(v.product);
+    el.vpProduct.hidden = !p;
+    if (p) el.vpProduct.dataset.quick = p.id;
+  }
+
+  function openVideo(id, trigger) {
+    const v = VIDEOS.find((x) => x.id === id);
+    if (!v) return;
+    currentVideo = v;
+    renderVideoMeta();
+    const vid = el.vpVideo;
+    pausePreviews();
+    vid.poster = v.poster;
+    vid.src = v.src;
+    vid.muted = false;
+    Overlay.open(el.videoModal, {
+      trigger: trigger,
+      initialFocus: '#vpVideo',
+      onOpen() {
+        try { const p = vid.play(); if (p && p.catch) p.catch(() => { /* user can press play */ }); } catch (e) { /* ignore */ }
+      },
+      onClose() {
+        try { vid.pause(); vid.removeAttribute('src'); vid.load(); } catch (e) { /* ignore */ }
+        currentVideo = null;
+        initVideoPreviews(); // resume the previews that are in view
+      }
+    });
+  }
+
+  /* ======================================================================
      14b. Bank transfer details (config at the top of this file)
      ====================================================================== */
   const BANK_FIELDS = [
@@ -1738,11 +1842,13 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     renderDeal();
     renderGallery();
     renderBank();
+    renderVideos();
     refreshFormText();
     if (Overlay.current === el.quickView && qvId) renderQuickView();
     if (Overlay.current === el.searchOverlay) renderSearch();
     if (Overlay.current === el.lightbox) renderLightbox();
     if (Overlay.current === el.creditsModal) renderCredits();
+    if (Overlay.current === el.videoModal) renderVideoMeta();
     if (el.toast.classList.contains('is-show')) hideToast();
 
     if (o.save !== false) storage.set('volt.lang', state.lang);
@@ -1804,6 +1910,9 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
 
       const gItem = tgt.closest('[data-lb-index]');
       if (gItem) { openLightbox(Number(gItem.dataset.lbIndex), gItem); return; }
+
+      const vBtn = tgt.closest('[data-video]');
+      if (vBtn) { openVideo(vBtn.dataset.video, vBtn); return; }
 
       const creditsBtn = tgt.closest('[data-open-credits]');
       if (creditsBtn) { renderCredits(); Overlay.open(el.creditsModal, { trigger: creditsBtn }); return; }

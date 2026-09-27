@@ -20,6 +20,7 @@ A bilingual (Arabic / English) website for **RC World Egypt**, a specialist RC h
 - **Order through WhatsApp**: no online payment and no listed prices. Visitors build an inquiry list and send it in one WhatsApp message, or tap "Ask for price" on any product. Payment methods: cash on delivery or bank transfer (CIB), delivery to every governorate
 - **Inside the shop gallery**: 184 photos in 7 categories with "Show more", a full-size lightbox and swipe / arrow-key navigation
 - **Quick view**: a product pop-up with a photo strip and a specs table
+- **Videos ("In action")**: the owner's own clips in 16:9 cards. Muted 8-second previews play only while a card is on screen (never with reduced motion, Save-Data or 2G), and a tap opens a full player with sound and a "View product" link. The list lives in `assets/js/videos.js`
 - **Contact**: call, WhatsApp and Facebook community buttons, a Google Maps location and a contact form that opens WhatsApp with the message ready
 - **Community band**: invites hobbyists to the shop's Facebook community to share tips, setups and new arrivals
 - **Responsive & accessible**: works from phones to wide screens, is keyboard friendly and respects reduced-motion settings
@@ -48,6 +49,7 @@ HTML5 · CSS3 · vanilla JavaScript: no frameworks, no build step.
 - **الطلب عبر واتساب** — لا دفع إلكتروني ولا أسعار معروضة: يضيف الزائر ما يريده إلى قائمة الطلب ويرسلها في رسالة واتساب واحدة، أو يضغط «اسأل عن السعر» في أي منتج. طرق الدفع: الدفع عند الاستلام أو تحويل بنكي ‏(CIB)، والتوصيل لجميع المحافظات
 - **معرض «من داخل المحل»** — ‏184 صورة في 7 أقسام مع زر «عرض المزيد» وعارض صور بالحجم الكامل
 - **عرض سريع** — نافذة منبثقة بصور المنتج وجدول مواصفات
+- **فيديو من المحل** — مقاطع صاحب المحل في بطاقات 16:9 مع معاينة صامتة قصيرة أثناء ظهورها على الشاشة، ومشغّل كامل بالصوت ورابط «عرض المنتج»
 - **التواصل** — أزرار اتصال وواتساب ومجتمعنا على فيسبوك، وخريطة جوجل للموقع، ونموذج تواصل يفتح واتساب والرسالة جاهزة
 - **تصميم متجاوب وسهل الاستخدام** — من الجوال حتى الشاشات العريضة، ويدعم التنقل بلوحة المفاتيح
 

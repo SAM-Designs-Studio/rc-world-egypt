@@ -3682,6 +3682,32 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 .credits__sep { color: var(--c-text-3); }
 .credits__list a { color: var(--c-volt); text-decoration: underline; text-underline-offset: 2px; }
 
+/* ---------- Videos ("In action") ---------- */
+.video-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+@media (min-width: 700px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* 4 clips → 2 × 2 from tablet up (large enough to read the preview) */
+@media (min-width: 1024px) { .video-grid { gap: 22px; } }
+.vcard__btn { display: block; width: 100%; text-align: start; border-radius: 18px; border: 1px solid var(--c-line); background: var(--c-surface); overflow: hidden; transition: border-color .25s, transform .3s var(--ease-out), box-shadow .3s; }
+.vcard__btn:hover, .vcard__btn:focus-visible { border-color: rgba(212, 255, 58, .55); transform: translateY(-3px); box-shadow: 0 20px 44px -26px rgba(212, 255, 58, .45); }
+/* 16:9 box + cover: crops the black bars of portrait files that carry a landscape picture */
+.vcard__media { position: relative; display: block; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+.vcard__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.vcard__play { position: absolute; inset: 0; margin: auto; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: rgba(8, 9, 11, .62); border: 1px solid rgba(255, 255, 255, .28); color: var(--c-volt); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: transform .3s var(--ease-out), background .3s; }
+.vcard__play .icon { width: 24px; height: 24px; margin-inline-start: 3px; }
+[dir="rtl"] .vcard__play .icon { margin-inline-start: 0; margin-inline-end: 3px; }
+.vcard__btn:hover .vcard__play { transform: scale(1.08); background: rgba(212, 255, 58, .9); color: var(--c-volt-ink); }
+.vcard__time { position: absolute; bottom: 10px; inset-inline-end: 10px; padding: 2px 8px; border-radius: 999px; background: rgba(8, 9, 11, .78); font-family: "Chakra Petch", sans-serif; font-size: .78rem; font-weight: 700; direction: ltr; }
+.vcard__text { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px 14px; }
+.vcard__title { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; }
+.vcard__desc { color: var(--c-text-2); font-size: .9rem; }
+.modal__dialog--video { width: min(1000px, calc(100% - 24px)); padding: 0; overflow: hidden; }
+.vplayer { aspect-ratio: 16 / 9; background: #000; }
+.vplayer video { display: block; width: 100%; height: 100%; object-fit: cover; background: #000; }
+.vplayer__meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; padding: 14px 18px 16px; }
+.vplayer__title { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; }
+.vplayer__desc { color: var(--c-text-2); font-size: .9rem; }
+.modal__dialog--video .modal__close { z-index: 3; background: rgba(8, 9, 11, .7); }
+
 /* ==========================================================================
    21. Reduced motion — disable animations & smooth scrolling
    ========================================================================== */

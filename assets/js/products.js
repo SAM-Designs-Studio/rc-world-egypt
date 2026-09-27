@@ -152,6 +152,19 @@
       tags: ['baja 5b', 'chassis', 'petrol', 'baja', 'شاسيه', 'بنزين'],
       photos: ['baja-121', 'baja-122', 'baja-123', 'baja-125', 'baja-n19']
     },
+    {
+      id: 'losi-obr-15', model: 'Losi 1/5 OBR', brands: ['Losi'],
+      name_ar: 'سيارة 1/5 براشلس للطرق الممهدة والوعرة', name_en: '1/5 Brushless On/Off-road Car',
+      desc_ar: 'سيارة كبيرة بمقاس 1/5 بمحرك براشلس للطرق الممهدة والوعرة — شاهدها تعمل في قسم الفيديو.' + CONTACT_AR,
+      desc_en: 'A big 1/5-scale brushless car for on- and off-road driving — see it running in the videos section.' + CONTACT_EN,
+      category: 'baja', scales: ['1/5'], level: 'pro', featured: 88, inStock: true, price: null,
+      specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, use: { ar: 'طرق ممهدة ووعرة', en: 'On- & off-road' } },
+      tags: ['losi', 'obr', '1/5', 'brushless', 'mini cooper', 'لوسي', 'براشلس'],
+      images: [
+        { src: 'assets/video/losi-obr-road-run.jpg', thumb: 'assets/video/losi-obr-road-run.jpg', size: [1280, 720, 1280, 720] },
+        { src: 'assets/video/losi-obr-mini-cooper.jpg', thumb: 'assets/video/losi-obr-mini-cooper.jpg', size: [1280, 720, 1280, 720] }
+      ]
+    },
 
     /* ===== Off-road ===== */
     {
@@ -929,7 +942,7 @@
   window.VOLT_LEVEL_ORDER = {
     beginner: ['foam-trainer-3ch', 'foam-trainer-4ch-gyro', 'cessna-foam-trainer', 'foam-glider-trainer', 'traxxas-trx4m-high-trail', 'traxxas-e-revo-116', 'arrma-typhon-grom', 'mini-drift-128', 'mini-drift-124', 'drift-116-4wd'],
     intermediate: ['traxxas-slash-vxl', 'traxxas-maxx-v2', 'traxxas-4-tec-drift', 'hpi-rs4', 'drift-114-rwd', 'panther-touring-rtr', 'foam-sport-trainer', 'losi-promoto-mx'],
-    pro: ['losi-5ive-t-3', 'fg-15-buggy', 'rofun-baja-5t', 'fg-baja-beetle', 'fg-16-monster-2wd', 'petrol-chassis-15', 'traxxas-x-maxx-8s', 'arrma-kraton-6s-v6', 'arrma-mojave-6s', 'arrma-mojave-exb', 'arrma-big-rock-6s', 'arrma-talion-exb-6s', 'traxxas-e-revo-6s', 'arrma-kraton-exb-roller', 'traxxas-desert-truck-fox', 'hpi-wr8', 'mst-110-drift', 'traxxas-m41-6s', 'proboat-blackjack-42']
+    pro: ['losi-5ive-t-3', 'fg-15-buggy', 'rofun-baja-5t', 'fg-baja-beetle', 'fg-16-monster-2wd', 'petrol-chassis-15', 'losi-obr-15', 'traxxas-x-maxx-8s', 'arrma-kraton-6s-v6', 'arrma-mojave-6s', 'arrma-mojave-exb', 'arrma-big-rock-6s', 'arrma-talion-exb-6s', 'traxxas-e-revo-6s', 'arrma-kraton-exb-roller', 'traxxas-desert-truck-fox', 'hpi-wr8', 'mst-110-drift', 'traxxas-m41-6s', 'proboat-blackjack-42']
   };
 
   /* ---------- Featured product (+ which real photo to show large) ---------- */

@@ -45,6 +45,7 @@
   <script src="assets/js/photos.js" defer></script>
   <script src="assets/js/photo-sizes.js" defer></script>
   <script src="assets/js/products.js" defer></script>
+  <script src="assets/js/videos.js" defer></script>
   <script src="assets/js/main.js" defer></script>
 </head>
 <body>
@@ -120,6 +121,7 @@
     <symbol id="i-cat-tools" viewBox="0 0 24 24"><path d="M14.7 6.3a4.2 4.2 0 0 0-5.3 5.3L3.8 17.2a1.9 1.9 0 0 0 2.7 2.7l5.6-5.6a4.2 4.2 0 0 0 5.3-5.3l-2.6 2.6-2.4-.3-.3-2.4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m14.6 15.2 4.9 4.9M18.6 3.4l2 2-2.9 2.9-2-2z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cat-boats" viewBox="0 0 24 24"><path d="M2.5 14.5h19l-2.7 4.3a1.8 1.8 0 0 1-1.5.8H6.9a1.8 1.8 0 0 1-1.6-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m6.5 14.5 2.2-4.2h6.6l3.4 4.2M11 10.3V7.5h3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cat-electronics" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M15.5 8 18 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="14.2" r="2.1" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="14.2" r="2.1" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" fill="currentColor"/></symbol>
     <symbol id="i-cat-parts" viewBox="0 0 24 24"><rect x="3" y="7" width="15.5" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M21 10.5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11.6 8.8 8.8 12.4h3l-1.1 3 3.3-4h-3.1z" fill="currentColor"/></symbol>
   </svg>
 
@@ -154,6 +156,7 @@
           <li><a class="nav__link" href="#shop" data-i18n="nav.shop">المتجر</a></li>
           <li><a class="nav__link" href="#categories" data-i18n="nav.categories">الأقسام</a></li>
           <li><a class="nav__link" href="#gallery" data-i18n="nav.gallery">المعرض</a></li>
+          <li><a class="nav__link" href="#videos" data-i18n="nav.videos">فيديو</a></li>
           <li><a class="nav__link" href="#deals" data-i18n="nav.deals">منتج مميّز</a></li>
           <li><a class="nav__link" href="#levels" data-i18n="nav.levels">مستويات المهارة</a></li>
           <li><a class="nav__link" href="#contact" data-i18n="nav.contact">تواصل معنا</a></li>
@@ -545,6 +548,20 @@
     </section>
 
     <!-- ===================================================================
+         04 — Videos (the owner's clips; data: assets/js/videos.js)
+         =================================================================== -->
+    <section class="section videos" id="videos" aria-labelledby="videosTitle">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow"><span class="eyebrow__num">04</span><span data-i18n="videos.eyebrow">فيديو</span></p>
+          <h2 class="section-title" id="videosTitle" data-i18n="videos.title">فيديو من المحل</h2>
+          <p class="section-sub" data-i18n="videos.sub">لقطات قصيرة لسيارات من المحل وهي تعمل — اضغط على أي فيديو لمشاهدته كاملًا بالصوت.</p>
+        </header>
+        <ul class="video-grid" id="videoGrid"></ul>
+      </div>
+    </section>
+
+    <!-- ===================================================================
          04 — Featured product
          =================================================================== -->
     <section class="section deal" id="deals" aria-labelledby="dealTitle">
@@ -559,7 +576,7 @@
         </div>
 
         <div class="deal__copy" data-reveal style="--d:1">
-          <p class="eyebrow"><span class="eyebrow__num">04</span><span data-i18n="deal.eyebrow">منتج مميّز</span></p>
+          <p class="eyebrow"><span class="eyebrow__num">05</span><span data-i18n="deal.eyebrow">منتج مميّز</span></p>
           <h2 class="section-title" id="dealTitle" data-i18n="deal.title">اختيارنا لعشّاق الباجا</h2>
           <h3 class="deal__name" id="dealName"></h3>
           <p class="deal__desc" id="dealDesc"></p>
@@ -586,7 +603,7 @@
     <section class="section levels" id="levels" aria-labelledby="levelsTitle">
       <div class="container">
         <header class="section-head section-head--center" data-reveal>
-          <p class="eyebrow"><span class="eyebrow__num">05</span><span data-i18n="levels.eyebrow">مستوى المهارة</span></p>
+          <p class="eyebrow"><span class="eyebrow__num">06</span><span data-i18n="levels.eyebrow">مستوى المهارة</span></p>
           <h2 class="section-title" id="levelsTitle" data-i18n="levels.title">من أول لفّة إلى منصة التتويج</h2>
           <p class="section-sub" data-i18n="levels.sub">لست متأكدًا من أين تبدأ؟ اختر مستواك وسنعرض لك الموديلات المناسبة فورًا.</p>
         </header>
@@ -656,7 +673,7 @@
     <section class="section why" id="why" aria-labelledby="whyTitle">
       <div class="container why__inner">
         <header class="section-head why__head" data-reveal>
-          <p class="eyebrow"><span class="eyebrow__num">06</span><span data-i18n="why.eyebrow">لماذا <bdi>RC World Egypt</bdi>؟</span></p>
+          <p class="eyebrow"><span class="eyebrow__num">07</span><span data-i18n="why.eyebrow">لماذا <bdi>RC World Egypt</bdi>؟</span></p>
           <h2 class="section-title" id="whyTitle" data-i18n="why.title">تسوّق ببساطة ووضوح</h2>
           <p class="section-sub" data-i18n="why.sub">نساعدك على اختيار ما يناسبك، ونؤكد معك السعر والتوفر وتفاصيل الشحن مباشرة قبل أي طلب.</p>
         </header>
@@ -702,7 +719,7 @@
           </ul>
         </div>
         <div class="about__copy" data-reveal style="--d:1">
-          <p class="eyebrow"><span class="eyebrow__num">07</span><span data-i18n="about.eyebrow">عن المحل</span></p>
+          <p class="eyebrow"><span class="eyebrow__num">08</span><span data-i18n="about.eyebrow">عن المحل</span></p>
           <h2 class="section-title" id="aboutTitle" data-i18n="about.title">محل متخصص في الشيخ زايد</h2>
           <p class="section-sub" data-i18n="about.text">محل <bdi>RC World Egypt</bdi> في مدينة الشيخ زايد متخصص في سيارات وطائرات التحكم عن بعد: باجا وأوف رود ودرفت وطائرات تدريب من الفوم، مع قطع الغيار والإطارات والهياكل والبطاريات.</p>
           <p class="about__owner"><svg class="icon" aria-hidden="true"><use href="#logo-mark"/></svg><span><span data-i18n="about.ownerLabel">المالك</span>: <strong data-i18n="about.owner">حمدي شوقي الفهيم</strong></span></p>
@@ -737,7 +754,7 @@
         <div class="contact__grid contact__grid--top">
           <div class="contact__info" data-reveal>
             <header class="section-head">
-              <p class="eyebrow"><span class="eyebrow__num">08</span><span data-i18n="contact.eyebrow">تواصل معنا</span></p>
+              <p class="eyebrow"><span class="eyebrow__num">09</span><span data-i18n="contact.eyebrow">تواصل معنا</span></p>
               <h2 class="section-title" id="contactTitle" data-i18n="contact.title">تواصل مع مالك <bdi>RC World Egypt</bdi> مباشرة</h2>
               <p class="section-sub" data-i18n="contact.sub">اسأل عن السعر والتوفر أو أرسل قائمة طلبك — اتصل بنا أو راسلنا عبر واتساب.</p>
             </header>
@@ -959,9 +976,10 @@
           <li><a href="#shop"><span class="mnav__num">02</span><span data-i18n="nav.shop">المتجر</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
           <li><a href="#categories"><span class="mnav__num">03</span><span data-i18n="nav.categories">الأقسام</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
           <li><a href="#gallery"><span class="mnav__num">04</span><span data-i18n="nav.gallery">المعرض</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-          <li><a href="#deals"><span class="mnav__num">05</span><span data-i18n="nav.deals">منتج مميّز</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-          <li><a href="#levels"><span class="mnav__num">06</span><span data-i18n="nav.levels">مستويات المهارة</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-          <li><a href="#contact"><span class="mnav__num">07</span><span data-i18n="nav.contact">تواصل معنا</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#videos"><span class="mnav__num">05</span><span data-i18n="nav.videos">فيديو</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#deals"><span class="mnav__num">06</span><span data-i18n="nav.deals">منتج مميّز</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#levels"><span class="mnav__num">07</span><span data-i18n="nav.levels">مستويات المهارة</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#contact"><span class="mnav__num">08</span><span data-i18n="nav.contact">تواصل معنا</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
         </ul>
       </nav>
       <div class="mnav__foot">
@@ -1014,6 +1032,24 @@
     <div class="modal__dialog">
       <button class="icon-btn modal__close" type="button" data-close data-i18n-aria="a11y.close" aria-label="إغلاق"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
       <div class="qv" id="qvContent"></div>
+    </div>
+  </div>
+
+  <!-- Video player -->
+  <div class="overlay overlay--modal" id="videoModal" role="dialog" aria-modal="true" aria-labelledby="vpTitle">
+    <div class="overlay__backdrop" data-close></div>
+    <div class="modal__dialog modal__dialog--video">
+      <button class="icon-btn modal__close" type="button" data-close data-i18n-aria="a11y.close" aria-label="إغلاق"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      <div class="vplayer"><video id="vpVideo" controls playsinline preload="none"></video></div>
+      <div class="vplayer__meta">
+        <div>
+          <p class="vplayer__title" id="vpTitle"></p>
+          <p class="vplayer__desc" id="vpDesc"></p>
+        </div>
+        <button class="btn btn--line btn--sm" type="button" id="vpProduct" data-quick="" hidden>
+          <svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span data-i18n="videos.viewProduct">عرض المنتج</span>
+        </button>
+      </div>
     </div>
   </div>
 

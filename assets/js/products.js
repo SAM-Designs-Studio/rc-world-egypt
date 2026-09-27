@@ -12,7 +12,8 @@
        assets/img/shop/{full,thumb}/<key>.jpg.
      • Foam trainer planes, small drift cars and a few tools use stock photos that
        show the item type itself (PX / U helpers, content-checked, location-neutral).
-       Tools with no matching photo show the category icon instead of a picture.
+       Tools with no matching photo carry art: '<name>' → a drawn line illustration
+       (#art-<name> in index.html) on a designed card instead of a photo.
      • No prices on the site (price: null) — the shop confirms price and availability.
      • Specs are well-known type facts only (scale, petrol / electric / nitro,
        drive, cell count when it is part of the model name). No speeds, no
@@ -22,7 +23,7 @@
      id, model (English, both languages), brands [..], name_ar / name_en
      (descriptor), desc_ar / desc_en, category (baja | offroad | planes |
      drift | parts | tools | boats), scales [..], level, featured (sort weight), inStock,
-     price (null), specs, tags, photos [..] | images [{ src, thumb }]
+     price (null), specs, tags, photos [..] | images [{ src, thumb }] | art
    ========================================================================== */
 
 (function () {
@@ -432,7 +433,7 @@
       category: 'drift', scales: ['1/28'], level: 'beginner', featured: 64, inStock: true, price: null,
       specs: { power: ELECTRIC, drive: 'RWD', extras: { ar: 'جيروسكوب للتحكم في الانزلاق', en: 'Gyro for drift control' } },
       tags: ['mini', 'drift', 'rwd', 'gyro', 'palm', 'ميني', 'صغيرة', 'درفت', 'جيرو'],
-      images: [PX('13047779'), PX('13047786')]
+      images: [PX('13047779')]
     },
     {
       id: 'mini-drift-124', model: 'Mini Drift 1/24 RWD', brands: [],
@@ -442,7 +443,7 @@
       category: 'drift', scales: ['1/24'], level: 'beginner', featured: 64, inStock: true, price: null,
       specs: { power: ELECTRIC, drive: 'RWD', extras: { ar: 'جيروسكوب للتحكم في الانزلاق', en: 'Gyro for drift control' } },
       tags: ['mini', 'drift', 'rwd', 'gyro', 'ميني', 'صغيرة', 'درفت', 'جيرو'],
-      images: [PX('13047783')]
+      images: [PX('13047786'), PX('13047783')]
     },
     {
       id: 'drift-116-4wd', model: 'Drift 1/16 4WD', brands: [],
@@ -452,7 +453,7 @@
       category: 'drift', scales: ['1/16'], level: 'beginner', featured: 64, inStock: true, price: null,
       specs: { power: ELECTRIC, drive: '4WD' },
       tags: ['drift', '4wd', 'درفت', 'دفع رباعي'],
-      images: [PX('13047778'), PX('13047780')]
+      images: [U('1637875373155-2f9d64a849e3')]
     },
     {
       id: 'drift-114-rwd', model: 'Drift 1/14 RWD', brands: [],
@@ -462,7 +463,7 @@
       category: 'drift', scales: ['1/14'], level: 'intermediate', featured: 64, inStock: true, price: null,
       specs: { power: ELECTRIC, drive: 'RWD' },
       tags: ['drift', 'rwd', 'درفت', 'دفع خلفي'],
-      images: [PX('12765684'), PX('13047782')]
+      images: [PX('13047783')]
     },
     {
       id: 'drift-wheels-tires-110', model: '1/10 Drift Wheels & Tires', brands: [],
@@ -575,7 +576,8 @@
       desc_en: 'Socket-tip drivers for wheel nuts and small nuts.' + CONTACT_EN,
       category: 'tools', scales: ['1/10', '1/8'], level: 'beginner', featured: 44, inStock: true, price: null,
       specs: { sizes: '5.5 · 7 · 8 mm', use: { ar: 'صواميل العجلات', en: 'Wheel nuts' } },
-      tags: ['nut driver', 'socket', 'tools', 'مفك', 'صواميل', 'عدة']
+      tags: ['nut driver', 'socket', 'tools', 'مفك', 'صواميل', 'عدة'],
+      art: 'nut-drivers'
     },
     {
       id: 'hex-key-set-15', model: 'Metric Hex Key Set 4 / 5 / 6 mm', brands: [],
@@ -604,7 +606,8 @@
       desc_en: 'A thin wrench for adjusting turnbuckles when setting camber and toe.' + CONTACT_EN,
       category: 'tools', scales: ['1/10', '1/8'], level: 'intermediate', featured: 41, inStock: true, price: null,
       specs: { use: { ar: 'ضبط الكامبر والتو', en: 'Camber & toe adjustment' } },
-      tags: ['turnbuckle', 'wrench', 'camber', 'toe', 'tools', 'مفتاح', 'وصلات', 'عدة']
+      tags: ['turnbuckle', 'wrench', 'camber', 'toe', 'tools', 'مفتاح', 'وصلات', 'عدة'],
+      images: [PX('5853933'), PX('8703535')]
     },
     {
       id: 'body-reamer', model: 'Body Reamer', brands: [],
@@ -613,7 +616,8 @@
       desc_en: 'A tapered tool for making clean, round holes in bodies.' + CONTACT_EN,
       category: 'tools', scales: [], level: 'beginner', featured: 40, inStock: true, price: null,
       specs: { use: { ar: 'هياكل البولي كربونات', en: 'Polycarbonate bodies' } },
-      tags: ['reamer', 'body', 'tools', 'هيكل', 'بودي', 'ثقوب', 'عدة']
+      tags: ['reamer', 'body', 'tools', 'هيكل', 'بودي', 'ثقوب', 'عدة'],
+      art: 'reamer'
     },
     {
       id: 'curved-body-scissors', model: 'Curved Body Scissors', brands: [],
@@ -632,7 +636,8 @@
       desc_en: 'A gauge for setting ride height and camber angle.' + CONTACT_EN,
       category: 'tools', scales: ['1/10', '1/8'], level: 'pro', featured: 38, inStock: true, price: null,
       specs: { use: { ar: 'ضبط الإعدادات', en: 'Car setup' } },
-      tags: ['ride height', 'camber', 'gauge', 'setup', 'tools', 'مقياس', 'كامبر', 'عدة']
+      tags: ['ride height', 'camber', 'gauge', 'setup', 'tools', 'مقياس', 'كامبر', 'عدة'],
+      images: [PX('32633664'), PX('7180748')]
     },
     {
       id: 'setup-station', model: 'Setup Station 1/10 & 1/8', brands: [],
@@ -641,7 +646,8 @@
       desc_en: 'A setup station for 1/10 and 1/8 cars to measure camber, toe and ride height accurately.' + CONTACT_EN,
       category: 'tools', scales: ['1/10', '1/8'], level: 'pro', featured: 37, inStock: true, price: null,
       specs: { use: { ar: 'الكامبر والتو وارتفاع الشاسيه', en: 'Camber, toe & ride height' } },
-      tags: ['setup station', 'setup', 'camber', 'toe', 'tools', 'ضبط', 'إعدادات', 'عدة']
+      tags: ['setup station', 'setup', 'camber', 'toe', 'tools', 'ضبط', 'إعدادات', 'عدة'],
+      art: 'setup-station'
     },
     {
       id: 'tire-balancer', model: 'Tire Balancer', brands: [],
@@ -650,7 +656,8 @@
       desc_en: 'For balancing wheels and tyres to cut vibration at high speed.' + CONTACT_EN,
       category: 'tools', scales: [], level: 'pro', featured: 36, inStock: true, price: null,
       specs: { use: { ar: 'موازنة العجلات', en: 'Wheel balancing' } },
-      tags: ['tire', 'tyre', 'balancer', 'wheels', 'tools', 'إطارات', 'موازنة', 'عدة']
+      tags: ['tire', 'tyre', 'balancer', 'wheels', 'tools', 'إطارات', 'موازنة', 'عدة'],
+      art: 'tire-balancer'
     },
     {
       id: 'pit-mat-magnetic', model: 'Pit Mat with Magnetic Tray', brands: [],
@@ -659,7 +666,8 @@
       desc_en: 'A work mat that protects the bench and keeps parts together, with a magnetic tray for screws.' + CONTACT_EN,
       category: 'tools', scales: [], level: 'beginner', featured: 35, inStock: true, price: null,
       specs: { use: { ar: 'حفظ المسامير والقطع الصغيرة', en: 'Keeps screws & small parts in place' } },
-      tags: ['pit mat', 'mat', 'magnetic tray', 'tools', 'مفرش', 'صينية', 'مغناطيس', 'عدة']
+      tags: ['pit mat', 'mat', 'magnetic tray', 'tools', 'مفرش', 'صينية', 'مغناطيس', 'عدة'],
+      art: 'pit-mat'
     },
     {
       id: 'soldering-kit', model: 'Soldering Iron & Solder Kit', brands: [],
@@ -678,7 +686,8 @@
       desc_en: 'A small tester for checking servos and centring them before fitting.' + CONTACT_EN,
       category: 'tools', scales: [], level: 'intermediate', featured: 33, inStock: true, price: null,
       specs: { use: { ar: 'اختبار السيرفو وضبط المنتصف', en: 'Testing & centring servos' } },
-      tags: ['servo', 'tester', 'tools', 'سيرفو', 'اختبار', 'عدة']
+      tags: ['servo', 'tester', 'tools', 'سيرفو', 'اختبار', 'عدة'],
+      images: [PX('35652333'), PX('35652465')]
     },
     {
       id: 'lipo-balance-charger-dual', model: 'Dual LiPo Balance Charger', brands: [],
@@ -687,7 +696,8 @@
       desc_en: 'A two-output charger that charges two packs at once with cell balancing.' + CONTACT_EN,
       category: 'tools', scales: [], level: 'intermediate', featured: 32, inStock: true, price: null,
       specs: { use: { ar: 'شحن بطاريات الليبو', en: 'LiPo charging' } },
-      tags: ['charger', 'lipo', 'balance', 'dual', 'شاحن', 'ليبو', 'بطاريات', 'عدة']
+      tags: ['charger', 'lipo', 'balance', 'dual', 'شاحن', 'ليبو', 'بطاريات', 'عدة'],
+      art: 'charger'
     },
     {
       id: 'cellmeter-8', model: 'CellMeter 8 Battery Checker', brands: [],
@@ -726,7 +736,8 @@
       desc_en: 'A heat-resistant bag for safer charging and storage of LiPo packs.' + CONTACT_EN,
       category: 'tools', scales: [], level: 'beginner', featured: 30, inStock: true, price: null,
       specs: { use: { ar: 'شحن وتخزين البطاريات', en: 'Charging & storage' } },
-      tags: ['lipo bag', 'safe bag', 'battery', 'حقيبة', 'ليبو', 'بطاريات', 'أمان']
+      tags: ['lipo bag', 'safe bag', 'battery', 'حقيبة', 'ليبو', 'بطاريات', 'أمان'],
+      images: [PX('13047785')]
     },
     {
       id: 'glow-igniter-plug-driver', model: 'Glow Igniter & Glow Plug Driver', brands: [],
@@ -745,7 +756,8 @@
       desc_en: 'A spark plug wrench and a clutch tool for the petrol engines on Baja cars.' + CONTACT_EN,
       category: 'tools', scales: ['1/5'], level: 'intermediate', featured: 28, inStock: true, price: null,
       specs: { use: { ar: 'محركات البنزين', en: 'Petrol engines' } },
-      tags: ['spark plug', 'clutch', 'petrol', 'baja', 'tools', 'بوجيه', 'كلتش', 'بنزين', 'باجا', 'عدة']
+      tags: ['spark plug', 'clutch', 'petrol', 'baja', 'tools', 'بوجيه', 'كلتش', 'بنزين', 'باجا', 'عدة'],
+      art: 'spark-plug'
     },
     {
       id: 'shock-oil-thread-lock', model: 'Shock Oil, Diff Oil & Thread Lock', brands: ['Traxxas'],

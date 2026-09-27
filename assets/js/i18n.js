@@ -194,7 +194,7 @@ window.VOLT_I18N = {
     'qv.thumb': 'عرض الصورة {n}',
     'qv.perk1': 'السعر والتوفر عند التواصل',
     'qv.perk2': 'توصيل لجميع المحافظات — تفاصيل الشحن عند التواصل',
-    'qv.perk3': 'الدفع عند الاستلام',
+    'qv.perk3': 'الدفع عند الاستلام أو تحويل بنكي',
 
     /* Featured product */
     'deal.eyebrow': 'منتج مميّز',
@@ -232,8 +232,8 @@ window.VOLT_I18N = {
     'why.f2.text': 'قطع غيار لأشهر علامات الباجا والأوف رود، مع الإطارات والهياكل والبطاريات — أرسل لنا اسم الموديل والقطعة التي تحتاجها.',
     'why.f3.title': 'اطلب بسهولة عبر واتساب',
     'why.f3.text': 'أضف ما تريده إلى قائمة الطلب وأرسلها في رسالة واحدة، ونرد عليك بالسعر والتوفر.',
-    'why.f4.title': 'الدفع عند الاستلام',
-    'why.f4.text': 'ادفع نقدًا عند الاستلام. توصيل لجميع المحافظات — تفاصيل الشحن عند التواصل.',
+    'why.f4.title': 'الدفع عند الاستلام أو تحويل بنكي',
+    'why.f4.text': 'ادفع نقدًا عند الاستلام أو بتحويل بنكي. توصيل لجميع المحافظات — تفاصيل الشحن عند التواصل.',
 
     /* About the shop */
     'about.title': 'محل متخصص في الشيخ زايد',
@@ -265,6 +265,17 @@ window.VOLT_I18N = {
     'contact.addressValue': 'مدينة الشيخ زايد، 6 أكتوبر، القاهرة الكبرى، مصر',
     'contact.mapTitle': 'خريطة: مدينة الشيخ زايد، الجيزة، مصر',
     'contact.mapLink': 'فتح في خرائط جوجل',
+    'bank.title': 'بيانات التحويل البنكي',
+    'bank.pending': 'تحويل بنكي متاح — نرسل لك بيانات الحساب عند تأكيد الطلب',
+    'bank.bankName': 'البنك',
+    'bank.accountName': 'اسم صاحب الحساب',
+    'bank.accountNumber': 'رقم الحساب',
+    'bank.iban': 'رقم الآيبان (IBAN)',
+    'bank.instapay': 'حساب <bdi>InstaPay</bdi>',
+    'bank.copy': 'نسخ {x}',
+    'bank.copyShort': 'نسخ',
+    'bank.copied': 'تم النسخ',
+    'bank.copyFailed': 'تعذّر النسخ — انسخ الرقم يدويًا',
 
     /* Contact form (sends via WhatsApp) */
     'form.title': 'أرسل لنا رسالة',
@@ -314,6 +325,7 @@ window.VOLT_I18N = {
     'list.emptyText': 'ابدأ بالباجا أو الأوف رود أو طائرات الفوم، ثم تواصل معنا لمعرفة السعر والتوفر.',
     'list.emptyCta': 'تصفّح المتجر',
     'list.note': 'سنؤكد لك السعر والتوفر',
+    'list.pay': 'الدفع عند الاستلام أو بتحويل بنكي',
     'list.checkout': 'تواصل لإتمام الطلب',
     'list.remove': 'إزالة {name} من القائمة',
     'list.inc': 'زيادة كمية {name}',
@@ -343,6 +355,7 @@ window.VOLT_I18N = {
     'footer.about': 'لماذا نحن',
     'footer.pay': 'طرق الدفع',
     'footer.cod': 'الدفع عند الاستلام',
+    'pay.bank': 'تحويل بنكي',
     'footer.copy': '© {year} <bdi>RC World Egypt</bdi>. جميع الحقوق محفوظة.',
     'footer.credit': 'تصميم وتطوير: <strong><bdi>Sam</bdi></strong>',
     'footer.top': 'العودة للأعلى'
@@ -518,7 +531,7 @@ window.VOLT_I18N = {
     'qv.thumb': 'Show photo {n}',
     'qv.perk1': 'Price & availability on contact',
     'qv.perk2': 'Delivery across Egypt — shipping details on contact',
-    'qv.perk3': 'Cash on delivery',
+    'qv.perk3': 'Cash on delivery or bank transfer',
 
     /* Featured product */
     'deal.eyebrow': 'Featured product',
@@ -556,8 +569,8 @@ window.VOLT_I18N = {
     'why.f2.text': 'Parts for the best-known Baja and off-road brands, plus tyres, bodies and batteries — just send us the model and the part you need.',
     'why.f3.title': 'Order easily on WhatsApp',
     'why.f3.text': 'Add what you want to your inquiry list and send it in one message — we reply with price and availability.',
-    'why.f4.title': 'Cash on delivery',
-    'why.f4.text': 'Pay in cash on delivery. Delivery across Egypt — shipping details on contact.',
+    'why.f4.title': 'Cash on delivery or bank transfer',
+    'why.f4.text': 'Pay cash on delivery or by bank transfer. Delivery across Egypt — shipping details on contact.',
 
     /* About the shop */
     'about.title': 'A specialist RC shop in Sheikh Zayed',
@@ -589,6 +602,17 @@ window.VOLT_I18N = {
     'contact.addressValue': 'Sheikh Zayed City, 6th of October, Greater Cairo, Egypt',
     'contact.mapTitle': 'Map: Sheikh Zayed City, Giza, Egypt',
     'contact.mapLink': 'Open in Google Maps',
+    'bank.title': 'Bank transfer details',
+    'bank.pending': 'Bank transfer available — we\'ll send the account details when you confirm your order',
+    'bank.bankName': 'Bank',
+    'bank.accountName': 'Account name',
+    'bank.accountNumber': 'Account number',
+    'bank.iban': 'IBAN',
+    'bank.instapay': 'InstaPay',
+    'bank.copy': 'Copy {x}',
+    'bank.copyShort': 'Copy',
+    'bank.copied': 'Copied',
+    'bank.copyFailed': 'Couldn\'t copy — please copy it manually',
 
     /* Contact form (sends via WhatsApp) */
     'form.title': 'Send us a message',
@@ -638,6 +662,7 @@ window.VOLT_I18N = {
     'list.emptyText': 'Start with Baja, off-road or foam planes, then contact us for price and availability.',
     'list.emptyCta': 'Browse the shop',
     'list.note': 'We\'ll confirm price and availability',
+    'list.pay': 'Cash on delivery or bank transfer',
     'list.checkout': 'Contact us to order',
     'list.remove': 'Remove {name} from the list',
     'list.inc': 'Increase quantity of {name}',
@@ -667,6 +692,7 @@ window.VOLT_I18N = {
     'footer.about': 'Why us',
     'footer.pay': 'Payment',
     'footer.cod': 'Cash on delivery',
+    'pay.bank': 'Bank transfer',
     'footer.copy': '© {year} RC World Egypt. All rights reserved.',
     'footer.credit': 'Designed &amp; developed by <strong>Sam</strong>',
     'footer.top': 'Back to top'

@@ -14,6 +14,22 @@
    WhatsApp, who confirms price, availability and shipping.
    ========================================================================== */
 
+/* ==========================================================================
+   BANK TRANSFER DETAILS — fill in when the shop sends them
+   --------------------------------------------------------------------------
+   While every field is '' the contact section only says that bank transfer
+   is available and that the account details are sent when the order is
+   confirmed. Filled fields appear in a card, each with a copy button
+   (numbers / IBAN are shown left-to-right, also in Arabic).
+     bankName      e.g. 'Banque Misr'
+     accountName   the account holder's name
+     accountNumber the account number
+     iban          e.g. 'EG38 0019 …'
+     instapay      InstaPay address or phone, e.g. 'name@instapay'
+   Never put sample / placeholder numbers here.
+   ========================================================================== */
+const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '', instapay: '' };
+
 (function () {
   'use strict';
 
@@ -144,6 +160,7 @@
     lbPrev: $('#lbPrev'),
     lbNext: $('#lbNext'),
     // contact form
+    bankBody: $('#bankBody'),
     contactForm: $('#contactForm'),
     formStatus: $('#formStatus'),
     cName: $('#cName'),
@@ -284,9 +301,12 @@
   const pModelText = (p) => iso(p.model);
   /** Full plain-text name for alt text: Arabic descriptor first, so the line stays RTL. */
   const pLabel = (p) => (state.lang === 'en' ? p.model + ' — ' + p.name_en : p.name_ar + ' ' + iso(p.model));
-  const pImages = (p) => (p._imgs && p._imgs.length ? p._imgs : [{ src: '', thumb: '', tw: 600, th: 450, fw: 1200, fh: 900, none: true }]);
-  /** <img> for a product image, or '' when the product has no photo (the category icon behind it shows instead). */
-  const imgTag = (im, attrs, large) => (im.none ? '' : '<img src="' + esc(large ? (im.src || im.thumb) : (im.thumb || im.src)) + '" ' + attrs + '>');
+  const pImages = (p) => (p._imgs && p._imgs.length ? p._imgs : [{ src: '', thumb: '', tw: 600, th: 450, fw: 1200, fh: 900, none: true, art: p.art || '' }]);
+  /** <img> for a product image; products without a photo get their drawn illustration (#art-…) on a designed card. */
+  const imgTag = (im, attrs, large) => {
+    if (!im.none) return '<img src="' + esc(large ? (im.src || im.thumb) : (im.thumb || im.src)) + '" ' + attrs + '>';
+    return im.art ? '<span class="tool-art" aria-hidden="true"><svg><use href="#art-' + esc(im.art) + '"/></svg></span>' : '';
+  };
 
   /** Localise a spec value ({ar, en} objects; strings shown as-is). */
   function specValue(v) {
@@ -1290,6 +1310,78 @@
   }
 
   /* ======================================================================
+     14b. Bank transfer details (config at the top of this file)
+     ====================================================================== */
+  const BANK_FIELDS = [
+    ['bankName', 'bank.bankName', false],
+    ['accountName', 'bank.accountName', false],
+    ['accountNumber', 'bank.accountNumber', true],
+    ['iban', 'bank.iban', true],
+    ['instapay', 'bank.instapay', true]
+  ];
+
+  function renderBank() {
+    if (!el.bankBody) return;
+    const filled = BANK_FIELDS.filter((f) => String(BANK_DETAILS[f[0]] || '').trim());
+    if (!filled.length) {
+      el.bankBody.innerHTML = '<p class="bank__note">' + esc(t('bank.pending')) + '</p>';
+      return;
+    }
+    el.bankBody.innerHTML = '<dl class="bank__list">' + filled.map((f) => {
+      const v = String(BANK_DETAILS[f[0]]).trim();
+      const shown = f[2] || !HAS_ARABIC.test(v) ? bdi(v) : esc(v); // numbers / IBAN always LTR
+      return '<div class="bank__row"><dt>' + t(f[1]) + '</dt><dd>' +
+        '<span class="bank__value">' + shown + '</span>' +
+        '<button type="button" class="bank__copy" data-copy="' + esc(v) + '" aria-label="' + esc(tt('bank.copy', { x: plain(t(f[1])) })) + '">' +
+          '<svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span class="bank__copy-label">' + esc(t('bank.copyShort')) + '</span>' +
+        '</button></dd></div>';
+    }).join('') + '</dl>';
+  }
+
+  function fallbackCopy(text) {
+    try {
+      const ta = doc.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      doc.body.appendChild(ta);
+      ta.select();
+      const ok = doc.execCommand('copy');
+      ta.remove();
+      return !!ok;
+    } catch (e) { return false; }
+  }
+
+  /** Copy to clipboard (Clipboard API on https, textarea fallback on file:// / older browsers). */
+  function copyText(text) {
+    return new Promise((resolve) => {
+      try {
+        const nav = window.navigator;
+        if (nav && nav.clipboard && window.isSecureContext) {
+          nav.clipboard.writeText(text).then(() => resolve(true), () => resolve(fallbackCopy(text)));
+          return;
+        }
+      } catch (e) { /* fall through */ }
+      resolve(fallbackCopy(text));
+    });
+  }
+
+  function onCopy(btn) {
+    copyText(btn.dataset.copy || '').then((ok) => {
+      const label = $('.bank__copy-label', btn);
+      btn.classList.toggle('is-copied', ok);
+      if (label) label.textContent = t(ok ? 'bank.copied' : 'bank.copyFailed');
+      announce(t(ok ? 'bank.copied' : 'bank.copyFailed'));
+      window.clearTimeout(btn._copyTimer);
+      btn._copyTimer = window.setTimeout(() => {
+        btn.classList.remove('is-copied');
+        if (label && doc.contains(label)) label.textContent = t('bank.copyShort');
+      }, 1800);
+    });
+  }
+
+  /* ======================================================================
      15. Contact form → WhatsApp (validation; nothing is sent from the site)
      ====================================================================== */
   const toLatinDigits = (s) => String(s)
@@ -1424,6 +1516,7 @@
     renderCart();
     renderDeal();
     renderGallery();
+    renderBank();
     refreshFormText();
     if (Overlay.current === el.quickView && qvId) renderQuickView();
     if (Overlay.current === el.searchOverlay) renderSearch();
@@ -1489,6 +1582,9 @@
 
       const gItem = tgt.closest('[data-lb-index]');
       if (gItem) { openLightbox(Number(gItem.dataset.lbIndex), gItem); return; }
+
+      const copyBtn = tgt.closest('[data-copy]');
+      if (copyBtn) { onCopy(copyBtn); return; }
 
       const langBtn = tgt.closest('[data-lang-toggle]');
       if (langBtn) { setLang(state.lang === 'ar' ? 'en' : 'ar', { announce: true }); }

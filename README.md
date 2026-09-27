@@ -17,7 +17,7 @@ A bilingual (Arabic / English) website for **RC World Egypt**, a specialist RC h
 - **Arabic & English**: one-click language switch with a full right-to-left / left-to-right layout, remembered between visits
 - **Shop photography**: products, gallery, hero and "About the shop" feature the shop's own photos
 - **Catalogue from well-known brands**: Losi, Arrma, Traxxas, HPI, Rovan, King Motor, FG, Rofun, MST, HSP, Xray, Kyosho and Thunder Tiger, with filters by category, scale, brand and skill level, plus live search and sorting
-- **Order through WhatsApp**: no online payment and no listed prices. Visitors build an inquiry list and send it in one WhatsApp message, or tap "Ask for price" on any product. Cash on delivery or bank transfer (account details are sent when the order is confirmed), delivery to every governorate
+- **Order through WhatsApp**: no online payment and no listed prices. Visitors build an inquiry list and send it in one WhatsApp message, or tap "Ask for price" on any product. Payment methods: cash on delivery or bank transfer (CIB), delivery to every governorate
 - **Inside the shop gallery**: 184 photos in 7 categories with "Show more", a full-size lightbox and swipe / arrow-key navigation
 - **Quick view**: a product pop-up with a photo strip and a specs table
 - **Contact**: call, WhatsApp and Facebook community buttons, a Google Maps location and a contact form that opens WhatsApp with the message ready
@@ -45,7 +45,7 @@ HTML5 · CSS3 · vanilla JavaScript: no frameworks, no build step.
 - **العربية والإنجليزية** — تبديل فوري بين اللغتين مع تغيير اتجاه الصفحة بالكامل وحفظ الاختيار
 - **صور المحل** — المنتجات والمعرض وواجهة الموقع وقسم «عن المحل» بصور المحل نفسه
 - **منتجات من علامات معروفة** — فلترة حسب القسم والمقاس والعلامة ومستوى المهارة، مع بحث مباشر وترتيب
-- **الطلب عبر واتساب** — لا دفع إلكتروني ولا أسعار معروضة: يضيف الزائر ما يريده إلى قائمة الطلب ويرسلها في رسالة واتساب واحدة، أو يضغط «اسأل عن السعر» في أي منتج. الدفع عند الاستلام أو بتحويل بنكي (نرسل بيانات الحساب عند تأكيد الطلب)، والتوصيل لجميع المحافظات
+- **الطلب عبر واتساب** — لا دفع إلكتروني ولا أسعار معروضة: يضيف الزائر ما يريده إلى قائمة الطلب ويرسلها في رسالة واتساب واحدة، أو يضغط «اسأل عن السعر» في أي منتج. طرق الدفع: الدفع عند الاستلام أو تحويل بنكي ‏(CIB)، والتوصيل لجميع المحافظات
 - **معرض «من داخل المحل»** — ‏184 صورة في 7 أقسام مع زر «عرض المزيد» وعارض صور بالحجم الكامل
 - **عرض سريع** — نافذة منبثقة بصور المنتج وجدول مواصفات
 - **التواصل** — أزرار اتصال وواتساب ومجتمعنا على فيسبوك، وخريطة جوجل للموقع، ونموذج تواصل يفتح واتساب والرسالة جاهزة

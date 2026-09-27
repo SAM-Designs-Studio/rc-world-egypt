@@ -422,11 +422,6 @@
           </div>
         </div>
 
-        <div class="shop__meta">
-          <p class="result-count" id="resultCount" aria-live="polite"></p>
-          <ul class="active-chips" id="activeChips"></ul>
-        </div>
-
         <div class="shop__layout">
           <div class="filters-backdrop" id="filtersBackdrop" data-close-filters></div>
           <aside class="filters" id="filters" aria-labelledby="filtersTitle">
@@ -473,6 +468,20 @@
           </aside>
 
           <div class="shop__results">
+            <div class="results-head is-quiet" id="resultsHead" tabindex="-1">
+              <div class="results-head__top">
+                <div class="results-head__text">
+                  <h3 class="results-head__title" id="resultsTitle">كل المنتجات</h3>
+                  <p class="results-head__count" id="resultCount" aria-live="polite" hidden></p>
+                </div>
+                <button class="btn btn--line btn--sm results-head__all" type="button" id="resultsAll" data-clear-filters hidden>
+                  <svg class="icon" aria-hidden="true"><use href="#i-list"/></svg>
+                  <span data-i18n="results.showAll">عرض كل المنتجات</span>
+                </button>
+              </div>
+              <p class="results-head__hint" id="resultsHint" hidden></p>
+              <ul class="active-chips" id="activeChips" hidden></ul>
+            </div>
             <ul class="product-grid" id="productGrid"></ul>
 
             <div class="empty-state" id="emptyState" hidden>
@@ -595,6 +604,7 @@
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="levels.beginner.b2">سيارات سهلة القيادة</span></li>
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="levels.beginner.b3">تتحمل الصدمات</span></li>
             </ul>
+            <ul class="level-card__models" data-level-models="beginner" aria-hidden="true"></ul>
             <a class="level-card__cta" href="#shop" data-set-level="beginner">
               <span><span data-i18n="levels.beginner.cta">موديلات المبتدئين</span> <small data-level-count="beginner"></small></span>
               <svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg>
@@ -612,6 +622,7 @@
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="levels.intermediate.b2">قابلة للضبط والترقية</span></li>
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="levels.intermediate.b3">قطع غيار عند الطلب</span></li>
             </ul>
+            <ul class="level-card__models" data-level-models="intermediate" aria-hidden="true"></ul>
             <a class="level-card__cta" href="#shop" data-set-level="intermediate">
               <span><span data-i18n="levels.intermediate.cta">موديلات المستوى المتوسط</span> <small data-level-count="intermediate"></small></span>
               <svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg>
@@ -629,6 +640,7 @@
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="levels.pro.b2">شاحنات مونستر وتراغي كبيرة</span></li>
               <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="levels.pro.b3">استشارة قبل الشراء</span></li>
             </ul>
+            <ul class="level-card__models" data-level-models="pro" aria-hidden="true"></ul>
             <a class="level-card__cta" href="#shop" data-set-level="pro">
               <span><span data-i18n="levels.pro.cta">موديلات المحترفين</span> <small data-level-count="pro"></small></span>
               <svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg>
@@ -763,7 +775,7 @@
               </li>
               <li>
                 <span class="contact__icon" aria-hidden="true"><svg class="icon"><use href="#i-cash"/></svg></span>
-                <span><span class="contact__label" data-i18n="footer.pay">طرق الدفع</span><span class="contact__value"><span data-i18n="footer.cod">الدفع عند الاستلام</span> · <span data-i18n="pay.bank">تحويل بنكي</span></span></span>
+                <span><span class="contact__label" data-i18n="footer.pay">طرق الدفع</span><span class="contact__value"><span data-i18n="footer.cod">الدفع عند الاستلام</span> · <span data-i18n="pay.bank">تحويل بنكي</span> <span class="cib-plate cib-plate--xs"><img src="assets/img/cib-logo.svg" width="35" height="14" alt="CIB"></span></span></span>
               </li>
             </ul>
             <div class="bank" role="group" aria-labelledby="bankTitle">
@@ -913,7 +925,7 @@
         <p class="footer__label" data-i18n="footer.pay">طرق الدفع</p>
         <ul class="pay-badges">
           <li class="pay pay--cod"><svg class="icon" aria-hidden="true"><use href="#i-cash"/></svg><span data-i18n="footer.cod">الدفع عند الاستلام</span></li>
-          <li class="pay pay--bank"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span data-i18n="pay.bank">تحويل بنكي</span></li>
+          <li class="pay pay--bank"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span data-i18n="pay.bank">تحويل بنكي</span><span class="cib-plate cib-plate--xs"><img src="assets/img/cib-logo.svg" width="35" height="14" alt="CIB"></span></li>
         </ul>
       </div>
 
@@ -928,6 +940,9 @@
   <!-- =====================================================================
        Overlays: mobile nav, search, quick view, inquiry list, lightbox
        ===================================================================== -->
+
+  <!-- Small status toast (e.g. "Copied ✓") -->
+  <div class="mini-toast" id="miniToast" role="status" aria-live="polite"></div>
 
   <!-- Mobile navigation -->
   <div class="overlay drawer drawer--nav" id="mobileNav" role="dialog" aria-modal="true" aria-labelledby="mobileNavTitle">
@@ -1022,7 +1037,7 @@
       </div>
       <div class="cart-summary" id="cartSummary">
         <p class="list-note"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="list.note">سنؤكد لك السعر والتوفر</span></p>
-        <p class="list-note list-note--pay"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span data-i18n="list.pay">الدفع عند الاستلام أو بتحويل بنكي</span></p>
+        <p class="list-note list-note--pay"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span data-i18n="list.pay">الدفع عند الاستلام أو بتحويل بنكي</span><span class="cib-plate cib-plate--xs"><img src="assets/img/cib-logo.svg" width="35" height="14" alt="CIB"></span></p>
         <button class="btn btn--primary btn--block btn--lg" type="button" id="checkoutBtn">
           <span data-i18n="list.checkout">تواصل لإتمام الطلب</span>
           <svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg>

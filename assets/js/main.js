@@ -21,14 +21,14 @@
    is available and that the account details are sent when the order is
    confirmed. Filled fields appear in a card, each with a copy button
    (numbers / IBAN are shown left-to-right, also in Arabic).
-     bankName      e.g. 'Banque Misr'
-     accountName   the account holder's name
+     bankName      'CIB' shows the full bank name + the CIB logo (on a white plate)
+     accountName   the account holder's name exactly as the bank spells it
      accountNumber the account number
      iban          e.g. 'EG38 0019 …'
      instapay      InstaPay address or phone, e.g. 'name@instapay'
    Never put sample / placeholder numbers here.
    ========================================================================== */
-const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '', instapay: '' };
+const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', accountNumber: '100031395447', iban: '', instapay: '' };
 
 (function () {
   'use strict';
@@ -45,6 +45,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
   const PRODUCTS = window.VOLT_PRODUCTS || [];
   const CATEGORIES = (window.VOLT_CATEGORIES || []).map((c) => c.id);
   const FEATURED = window.VOLT_FEATURED || null;
+  const LEVEL_ORDER = window.VOLT_LEVEL_ORDER || {};
   const BRANDS = (window.VOLT_BRANDS || []).slice();
   const SIZES = window.SHOP_PHOTO_SIZES || {};
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
@@ -104,6 +105,11 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     grid: $('#productGrid'),
     emptyState: $('#emptyState'),
     resultCount: $('#resultCount'),
+    resultsHead: $('#resultsHead'),
+    resultsTitle: $('#resultsTitle'),
+    resultsHint: $('#resultsHint'),
+    resultsAll: $('#resultsAll'),
+    miniToast: $('#miniToast'),
     chips: $('#activeChips'),
     loadMore: $('#loadMore'),
     loadMoreLabel: $('#loadMoreLabel'),
@@ -363,6 +369,9 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
   }
 
 
+  /** Tiny CIB logo on its white plate (the logo only reads correctly on white). */
+  const CIB_XS = '<span class="cib-plate cib-plate--xs"><img src="assets/img/cib-logo.svg" width="35" height="14" alt="CIB"></span>';
+
   /** Normalise text for forgiving AR/EN search (diacritics, alef forms, digits). */
   function norm(s) {
     return String(s || '')
@@ -566,11 +575,31 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
   function renderCounts() {
     $$('[data-cat-count]').forEach((n) => { n.textContent = tp('unit.product', catCounts[n.dataset.catCount] || 0); });
     $$('[data-level-count]').forEach((n) => { n.textContent = '(' + fmt(levelCounts[n.dataset.levelCount] || 0) + ')'; });
+    renderLevelPreviews();
     setCount(el.heroCount, PRODUCTS.length);
     setCount(el.heroScales, SCALES.length);
     if (el.heroScalesLabel && SCALES.length) {
       el.heroScalesLabel.innerHTML = t('hero.stat2', { min: bdi(SCALES[0]), max: bdi(SCALES[SCALES.length - 1]) });
     }
+  }
+
+  /** 3–4 round thumbnails of real models at a level (one per category first, then fill). */
+  function levelPreview(level) {
+    const list = PRODUCTS.filter((p) => p.level === level && !pImages(p)[0].none).sort(levelSorter(level));
+    const picked = [];
+    const cats = new Set();
+    list.forEach((p) => { if (picked.length < 4 && !cats.has(p.category)) { picked.push(p); cats.add(p.category); } });
+    list.forEach((p) => { if (picked.length < 4 && picked.indexOf(p) === -1) picked.push(p); });
+    return picked;
+  }
+
+  function renderLevelPreviews() {
+    $$('[data-level-models]').forEach((ul) => {
+      ul.innerHTML = levelPreview(ul.dataset.levelModels).map((p) => {
+        const im = pImages(p)[0];
+        return '<li title="' + esc(p.model) + '"><img src="' + esc(im.thumb || im.src) + '" width="' + im.tw + '" height="' + im.th + '" loading="lazy" decoding="async" alt=""></li>';
+      }).join('');
+    });
   }
 
   /* ======================================================================
@@ -624,7 +653,6 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
       '<li><button type="button" class="fchip" data-chip-type="' + c.type + '" data-chip-value="' + esc(c.value) + '" aria-label="' + esc(tt('chip.remove', { x: plain(c.html) })) + '">' +
       '<span>' + c.html + '</span><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></li>'
     ).join('');
-    if (chips.length > 1) html += '<li><button type="button" class="fchip fchip--clear" data-clear-filters>' + esc(t('filter.clear')) + '</button></li>';
     el.chips.innerHTML = html;
 
     const n = activeFilterTotal();
@@ -650,16 +678,87 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
   }
 
   /** Shortcut used by category tiles, level cards, hero & footer links. */
+  /** Shortcut used by level cards, category tiles, hero CTAs and footer links: filter, then land on the results. */
   function applyShortcut(opts) {
+    if (Overlay.current) Overlay.close({ restoreFocus: false }); // never leave a drawer open over the results
     state.f = freshFilters();
     const cats = opts.cat ? String(opts.cat).split(',').map((c) => c.trim()).filter(Boolean) : [];
     cats.forEach((c) => state.f.cats.add(c));        // e.g. "baja,offroad"
     if (opts.level) state.f.levels.add(opts.level);
+    if (opts.scale) state.f.scales.add(opts.scale);
     syncFilterControls();
     resetAndRender();
-    scrollToId('shop', el.shopTitle);
-    const label = cats.length ? cats.map((c) => t('cat.' + c)).join(' + ') : t('level.' + opts.level);
-    announce(label + ' — ' + tp('unit.product', getResults().length));
+    scrollToResults();
+    announce(plain(el.resultsTitle.innerHTML) + ' — ' + el.resultCount.textContent);
+  }
+
+  /** Scroll so the results header sits just below the sticky header, with the first row of cards in view. */
+  function scrollToResults(opts) {
+    const o = opts || {};
+    const head = el.resultsHead;
+    if (!head || !head.getBoundingClientRect) return;
+    const headerH = el.header ? el.header.getBoundingClientRect().height : 0;
+    const y = window.scrollY || root.scrollTop || 0;
+    const top = Math.max(0, Math.round(head.getBoundingClientRect().top + y - headerH - 12));
+    const smooth = !o.instant && !reduceMotion.matches;
+    try { window.scrollTo({ top: top, behavior: smooth ? 'smooth' : 'auto' }); } catch (e) { window.scrollTo(0, top); }
+    if (o.focus !== false) {
+      window.setTimeout(() => { try { head.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }, smooth ? 450 : 0);
+    }
+  }
+
+  /* ---------- URL hash: #shop?level=beginner · #shop?cat=baja,offroad · &scale= · &brand= · &q= ---------- */
+  function filtersToQuery() {
+    const f = state.f;
+    const parts = [];
+    const add = (k, set) => { if (set.size) parts.push(k + '=' + Array.from(set).map(encodeURIComponent).join(',')); };
+    add('cat', f.cats); add('level', f.levels); add('scale', f.scales); add('brand', f.brands);
+    if (f.q.trim()) parts.push('q=' + encodeURIComponent(f.q.trim()));
+    return parts.join('&');
+  }
+
+  function syncHash() {
+    try {
+      const q = filtersToQuery();
+      const cur = window.location.hash || '';
+      const next = q ? '#shop?' + q : (cur.indexOf('#shop?') === 0 ? '#shop' : null);
+      if (next !== null && next !== cur && window.history && window.history.replaceState) window.history.replaceState(null, '', next);
+    } catch (e) { /* file:// or sandboxed — filtering still works */ }
+  }
+
+  /** Read filters from the hash; returns true when it held any. */
+  function filtersFromHash() {
+    let h = '';
+    try { h = window.location.hash || ''; } catch (e) { h = ''; }
+    if (h.indexOf('#shop?') !== 0) return false;
+    const f = freshFilters();
+    let any = false;
+    const allow = { cat: [CATEGORIES, 'cats'], level: [LEVELS, 'levels'], scale: [SCALES, 'scales'], brand: [BRANDS, 'brands'] };
+    h.slice(6).split('&').forEach((pair) => {
+      const i = pair.indexOf('=');
+      if (i < 1) return;
+      const k = pair.slice(0, i);
+      const raw = pair.slice(i + 1);
+      try {
+        if (k === 'q') { f.q = decodeURIComponent(raw); any = any || !!f.q.trim(); return; }
+        if (!allow[k]) return;
+        raw.split(',').map((v) => decodeURIComponent(v)).forEach((v) => {
+          if (allow[k][0].indexOf(v) !== -1) { f[allow[k][1]].add(v); any = true; }
+        });
+      } catch (e) { /* malformed value — ignore */ }
+    });
+    if (!any) return false;
+    state.f = f;
+    return true;
+  }
+
+  function applyHashFilters(instant) {
+    if (!filtersFromHash()) return false;
+    syncFilterControls();
+    state.shown = PAGE_SIZE;
+    renderProducts();
+    scrollToResults({ instant: instant, focus: false });
+    return true;
   }
 
   function scrollToId(id, focusTarget) {
@@ -676,6 +775,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
   function resetAndRender() {
     state.shown = PAGE_SIZE;
     renderProducts();
+    syncHash();
   }
 
   /* ======================================================================
@@ -688,6 +788,13 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     scaleAsc: (a, b) => (scaleNum(b) || -1) - (scaleNum(a) || -1) || b.featured - a.featured
   };
 
+  /** Level shortcuts list the typical first models first (VOLT_LEVEL_ORDER), then the rest by weight. */
+  function levelSorter(level) {
+    const order = LEVEL_ORDER[level] || [];
+    const rank = (p) => { const i = order.indexOf(p.id); return i === -1 ? 999 : i; };
+    return (a, b) => rank(a) - rank(b) || b.featured - a.featured;
+  }
+
   function getResults() {
     const f = state.f;
     const q = norm(f.q);
@@ -697,7 +804,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
       (!f.brands.size || pBrands(p).some((b) => f.brands.has(b))) &&
       (!f.levels.size || f.levels.has(p.level)) &&
       matches(p, q)
-    ).sort(SORTERS[state.sort] || SORTERS.featured);
+    ).sort(state.sort === 'featured' && f.levels.size === 1 ? levelSorter(Array.from(f.levels)[0]) : (SORTERS[state.sort] || SORTERS.featured));
   }
 
   function cardHTML(p, i) {
@@ -712,7 +819,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
         '<div class="pcard__media">' +
           '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
           imgTag(img, 'width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt="' + esc(pLabel(p)) + '"') +
-          '<span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span>' +
+          (p.level ? '<span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span>' : '') +
           (count > 1 ? '<span class="photo-count" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg>' + fmt(count) + '</span>' : '') +
           '<button class="pcard__quick" type="button" data-quick="' + p.id + '">' +
             '<svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span>' + esc(t('card.quick')) + '</span>' +
@@ -742,10 +849,46 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     el.grid.innerHTML = visible.map(cardHTML).join('');
     el.grid.hidden = total === 0;
     el.emptyState.hidden = total > 0;
-    el.resultCount.innerHTML = t('shop.found', { x: '<strong>' + esc(tp('unit.product', total)) + '</strong>' });
+    renderResultsHead(total);
     updateLoadMore(total, visible.length);
     el.filtersApplyLabel.textContent = t('shop.apply', { x: tp('unit.product', total) });
     renderChips();
+    if (hasRendered) pulse(el.resultsHead);
+    hasRendered = true;
+  }
+
+  let hasRendered = false;
+  function pulse(node) {
+    if (!node || !node.classList || reduceMotion.matches) return;
+    node.classList.remove('is-pulse');
+    void node.offsetWidth; // restart the animation
+    node.classList.add('is-pulse');
+  }
+
+  /** Title / count / hint above the grid, naming the current selection. */
+  function renderResultsHead(total) {
+    const f = state.f;
+    const q = f.q.trim();
+    const active = activeFilterTotal() > 0 || !!q;
+    const segs = [];
+    if (f.cats.size) segs.push(Array.from(f.cats).map((c) => esc(t('cat.' + c))).join(' + '));
+    f.levels.forEach((l) => segs.push(esc(t('results.level.' + l))));
+    if (f.scales.size) segs.push(t('results.scale', { x: bdi(Array.from(f.scales).join(' · ')) }));
+    if (f.brands.size) segs.push(Array.from(f.brands).map(bdi).join(' · '));
+    let title;
+    if (!active) title = esc(t('results.all', { n: fmt(PRODUCTS.length) }));
+    else if (!segs.length) title = t('results.search', { q: ltrHTML(q) });
+    else title = segs.join('<span class="results-head__sep" aria-hidden="true"> · </span>') + (q ? ' <span class="results-head__q">' + t('results.searchShort', { q: ltrHTML(q) }) + '</span>' : '');
+    el.resultsTitle.innerHTML = title;
+    el.resultsHead.classList.toggle('is-quiet', !active);
+    // models-only wording when a level is selected (levels only exist on complete vehicles)
+    el.resultCount.textContent = active ? tp(f.levels.size ? 'unit.model' : 'unit.product', total) : '';
+    el.resultCount.hidden = !active;
+    const onlyLevel = f.levels.size === 1 && !f.cats.size && !f.scales.size && !f.brands.size && !q;
+    el.resultsHint.hidden = !onlyLevel;
+    el.resultsHint.textContent = onlyLevel ? t('results.hint.' + Array.from(f.levels)[0]) : '';
+    el.resultsAll.hidden = !active;
+    el.chips.hidden = !active;
   }
 
   function updateLoadMore(total, shown) {
@@ -818,7 +961,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     const rows = [['category', esc(t('cat.' + p.category))]]
       .concat(pBrands(p).length ? [['brand', pBrands(p).map(bdi).join(' · ')]] : [])
       .concat(pScales(p).length ? [['scale', bdi(pScales(p).join(' · '))]] : [])
-      .concat([['level', esc(t('level.' + p.level))]])
+      .concat(p.level ? [['level', esc(t('level.' + p.level))]] : [])
       .concat(Object.keys(p.specs || {}).map((k) => [k, ltrHTML(specValue(p.specs[k]))]))
       .map((r) => '<tr><th scope="row">' + esc(t('spec.' + r[0])) + '</th><td>' + r[1] + '</td></tr>')
       .join('');
@@ -841,7 +984,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
         thumbs +
       '</div>' +
       '<div class="qv__body">' +
-        '<p class="qv__brand">' + metaHTML(p) + ' <span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span></p>' +
+        '<p class="qv__brand">' + metaHTML(p) + (p.level ? ' <span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span>' : '') + '</p>' +
         '<h2 class="qv__title" id="qvTitle">' + pModelHTML(p) + '</h2>' +
         '<p class="qv__type">' + esc(pType(p)) + '</p>' +
         priceAskHTML(p, 'price-ask--lg') +
@@ -858,7 +1001,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
         '<ul class="qv__perks">' +
           '<li><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>' + esc(t('qv.perk1')) + '</li>' +
           '<li><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>' + esc(t('qv.perk2')) + '</li>' +
-          '<li><svg class="icon" aria-hidden="true"><use href="#i-cash"/></svg>' + esc(t('qv.perk3')) + '</li>' +
+          '<li><svg class="icon" aria-hidden="true"><use href="#i-cash"/></svg><span>' + esc(t('qv.perk3')) + '</span>' + CIB_XS + '</li>' +
         '</ul>' +
         '<h3 class="qv__specs-title">' + esc(t('qv.specs')) + '</h3>' +
         '<table class="specs-table"><tbody>' + rows + '</tbody></table>' +
@@ -1119,7 +1262,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     state.f.q = raw;
     syncFilterControls();
     resetAndRender();
-    scrollToId('shop', el.shopTitle);
+    scrollToResults();
   }
 
   /* ======================================================================
@@ -1323,22 +1466,60 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     ['instapay', 'bank.instapay', true]
   ];
 
+  const BANK_NAMES = { CIB: 'bank.cibName' };            // known banks → full localised name + logo
+  const groupDigits = (v) => (/^\d+$/.test(v) ? v.replace(/(\d{4})(?=\d)/g, '$1 ') : v);
+
+  function bankRow(labelKey, valueHTML, copyValue, extraClass) {
+    return '<div class="bank__row' + (extraClass ? ' ' + extraClass : '') + '"><dt>' + t(labelKey) + '</dt><dd>' +
+      '<span class="bank__value">' + valueHTML + '</span>' +
+      (copyValue ? '<button type="button" class="bank__copy" data-copy="' + esc(copyValue) + '" aria-label="' + esc(tt('bank.copy', { x: plain(t(labelKey)) })) + '">' +
+        '<svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span class="bank__copy-label">' + esc(t('bank.copyShort')) + '</span></button>' : '') +
+      '</dd></div>';
+  }
+
   function renderBank() {
     if (!el.bankBody) return;
-    const filled = BANK_FIELDS.filter((f) => String(BANK_DETAILS[f[0]] || '').trim());
-    if (!filled.length) {
+    const val = (k) => String(BANK_DETAILS[k] || '').trim();
+    const any = BANK_FIELDS.some((fl) => val(fl[0]));
+    if (!any) {
       el.bankBody.innerHTML = '<p class="bank__note">' + esc(t('bank.pending')) + '</p>';
       return;
     }
-    el.bankBody.innerHTML = '<dl class="bank__list">' + filled.map((f) => {
-      const v = String(BANK_DETAILS[f[0]]).trim();
-      const shown = f[2] || !HAS_ARABIC.test(v) ? bdi(v) : esc(v); // numbers / IBAN always LTR
-      return '<div class="bank__row"><dt>' + t(f[1]) + '</dt><dd>' +
-        '<span class="bank__value">' + shown + '</span>' +
-        '<button type="button" class="bank__copy" data-copy="' + esc(v) + '" aria-label="' + esc(tt('bank.copy', { x: plain(t(f[1])) })) + '">' +
-          '<svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg><span class="bank__copy-label">' + esc(t('bank.copyShort')) + '</span>' +
-        '</button></dd></div>';
-    }).join('') + '</dl>';
+    const bankKey = BANK_NAMES[val('bankName').toUpperCase()];
+    const rows = [];
+    if (val('bankName')) rows.push(bankRow('bank.bankName', bankKey ? t(bankKey) : ltrHTML(val('bankName'))));
+    if (val('accountName')) rows.push(bankRow('bank.accountName', ltrHTML(val('accountName')), val('accountName')));
+    if (val('accountNumber')) {
+      const raw = val('accountNumber').replace(/\s+/g, '');
+      rows.push(bankRow('bank.accountNumber', '<bdi dir="ltr" class="bank__number">' + esc(groupDigits(raw)) + '</bdi>', raw, 'bank__row--number'));
+    }
+    if (val('iban')) rows.push(bankRow('bank.iban', '<bdi dir="ltr" class="bank__number bank__number--sm">' + esc(val('iban')) + '</bdi>', val('iban').replace(/\s+/g, '')));
+    if (val('instapay')) rows.push(bankRow('bank.instapay', bdi(val('instapay')), val('instapay')));
+    rows.push(bankRow('bank.currency', t('bank.currencyValue')));
+    const waHref = waLink(waText([tpl('wa.bankSent')]));
+    el.bankBody.innerHTML =
+      '<div class="bank-card">' +
+        '<div class="bank-card__top">' +
+          '<span class="bank-card__label"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg>' + esc(t('pay.bank')) + '</span>' +
+          (bankKey ? '<span class="cib-plate"><img src="assets/img/cib-logo.svg" width="100" height="40" alt="' + esc(plain(t(bankKey))) + '"></span>' : '') +
+        '</div>' +
+        '<dl class="bank__list">' + rows.join('') + '</dl>' +
+        '<div class="bank-card__foot">' +
+          '<p>' + esc(t('bank.note')) + '</p>' +
+          '<a class="btn btn--wa btn--sm bank-card__wa" href="' + esc(waHref) + '" target="_blank" rel="noopener noreferrer">' +
+            '<svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg><span>' + esc(t('bank.sendReceipt')) + '</span>' +
+            '<span class="sr-only"> ' + esc(t('a11y.newTab')) + '</span></a>' +
+        '</div>' +
+      '</div>';
+  }
+
+  let miniToastTimer = null;
+  function showMiniToast(text) {
+    if (!el.miniToast) return;
+    el.miniToast.textContent = text;
+    el.miniToast.classList.add('is-show');
+    window.clearTimeout(miniToastTimer);
+    miniToastTimer = window.setTimeout(() => el.miniToast.classList.remove('is-show'), 1800);
   }
 
   function fallbackCopy(text) {
@@ -1375,7 +1556,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
       const label = $('.bank__copy-label', btn);
       btn.classList.toggle('is-copied', ok);
       if (label) label.textContent = t(ok ? 'bank.copied' : 'bank.copyFailed');
-      announce(t(ok ? 'bank.copied' : 'bank.copyFailed'));
+      showMiniToast(t(ok ? 'bank.copied' : 'bank.copyFailed')); // role=status → also announced
       window.clearTimeout(btn._copyTimer);
       btn._copyTimer = window.setTimeout(() => {
         btn.classList.remove('is-copied');
@@ -1572,7 +1753,7 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
       if (lvl) { e.preventDefault(); applyShortcut({ level: lvl.dataset.setLevel }); return; }
 
       const shop = tgt.closest('[data-scroll-shop]');
-      if (shop) { e.preventDefault(); scrollToId('shop', el.shopTitle); return; }
+      if (shop) { e.preventDefault(); scrollToResults(); return; }
 
       const clear = tgt.closest('[data-clear-filters]');
       if (clear) { clearFilters(); if (el.shopSearch) el.shopSearch.focus({ preventScroll: true }); return; }
@@ -1736,6 +1917,9 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     initCountUp();
     onScroll();
     root.classList.add('is-ready');
+    // Shared link such as #shop?level=beginner → open the same filtered view
+    window.setTimeout(() => applyHashFilters(true), 60);
+    window.addEventListener('hashchange', () => applyHashFilters(false));
   }
 
   init();

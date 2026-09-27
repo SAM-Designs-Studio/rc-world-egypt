@@ -81,6 +81,7 @@ window.VOLT_I18N = {
 
     /* Units */
     'unit.product': { zero: 'لا توجد منتجات', one: 'منتج واحد', two: 'منتجان', few: '{n} منتجات', many: '{n} منتجًا', other: '{n} منتج' },
+    'unit.model': { zero: 'لا توجد موديلات', one: 'موديل واحد', two: 'موديلان', few: '{n} موديلات', many: '{n} موديلًا', other: '{n} موديل' },
     'unit.item': { zero: 'لا توجد قطع', one: 'قطعة واحدة', two: 'قطعتان', few: '{n} قطع', many: '{n} قطعة', other: '{n} قطعة' },
 
     /* Categories */
@@ -115,6 +116,17 @@ window.VOLT_I18N = {
     'shop.sortLabel': 'ترتيب',
     'shop.found': 'نعرض لك {x}',
     'shop.apply': 'عرض {x}',
+    'results.showAll': 'عرض كل المنتجات',
+    'results.searchShort': '— «{q}»',
+    'results.search': 'نتائج البحث عن «{q}»',
+    'results.scale': 'مقاس {x}',
+    'results.hint.pro': 'حجم وقوة أكبر — لأصحاب الخبرة',
+    'results.hint.intermediate': 'أسرع وقابلة للضبط والترقية — خطوتك التالية',
+    'results.hint.beginner': 'سهلة القيادة ومتينة — مثالية كبداية',
+    'results.level.pro': 'موديلات المحترفين',
+    'results.level.intermediate': 'موديلات المستوى المتوسط',
+    'results.level.beginner': 'موديلات المبتدئين',
+    'results.all': 'كل المنتجات ({n})',
     'shop.more': 'عرض المزيد ({n})',
     'sort.featured': 'المميزة',
     'sort.scaleDesc': 'المقاس: من الأكبر للأصغر',
@@ -272,6 +284,11 @@ window.VOLT_I18N = {
     'contact.mapTitle': 'خريطة: مدينة الشيخ زايد، الجيزة، مصر',
     'contact.mapLink': 'فتح في خرائط جوجل',
     'bank.title': 'بيانات التحويل البنكي',
+    'bank.sendReceipt': 'أرسل الإيصال',
+    'bank.note': 'بعد التحويل، أرسل صورة الإيصال على واتساب لتأكيد طلبك',
+    'bank.currencyValue': 'جنيه مصري <bdi>(EGP)</bdi>',
+    'bank.currency': 'العملة',
+    'bank.cibName': 'البنك التجاري الدولي <bdi>(CIB)</bdi>',
     'bank.pending': 'تحويل بنكي متاح — نرسل لك بيانات الحساب عند تأكيد الطلب',
     'bank.bankName': 'البنك',
     'bank.accountName': 'اسم صاحب الحساب',
@@ -280,7 +297,7 @@ window.VOLT_I18N = {
     'bank.instapay': 'حساب <bdi>InstaPay</bdi>',
     'bank.copy': 'نسخ {x}',
     'bank.copyShort': 'نسخ',
-    'bank.copied': 'تم النسخ',
+    'bank.copied': 'تم النسخ ✓',
     'bank.copyFailed': 'تعذّر النسخ — انسخ الرقم يدويًا',
 
     /* Contact form (sends via WhatsApp) */
@@ -311,6 +328,7 @@ window.VOLT_I18N = {
     'wa.contactTopic': 'الموضوع: {x}',
     'wa.contactMsg': 'الرسالة:',
     'wa.listIntro': 'أرغب في طلب المنتجات التالية:',
+    'wa.bankSent': 'أرسلت تحويلًا بنكيًا لطلبي',
 
     /* Search */
     'search.title': 'ابحث في <bdi>RC World Egypt</bdi>',
@@ -424,6 +442,7 @@ window.VOLT_I18N = {
 
     /* Units */
     'unit.product': { zero: 'no products', one: '{n} product', other: '{n} products' },
+    'unit.model': { zero: 'no models', one: '{n} model', other: '{n} models' },
     'unit.item': { zero: 'no items', one: '{n} item', other: '{n} items' },
 
     /* Categories */
@@ -458,6 +477,17 @@ window.VOLT_I18N = {
     'shop.sortLabel': 'Sort',
     'shop.found': 'Showing {x}',
     'shop.apply': 'Show {x}',
+    'results.showAll': 'Show all products',
+    'results.searchShort': '— “{q}”',
+    'results.search': 'Search results for “{q}”',
+    'results.scale': 'Scale {x}',
+    'results.hint.pro': 'More size and power — for experienced drivers',
+    'results.hint.intermediate': 'Faster, tunable and upgradeable — your next step',
+    'results.hint.beginner': 'Easy to drive and tough — ideal to start with',
+    'results.level.pro': 'Pro models',
+    'results.level.intermediate': 'Intermediate models',
+    'results.level.beginner': 'Beginner models',
+    'results.all': 'All products ({n})',
     'shop.more': 'Show more ({n})',
     'sort.featured': 'Featured',
     'sort.scaleDesc': 'Scale: largest first',
@@ -615,15 +645,20 @@ window.VOLT_I18N = {
     'contact.mapTitle': 'Map: Sheikh Zayed City, Giza, Egypt',
     'contact.mapLink': 'Open in Google Maps',
     'bank.title': 'Bank transfer details',
+    'bank.sendReceipt': 'Send the receipt',
+    'bank.note': 'After transferring, send the receipt on WhatsApp to confirm your order',
+    'bank.currencyValue': 'Egyptian pound (EGP)',
+    'bank.currency': 'Currency',
+    'bank.cibName': 'Commercial International Bank (CIB)',
     'bank.pending': 'Bank transfer available — we\'ll send the account details when you confirm your order',
     'bank.bankName': 'Bank',
-    'bank.accountName': 'Account name',
+    'bank.accountName': 'Account holder',
     'bank.accountNumber': 'Account number',
     'bank.iban': 'IBAN',
     'bank.instapay': 'InstaPay',
     'bank.copy': 'Copy {x}',
     'bank.copyShort': 'Copy',
-    'bank.copied': 'Copied',
+    'bank.copied': 'Copied ✓',
     'bank.copyFailed': 'Couldn\'t copy — please copy it manually',
 
     /* Contact form (sends via WhatsApp) */
@@ -654,6 +689,7 @@ window.VOLT_I18N = {
     'wa.contactTopic': 'Topic: {x}',
     'wa.contactMsg': 'Message:',
     'wa.listIntro': 'I’d like to order the following:',
+    'wa.bankSent': 'I\'ve sent a bank transfer for my order',
 
     /* Search */
     'search.title': 'Search RC World Egypt',

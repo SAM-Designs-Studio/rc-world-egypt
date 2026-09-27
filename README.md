@@ -4,7 +4,7 @@
 
 **A bilingual online store for radio-controlled cars, drones, planes and boats**
 
-**[▶ Live demo](https://invisablesam-designs.github.io/volt-rc-store/)**
+**[▶ Live demo](https://sam-designs-studio.github.io/volt-rc-store/)**
 
 ![VOLT RC — desktop](screenshots/desktop.png)
 
@@ -37,7 +37,7 @@ HTML5 · CSS3 · vanilla JavaScript — no frameworks, no build step.
 
 متجر إلكتروني لهواة سيارات وطائرات وقوارب التحكم عن بعد.
 
-**[▶ معاينة الموقع مباشرة](https://invisablesam-designs.github.io/volt-rc-store/)**
+**[▶ معاينة الموقع مباشرة](https://sam-designs-studio.github.io/volt-rc-store/)**
 
 > مشروع تصميمي تجريبي — تصميم وتطوير **Sam**. العلامة التجارية والمنتجات والأسعار والتقييمات محتوى تجريبي.
 

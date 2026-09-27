@@ -12,8 +12,8 @@
        assets/img/shop/{full,thumb}/<key>.jpg.
      • Foam trainer planes, small drift cars and a few tools use stock photos that
        show the item type itself (PX / U helpers, content-checked, location-neutral).
-       Tools with no matching photo carry art: '<name>' → a drawn line illustration
-       (#art-<name> in index.html) on a designed card instead of a photo.
+       Some tools use Creative Commons photos (CC helper, credited); their art: '<name>'
+       line illustration (#art-<name>) stays behind the photo as a fallback if it fails to load.
      • level (beginner | intermediate | pro) only on complete vehicles; parts, tools,
        electronics and plane accessories have level: null (never in level results).
      • No prices on the site (price: null) — the shop confirms price and availability.
@@ -39,6 +39,26 @@
   var U = function (id) {
     var base = 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&q=80&w=';
     return { src: base + '1200', thumb: base + '600' };
+  };
+  /* Creative Commons photos (attribution required): credited in the footer "Photo credits"
+     dialog and under the photo in quick view. Files: assets/img/shop/{full,thumb}/<key>.jpg */
+  window.VOLT_PHOTO_CREDITS = {
+    'tools-cc-nut-drivers-1': { product: 'nut-driver-set', author: 'Steve Rider', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0', source: 'https://commons.wikimedia.org/wiki/File:Xcelite_Nut_driver.jpg', size: [600, 450, 1400, 1050] },
+    'tools-cc-nut-drivers-2': { product: 'nut-driver-set', author: 'lmorchard', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/', source: 'https://www.flickr.com/photos/35034355597@N01/24684318539', size: [600, 445, 1024, 760] },
+    'tools-cc-body-reamer-1': { product: 'body-reamer', author: '魔私利戸', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0', source: 'https://commons.wikimedia.org/wiki/File:Taper_reamer_K-444.jpg', size: [600, 444, 1400, 1035] },
+    'tools-cc-body-reamer-2': { product: 'body-reamer', author: '魔私利戸', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0', source: 'https://commons.wikimedia.org/wiki/File:Taper_reamer_K-442.jpg', size: [600, 511, 1400, 1192] },
+    'tools-cc-setup-station-1': { product: 'setup-station', author: 'Vi4oto', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0', source: 'https://commons.wikimedia.org/wiki/File:Mugen_mtx5.jpg', size: [450, 600, 1050, 1400] },
+    'tools-cc-tire-balancer-1': { product: 'tire-balancer', author: 'K. Murray', license: 'CC BY-SA 3.0', licenseUrl: 'http://creativecommons.org/licenses/by-sa/3.0/', source: 'https://commons.wikimedia.org/wiki/File:Wheel_balancing_tool.jpg', size: [600, 450, 800, 600] },
+    'tools-cc-tire-balancer-2': { product: 'tire-balancer', author: 'ProjectManhattan', license: 'CC BY-SA 3.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/3.0', source: 'https://commons.wikimedia.org/wiki/File:Wheel_balancing.jpg', size: [600, 337, 1400, 787] },
+    'tools-cc-pit-mat-1': { product: 'pit-mat-magnetic', author: 'Zintosch7', license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0', source: 'https://commons.wikimedia.org/wiki/File:Workbench_of_a_bicycle_dealer.jpg', size: [600, 450, 1400, 1050] },
+    'tools-cc-pit-mat-2': { product: 'pit-mat-magnetic', author: 'btwashburn', license: 'CC BY 2.0', licenseUrl: 'https://creativecommons.org/licenses/by/2.0/', source: 'https://commons.wikimedia.org/wiki/File:Garage_Workbench_-_(1).jpg', size: [600, 450, 1400, 1050] },
+    'tools-cc-lipo-charger-1': { product: 'lipo-balance-charger-dual', author: 'SokilFPV', license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0', source: 'https://commons.wikimedia.org/wiki/File:ToolkitRC_M8S_LiPo_battery_charger.jpg', size: [600, 450, 1400, 1050] },
+    'tools-cc-lipo-charger-2': { product: 'lipo-balance-charger-dual', author: 'Teardown Central', license: 'CC BY-SA 2.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0', source: 'https://commons.wikimedia.org/wiki/File:Turnigy_Accucel_6_(7758024940).jpg', size: [600, 400, 1400, 933] },
+    'tools-cc-spark-plug-tool-1': { product: 'spark-plug-clutch-tool', author: 'SSC-Aviation', license: 'CC BY-SA 2.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/2.0/', source: 'https://www.flickr.com/photos/116745893@N02/12640075785', size: [600, 400, 1008, 672] }
+  };
+  var CC = function (key) {
+    var c = window.VOLT_PHOTO_CREDITS[key];
+    return { src: 'assets/img/shop/full/' + key + '.jpg', thumb: 'assets/img/shop/thumb/' + key + '.jpg', size: c.size, credit: key };
   };
   /* Photo key range helper: range('baja', 23, 27) -> ['baja-023', … 'baja-027'] */
   var range = function (cat, from, to) {
@@ -660,6 +680,7 @@
       category: 'tools', scales: ['1/10', '1/8'], level: null, featured: 44, inStock: true, price: null,
       specs: { sizes: '5.5 · 7 · 8 mm', use: { ar: 'صواميل العجلات', en: 'Wheel nuts' } },
       tags: ['nut driver', 'socket', 'tools', 'مفك', 'صواميل', 'عدة'],
+      images: [CC('tools-cc-nut-drivers-1'), CC('tools-cc-nut-drivers-2')],
       art: 'nut-drivers'
     },
     {
@@ -700,6 +721,7 @@
       category: 'tools', scales: [], level: null, featured: 40, inStock: true, price: null,
       specs: { use: { ar: 'هياكل البولي كربونات', en: 'Polycarbonate bodies' } },
       tags: ['reamer', 'body', 'tools', 'هيكل', 'بودي', 'ثقوب', 'عدة'],
+      images: [CC('tools-cc-body-reamer-1'), CC('tools-cc-body-reamer-2')],
       art: 'reamer'
     },
     {
@@ -730,6 +752,7 @@
       category: 'tools', scales: ['1/10', '1/8'], level: null, featured: 37, inStock: true, price: null,
       specs: { use: { ar: 'الكامبر والتو وارتفاع الشاسيه', en: 'Camber, toe & ride height' } },
       tags: ['setup station', 'setup', 'camber', 'toe', 'tools', 'ضبط', 'إعدادات', 'عدة'],
+      images: [CC('tools-cc-setup-station-1')],
       art: 'setup-station'
     },
     {
@@ -740,6 +763,7 @@
       category: 'tools', scales: [], level: null, featured: 36, inStock: true, price: null,
       specs: { use: { ar: 'موازنة العجلات', en: 'Wheel balancing' } },
       tags: ['tire', 'tyre', 'balancer', 'wheels', 'tools', 'إطارات', 'موازنة', 'عدة'],
+      images: [CC('tools-cc-tire-balancer-1'), CC('tools-cc-tire-balancer-2')],
       art: 'tire-balancer'
     },
     {
@@ -750,6 +774,7 @@
       category: 'tools', scales: [], level: null, featured: 35, inStock: true, price: null,
       specs: { use: { ar: 'حفظ المسامير والقطع الصغيرة', en: 'Keeps screws & small parts in place' } },
       tags: ['pit mat', 'mat', 'magnetic tray', 'tools', 'مفرش', 'صينية', 'مغناطيس', 'عدة'],
+      images: [CC('tools-cc-pit-mat-1'), CC('tools-cc-pit-mat-2')],
       art: 'pit-mat'
     },
     {
@@ -780,6 +805,7 @@
       category: 'tools', scales: [], level: null, featured: 32, inStock: true, price: null,
       specs: { use: { ar: 'شحن بطاريات الليبو', en: 'LiPo charging' } },
       tags: ['charger', 'lipo', 'balance', 'dual', 'شاحن', 'ليبو', 'بطاريات', 'عدة'],
+      images: [CC('tools-cc-lipo-charger-1'), CC('tools-cc-lipo-charger-2')],
       art: 'charger'
     },
     {
@@ -840,6 +866,7 @@
       category: 'tools', scales: ['1/5'], level: null, featured: 28, inStock: true, price: null,
       specs: { use: { ar: 'محركات البنزين', en: 'Petrol engines' } },
       tags: ['spark plug', 'clutch', 'petrol', 'baja', 'tools', 'بوجيه', 'كلتش', 'بنزين', 'باجا', 'عدة'],
+      images: [CC('tools-cc-spark-plug-tool-1')],
       art: 'spark-plug'
     },
     {

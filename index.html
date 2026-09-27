@@ -931,6 +931,7 @@
 
       <div class="footer__bottom">
         <p data-i18n="footer.copy">© 2026 <bdi>RC World Egypt</bdi>. جميع الحقوق محفوظة.</p>
+        <p><button type="button" class="footer__credits-link" data-open-credits><span data-i18n="footer.photoCredits">حقوق الصور</span></button></p>
         <p class="credit" data-i18n-html="footer.credit">تصميم وتطوير: <strong><bdi>Sam</bdi></strong></p>
       </div>
     </div>
@@ -1013,6 +1014,17 @@
     <div class="modal__dialog">
       <button class="icon-btn modal__close" type="button" data-close data-i18n-aria="a11y.close" aria-label="إغلاق"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
       <div class="qv" id="qvContent"></div>
+    </div>
+  </div>
+
+  <!-- Photo credits (Creative Commons attribution) -->
+  <div class="overlay overlay--modal" id="creditsModal" role="dialog" aria-modal="true" aria-labelledby="creditsTitle">
+    <div class="overlay__backdrop" data-close></div>
+    <div class="modal__dialog modal__dialog--credits">
+      <button class="icon-btn modal__close" type="button" data-close data-i18n-aria="a11y.close" aria-label="إغلاق"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      <h2 class="credits__title" id="creditsTitle" data-i18n="footer.photoCredits">حقوق الصور</h2>
+      <p class="credits__intro" data-i18n="credits.intro">بعض صور العدد والأدوات منشورة برخص المشاع الإبداعي، ونذكر أصحابها ورخصها هنا.</p>
+      <ul class="credits__list" id="creditsList"></ul>
     </div>
   </div>
 

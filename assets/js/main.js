@@ -46,6 +46,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   const CATEGORIES = (window.VOLT_CATEGORIES || []).map((c) => c.id);
   const FEATURED = window.VOLT_FEATURED || null;
   const LEVEL_ORDER = window.VOLT_LEVEL_ORDER || {};
+  const CREDITS = window.VOLT_PHOTO_CREDITS || {};
   const BRANDS = (window.VOLT_BRANDS || []).slice();
   const SIZES = window.SHOP_PHOTO_SIZES || {};
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
@@ -77,7 +78,10 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
         src: ph.full, thumb: ph.thumb, tw: ph.tw, th: ph.th, fw: ph.fw, fh: ph.fh
       }));
     } else {
-      p._imgs = (p.images || []).map((im) => ({ src: im.src, thumb: im.thumb, tw: 600, th: 400, fw: 1200, fh: 800 }));
+      p._imgs = (p.images || []).map((im) => {
+        const d = im.size || [600, 400, 1200, 800];
+        return { src: im.src, thumb: im.thumb, tw: d[0], th: d[1], fw: d[2], fh: d[3], credit: im.credit || '', art: p.art || '' };
+      });
     }
   });
 
@@ -110,6 +114,8 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     resultsHint: $('#resultsHint'),
     resultsAll: $('#resultsAll'),
     miniToast: $('#miniToast'),
+    creditsModal: $('#creditsModal'),
+    creditsList: $('#creditsList'),
     chips: $('#activeChips'),
     loadMore: $('#loadMore'),
     loadMoreLabel: $('#loadMoreLabel'),
@@ -310,7 +316,11 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   const pImages = (p) => (p._imgs && p._imgs.length ? p._imgs : [{ src: '', thumb: '', tw: 600, th: 450, fw: 1200, fh: 900, none: true, art: p.art || '' }]);
   /** <img> for a product image; products without a photo get their drawn illustration (#art-…) on a designed card. */
   const imgTag = (im, attrs, large) => {
-    if (!im.none) return '<img src="' + esc(large ? (im.src || im.thumb) : (im.thumb || im.src)) + '" ' + attrs + '>';
+    if (!im.none) {
+      // tools with a line illustration keep it behind the photo, shown only if the photo fails to load
+      const behind = im.art ? '<span class="tool-art tool-art--behind" aria-hidden="true"><svg><use href="#art-' + esc(im.art) + '"/></svg></span>' : '';
+      return behind + '<img src="' + esc(large ? (im.src || im.thumb) : (im.thumb || im.src)) + '" ' + attrs + '>';
+    }
     return im.art ? '<span class="tool-art" aria-hidden="true"><svg><use href="#art-' + esc(im.art) + '"/></svg></span>' : '';
   };
 
@@ -981,6 +991,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
           imgTag(main, 'id="qvMainImg" width="' + main.fw + '" height="' + main.fh + '" alt="' + esc(pLabel(p)) + '"', true) +
           '<span class="qv__scan" aria-hidden="true"></span>' +
         '</div>' +
+        '<p class="qv__credit" id="qvCredit"' + (main.credit ? '' : ' hidden') + '>' + creditLine(main) + '</p>' +
         thumbs +
       '</div>' +
       '<div class="qv__body">' +
@@ -1017,7 +1028,33 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     const im = imgs[qvImg];
     const main = $('#qvMainImg', el.qvContent);
     if (main) { main.src = im.src || im.thumb; main.width = im.fw; main.height = im.fh; }
+    const credit = $('#qvCredit', el.qvContent);
+    if (credit) { credit.innerHTML = creditLine(im); credit.hidden = !im.credit; }
     $$('.qv__thumb', el.qvContent).forEach((b, k) => b.setAttribute('aria-pressed', k === qvImg ? 'true' : 'false'));
+  }
+
+  /** "📷 Author · License" under Creative Commons photos (quick view). */
+  function creditLine(im) {
+    const c = im && im.credit && CREDITS[im.credit];
+    if (!c) return '';
+    return '<svg class="icon" aria-hidden="true"><use href="#i-camera"/></svg><span>' + bdi(c.author) + ' · ' +
+      '<a href="' + esc(c.licenseUrl) + '" target="_blank" rel="noopener noreferrer license">' + bdi(c.license) + '</a></span>';
+  }
+
+  /** Footer "Photo credits" dialog: item — author — license (link) — source (link). */
+  function renderCredits() {
+    if (!el.creditsList) return;
+    const keys = Object.keys(CREDITS);
+    el.creditsList.innerHTML = keys.map((k) => {
+      const c = CREDITS[k];
+      const p = byId.get(c.product);
+      const siblings = keys.filter((x) => CREDITS[x].product === c.product);
+      const item = (p ? esc(pType(p)) : '') + (siblings.length > 1 ? ' <span class="credits__n">' + fmt(siblings.indexOf(k) + 1) + '</span>' : '');
+      return '<li><span class="credits__item">' + item + '</span>' +
+        '<span class="credits__sep" aria-hidden="true"> — </span>' + bdi(c.author) +
+        '<span class="credits__sep" aria-hidden="true"> — </span><a href="' + esc(c.licenseUrl) + '" target="_blank" rel="noopener noreferrer license">' + bdi(c.license) + '</a>' +
+        '<span class="credits__sep" aria-hidden="true"> — </span><a href="' + esc(c.source) + '" target="_blank" rel="noopener noreferrer">' + esc(t('credits.source')) + '</a></li>';
+    }).join('');
   }
 
   function updateQvQty() {
@@ -1705,6 +1742,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     if (Overlay.current === el.quickView && qvId) renderQuickView();
     if (Overlay.current === el.searchOverlay) renderSearch();
     if (Overlay.current === el.lightbox) renderLightbox();
+    if (Overlay.current === el.creditsModal) renderCredits();
     if (el.toast.classList.contains('is-show')) hideToast();
 
     if (o.save !== false) storage.set('volt.lang', state.lang);
@@ -1766,6 +1804,9 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
 
       const gItem = tgt.closest('[data-lb-index]');
       if (gItem) { openLightbox(Number(gItem.dataset.lbIndex), gItem); return; }
+
+      const creditsBtn = tgt.closest('[data-open-credits]');
+      if (creditsBtn) { renderCredits(); Overlay.open(el.creditsModal, { trigger: creditsBtn }); return; }
 
       const copyBtn = tgt.closest('[data-copy]');
       if (copyBtn) { onCopy(copyBtn); return; }

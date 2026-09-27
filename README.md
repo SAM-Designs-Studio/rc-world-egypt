@@ -1,55 +1,54 @@
 <div align="center">
 
-# ⚡ VOLT RC
+# RC World Egypt
 
-**A bilingual online store for radio-controlled cars, drones, planes and boats**
+**Online store for RC World Egypt, Egypt — designed and developed by Sam**
 
-**[▶ Live demo](https://sam-designs-studio.github.io/volt-rc-store/)**
+**[▶ Live site](https://sam-designs-studio.github.io/volt-rc-store/)**
 
-![VOLT RC — desktop](screenshots/desktop.png)
+![RC World Egypt — desktop](screenshots/desktop.png)
 
 </div>
 
-> Concept design project — designed and developed by **Sam**. VOLT RC is a fictional brand; products, prices and reviews are sample content.
+A bilingual (Arabic / English) website for **RC World Egypt**, a specialist RC hobby shop in Sheikh Zayed City, built for the Egyptian market: Baja and off-road cars, drift & rally, foam trainer planes, spare parts and batteries.
 
 ## Features
 
-- **Arabic & English** — one-click language switch with full right-to-left / left-to-right layout, remembered between visits
-- **Real shop experience** — 24 products with filters (category, brand, skill level, price range, in stock), live search and sorting
-- **Quick view** — product pop-up with a full specs table and quantity selector
-- **Slide-in cart** — quantity controls, free-shipping progress, 15% VAT and totals, saved in the browser
-- **Deal of the week** — live countdown timer
-- **Shop by skill level** — beginner, intermediate and pro picks
-- **Reviews carousel**, validated contact and newsletter forms, back-to-top with scroll progress
-- **Responsive & accessible** — phones to wide screens, keyboard friendly, respects reduced-motion settings
+- **Arabic & English**: one-click language switch with a full right-to-left / left-to-right layout, remembered between visits
+- **Real shop photos**: products, gallery, hero and "About the shop" use the owner's own photos from the shop
+- **Catalogue from real brands**: Losi, Arrma, Traxxas, HPI, Rovan, King Motor, FG, Rofun, MST, HSP, Xray, Kyosho and Thunder Tiger, with filters by category, scale, brand and skill level, plus live search and sorting
+- **Order through WhatsApp**: no online payment and no listed prices. Visitors build an inquiry list and send it in one WhatsApp message, or tap "Ask for price" on any product. Cash on delivery, delivery to every governorate
+- **Photo gallery**: 184 shop photos in 7 categories with "Show more", a full-size lightbox and swipe / arrow-key navigation
+- **Quick view**: a product pop-up with a photo strip and a specs table
+- **Contact**: call, WhatsApp and Facebook group buttons, a Google Maps location and a contact form that opens WhatsApp with the message ready
+- **Community band**: links to the shop's Facebook group
+- **Responsive & accessible**: works from phones to wide screens, is keyboard friendly and respects reduced-motion settings
 
 ## Built with
 
-HTML5 · CSS3 · vanilla JavaScript — no frameworks, no build step.
+HTML5 · CSS3 · vanilla JavaScript: no frameworks, no build step.
 
-<img src="screenshots/mobile.png" alt="VOLT RC on a phone" width="280">
+<img src="screenshots/mobile.png" alt="RC World Egypt on a phone" width="280">
 
 ---
 
 <div dir="rtl" align="right">
 
-## ‏VOLT RC — متجر إلكتروني ثنائي اللغة
+## ‏RC World Egypt — متجر إلكتروني ثنائي اللغة
 
-متجر إلكتروني لهواة سيارات وطائرات وقوارب التحكم عن بعد.
+‏RC World Egypt متجر إلكتروني لمحل متخصص في هوايات التحكم عن بعد في مدينة الشيخ زايد، مصمم للسوق المصري — تصميم وتطوير **Sam**.
 
 **[▶ معاينة الموقع مباشرة](https://sam-designs-studio.github.io/volt-rc-store/)**
-
-> مشروع تصميمي تجريبي — تصميم وتطوير **Sam**. العلامة التجارية والمنتجات والأسعار والتقييمات محتوى تجريبي.
 
 ### المزايا
 
 - **العربية والإنجليزية** — تبديل فوري بين اللغتين مع تغيير اتجاه الصفحة بالكامل وحفظ الاختيار
-- **تجربة تسوق حقيقية** — ‏24 منتجًا مع فلترة حسب القسم والعلامة ومستوى المهارة والسعر والتوفر، مع بحث مباشر وترتيب
-- **عرض سريع** — نافذة منبثقة بجدول مواصفات كامل واختيار الكمية
-- **سلة جانبية** — التحكم بالكمية وشريط الشحن المجاني وضريبة القيمة المضافة والإجمالي، مع حفظ السلة في المتصفح
-- **عرض الأسبوع** — عداد تنازلي مباشر
-- **التسوق حسب مستوى المهارة** — مبتدئ ومتوسط ومحترف
-- **آراء العملاء** بشريط متحرك، ونماذج تواصل واشتراك مع التحقق من البيانات
+- **صور حقيقية من المحل** — المنتجات والمعرض وواجهة الموقع وقسم «عن المحل» بصور صاحب المحل نفسه
+- **منتجات من علامات حقيقية** — فلترة حسب القسم والمقاس والعلامة ومستوى المهارة، مع بحث مباشر وترتيب
+- **الطلب عبر واتساب** — لا دفع إلكتروني ولا أسعار معروضة: يضيف الزائر ما يريده إلى قائمة الطلب ويرسلها في رسالة واتساب واحدة، أو يضغط «اسأل عن السعر» في أي منتج. الدفع عند الاستلام والتوصيل لجميع المحافظات
+- **معرض صور** — ‏184 صورة من المحل في 7 أقسام مع زر «عرض المزيد» وعارض صور بالحجم الكامل
+- **عرض سريع** — نافذة منبثقة بصور المنتج وجدول مواصفات
+- **التواصل** — أزرار اتصال وواتساب ومجموعة فيسبوك، وخريطة جوجل للموقع، ونموذج تواصل يفتح واتساب والرسالة جاهزة
 - **تصميم متجاوب وسهل الاستخدام** — من الجوال حتى الشاشات العريضة، ويدعم التنقل بلوحة المفاتيح
 
 ### التقنيات المستخدمة

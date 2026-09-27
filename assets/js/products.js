@@ -1,410 +1,465 @@
 /* ==========================================================================
-   VOLT RC — Product catalogue
+   RC World Egypt — Product catalogue
    --------------------------------------------------------------------------
    Plain global data (no modules) so the site works from file://.
-   All brands and product names are fictional.
+   (window.VOLT_* are internal identifiers only — never shown to visitors.)
 
-   NAMING RULE: brand and model names are ALWAYS English (Latin letters),
-   in both languages. Only the descriptor is translated. main.js renders
-   every English name inside Arabic text in <bdi dir="ltr">…</bdi>
-   (or ⁨…⁩ isolates in plain-text contexts such as aria-labels / alt).
+   CATALOGUE: models Hamdy posts in the RC World Egypt Facebook group, using
+   his own naming. Real photos come from window.SHOP_PHOTOS (photos.js):
+     • photos: ['<cat>-<id>', …] — the first key is the card image; all keys
+       appear as quick-view thumbnails.
+     • The foam trainer planes have no real photos yet, so they keep ILLUSTRATIVE
+       stock photos (images: [...]) and the UI labels them
+       "صورة توضيحية / Illustrative photo".
+     • No prices on the site (price: null) — Hamdy confirms price and availability.
+     • Specs are well-known type facts only (scale, petrol / electric / nitro,
+       drive, cell count when it is part of the model name). No speeds, no
+       prices, no invented numbers.
 
    Product shape:
-     id
-     model     : English model name — identical in AR and EN (e.g. "Dune Viper X")
-     name_ar   : Arabic descriptor  (e.g. "باجي صحراء كهربائي 1/8")
-     name_en   : English descriptor (e.g. "1/8 Desert Buggy")
-     desc_ar, desc_en
-     category  : cars | drones | planes | boats | batteries | parts
-     brand     : fictional brand name (English in both languages)
-     price     : SAR, integer
-     oldPrice  : SAR (optional) -> item is "on sale"
-     rating    : 0–5, reviews: number of reviews
-     stock     : units available (0 = sold out)
-     level     : beginner | intermediate | pro
-     featured  : sort weight for "Featured"
-     badges    : any of "new", "best" ("sale" is derived from oldPrice)
-     specs     : ordered object. Numbers get units from i18n (see main.js):
-                 speed (km/h), runtime/flight (min), range (m),
-                 wingspan/length (mm), weight (g). Strings are shown as-is,
-                 {ar, en} objects are localised.
-     tags      : extra search keywords (generic terms, both languages)
-     image     : Unsplash CDN URL (every URL verified to return HTTP 200)
+     id, model (English, both languages), brands [..], name_ar / name_en
+     (descriptor), desc_ar / desc_en, category (baja | offroad | planes |
+     drift | parts), scales [..], level, featured (sort weight), inStock,
+     price (null), specs, tags, photos [..] | images [{ src, thumb }]
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  var IMG = function (id, w) {
-    return 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&w=' + (w || 800) + '&q=80';
+  /* ---------- Stock image helper (foam trainers only; URLs verified HTTP 200) ---------- */
+  var P = function (id) {
+    var base = 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=';
+    return { src: base + '1200', thumb: base + '600' };
+  };
+  /* Photo key range helper: range('baja', 23, 27) -> ['baja-023', … 'baja-027'] */
+  var range = function (cat, from, to) {
+    var out = [];
+    for (var i = from; i <= to; i++) out.push(cat + '-' + ('00' + i).slice(-3));
+    return out;
   };
 
   /* ---------- Categories (order = display order) ---------- */
   window.VOLT_CATEGORIES = [
-    { id: 'cars',      image: IMG('1675301586777-2c56ee8aa5ef') },
-    { id: 'drones',    image: IMG('1508444845599-5c89863b1c44') },
-    { id: 'planes',    image: IMG('1606370744289-16795bbded58') },
-    { id: 'boats',     image: IMG('1550009375-99bb7e3bf4d2') },
-    { id: 'batteries', image: IMG('1676337167616-78853693ba3a') },
-    { id: 'parts',     image: IMG('1517420704952-d9f39e95b43e') }
+    { id: 'baja' },
+    { id: 'offroad' },
+    { id: 'planes' },
+    { id: 'drift' },
+    { id: 'parts' }
   ];
+
+  /* ---------- Brands the shop deals in (shown as text only — no logos) ---------- */
+  window.VOLT_BRANDS = ['Losi', 'Arrma', 'Traxxas', 'HPI', 'Rovan', 'King Motor', 'FG', 'Rofun', 'MST', 'HSP', 'Xray', 'Kyosho', 'Thunder Tiger'];
+
+  var PETROL = { ar: 'بنزين', en: 'Petrol' };
+  var ELECTRIC = { ar: 'كهربائي', en: 'Electric' };
+  var EPO = { ar: 'فوم EPO متين', en: 'Tough EPO foam' };
+  var ASK = { ar: 'اسأل عن الموديلات المتاحة', en: 'Ask for available models' };
+  var CONTACT_AR = ' تواصل مع حمدي لمعرفة السعر والتوفر.';
+  var CONTACT_EN = ' Contact Hamdy for price and availability.';
 
   /* ---------- Products ---------- */
   window.VOLT_PRODUCTS = [
-    /* ===== Cars ===== */
+    /* ===== Baja & 1/5 ===== */
     {
-      id: 'dune-viper-x',
-      model: 'Dune Viper X',
-      name_ar: 'باجي صحراء كهربائي 1/8',
-      name_en: '1/8 Desert Buggy',
-      desc_ar: 'وحش Brushless بقوة 4S في هيكل باجي: 110 كم/س، مساعدات ألمنيوم وهيكل مضبوط لقفزات الصحراء. نجم عرض هذا الأسبوع.',
-      desc_en: 'A 4S brushless monster in a buggy chassis: 110 km/h, aluminium shocks and a chassis tuned for desert jumps. This week’s headline deal.',
-      category: 'cars', brand: 'Torque Lab',
-      price: 1199, oldPrice: 1649, rating: 4.8, reviews: 174, stock: 7,
-      level: 'pro', featured: 100, badges: ['best'],
-      specs: { scale: '1/8', speed: 110, drive: '4WD', motor: 'Brushless 2200KV', battery: '4S LiPo 6500mAh', runtime: 20, range: 300 },
-      tags: ['buggy', 'basher', 'desert', 'باجي', 'صحراء', 'تطعيس'],
-      image: IMG('1741271254950-8690e9a40965'),
-      imageLarge: IMG('1741271254950-8690e9a40965', 1200)
+      id: 'losi-5ive-t-3', model: 'Losi 5IVE-T 3.0', brands: ['Losi'],
+      name_ar: 'شاحنة 1/5 بمحرك بنزين ودفع رباعي', name_en: '1/5 Petrol 4WD Truck',
+      desc_ar: 'شاحنة كبيرة بمقاس 1/5 بمحرك بنزين ودفع رباعي للرمال والطرق الوعرة.' + CONTACT_AR,
+      desc_en: 'A big 1/5-scale petrol truck with four-wheel drive for sand and rough ground.' + CONTACT_EN,
+      category: 'baja', scales: ['1/5'], level: 'pro', featured: 100, inStock: true, price: null,
+      specs: { power: PETROL, drive: '4WD' },
+      tags: ['losi', '5ive', 'five-t', '12s', 'baja', 'petrol', 'باجا', 'بنزين', 'لوسي'],
+      photos: ['baja-008', 'baja-009', 'shop-010', 'shop-011', 'shop-007']
     },
     {
-      id: 'sandstorm-mt10',
-      model: 'Sandstorm MT-10',
-      name_ar: 'شاحنة مونستر كهربائية 1/10',
-      name_en: '1/10 Monster Truck',
-      desc_ar: 'مساعدات ضخمة، نظام Brushless مقاوم للماء، وإطارات تلتهم الكثبان الرملية. صُممت لتقفز وتهبط وتعيدها مرة بعد مرة.',
-      desc_en: 'Oversized shocks, a waterproof brushless system and tyres that eat sand dunes for breakfast. Built to bash, land and do it all again.',
-      category: 'cars', brand: 'Torque Lab',
-      price: 1499, oldPrice: 1799, rating: 4.8, reviews: 212, stock: 9,
-      level: 'intermediate', featured: 95, badges: ['best'],
-      specs: { scale: '1/10', speed: 80, drive: '4WD', motor: 'Brushless 3300KV', battery: '3S LiPo 5000mAh', runtime: 25, range: 200 },
-      tags: ['monster', 'truck', 'basher', 'مونستر', 'شاحنة'],
-      image: IMG('1643236873141-6511884b19e2')
+      id: 'fg-15-buggy', model: 'FG 1/5 Buggy', brands: ['FG'],
+      name_ar: 'باجي 1/5 بمحرك بنزين', name_en: '1/5 Petrol Buggy',
+      desc_ar: 'باجي كبير بمقاس 1/5 يعمل بالبنزين من FG.' + CONTACT_AR,
+      desc_en: 'A large 1/5-scale petrol buggy from FG.' + CONTACT_EN,
+      category: 'baja', scales: ['1/5'], level: 'pro', featured: 97, inStock: true, price: null,
+      specs: { power: PETROL },
+      tags: ['fg', 'buggy', 'petrol', 'باجي', 'بنزين'],
+      photos: range('baja', 23, 27)
     },
     {
-      id: 'kaze-dr1',
-      model: 'Kaze DR-1',
-      name_ar: 'سيارة درفت كهربائية 1/10',
-      name_en: '1/10 Drift Car',
-      desc_ar: 'دفع خلفي، جايرو توجيه ذكي، وإطارات صلبة لانزلاقات طويلة وأنيقة على الأسطح الملساء. أناقة الدرفت بين يديك.',
-      desc_en: 'Rear-wheel drive, an active steering gyro and hard-compound tyres for long, smoky slides on smooth concrete. Pure style on four wheels.',
-      category: 'cars', brand: 'Kaze Racing',
-      price: 1290, rating: 4.9, reviews: 138, stock: 14,
-      level: 'intermediate', featured: 90, badges: ['new'],
-      specs: { scale: '1/10', speed: 60, drive: { ar: 'دفع خلفي + جايرو', en: 'RWD + gyro' }, motor: 'Brushless 10.5T', battery: '2S LiPo 4000mAh', runtime: 30 },
-      tags: ['drift', 'on-road', 'درفت', 'تفحيط', 'اسفلت'],
-      image: IMG('1758964087156-0eac97044f84')
+      id: 'fg-baja-beetle', model: 'FG Baja Beetle 1/5', brands: ['FG'],
+      name_ar: 'سيارة باجا 1/5 بمحرك بنزين', name_en: '1/5 Petrol Baja Car',
+      desc_ar: 'سيارة باجا بمقاس 1/5 تعمل بالبنزين من FG.' + CONTACT_AR,
+      desc_en: 'A 1/5-scale petrol Baja car from FG.' + CONTACT_EN,
+      category: 'baja', scales: ['1/5'], level: 'pro', featured: 95, inStock: true, price: null,
+      specs: { power: PETROL },
+      tags: ['fg', 'beetle', 'baja', 'petrol', 'باجا', 'بنزين'],
+      photos: range('baja', 130, 134)
     },
     {
-      id: 'kaze-gtr',
-      model: 'Kaze GT-R Speed Run',
-      name_ar: 'سيارة سرعة للأسفلت 1/7',
-      name_en: '1/7 Speed-Run Car',
-      desc_ar: 'هيكل مصمم انسيابيًا، قوة 6S، وسرعة قصوى تتجاوز 130 كم/س. أسرع سيارة لدينا — تحتاج مدرجًا طويلًا وفارغًا.',
-      desc_en: 'Aero-tuned body, 6S power and a top speed north of 130 km/h. Our fastest car — bring a long, empty runway.',
-      category: 'cars', brand: 'Kaze Racing',
-      price: 2390, rating: 4.9, reviews: 57, stock: 4,
-      level: 'pro', featured: 88, badges: ['new'],
-      specs: { scale: '1/7', speed: 130, drive: 'AWD', motor: 'Brushless 1900KV', battery: '6S LiPo 5000mAh', runtime: 15, range: 300 },
-      tags: ['speed', 'on-road', 'fast', 'سرعة', 'اسفلت'],
-      image: IMG('1727622738048-29e6f37b2a8c')
+      id: 'rofun-baja-5t', model: 'Rofun Baja 5T 1/5 32cc', brands: ['Rofun'],
+      name_ar: 'شاحنة باجا 1/5 بمحرك بنزين 32cc', name_en: '1/5 Petrol Baja Truck (32cc)',
+      desc_ar: 'شاحنة باجا بمقاس 1/5 بمحرك بنزين سعة 32cc من Rofun.' + CONTACT_AR,
+      desc_en: 'A 1/5-scale Baja truck with a 32cc petrol engine, from Rofun.' + CONTACT_EN,
+      category: 'baja', scales: ['1/5'], level: 'pro', featured: 93, inStock: true, price: null,
+      specs: { power: { ar: 'بنزين 32cc', en: 'Petrol 32cc' } },
+      tags: ['rofun', 'baja', '5t', '32cc', 'petrol', 'باجا', 'بنزين'],
+      photos: ['baja-210', 'baja-211', 'baja-209', 'baja-212', 'baja-213']
     },
     {
-      id: 'atlas-cr4',
-      model: 'Atlas CR-4',
-      name_ar: 'زاحف صخور 1/10',
-      name_en: '1/10 Rock Crawler',
-      desc_ar: 'محاور بورتال، دفرنسات مقفلة، وإطارات لاصقة تتسلق صخورًا لن تجرؤ على صعودها مشيًا. بطيء، دقيق، وممتع بلا نهاية.',
-      desc_en: 'Portal axles, locked diffs and sticky tyres that climb rocks you wouldn’t walk up. Slow, precise and endlessly satisfying.',
-      category: 'cars', brand: 'Ridgeline',
-      price: 1150, rating: 4.7, reviews: 96, stock: 6,
-      level: 'beginner', featured: 70, badges: [],
-      specs: { scale: '1/10', speed: 15, drive: '4WD', motor: 'Brushed 35T', battery: '2S LiPo 3000mAh', runtime: 45 },
-      tags: ['crawler', 'rock', 'trail', 'زاحف', 'صخور'],
-      image: IMG('1579271723124-a758848c2753')
+      id: 'fg-16-monster-2wd', model: 'FG 1/6 Monster Truck 2WD', brands: ['FG'],
+      name_ar: 'شاحنة مونستر 1/6 بمحرك بنزين ودفع ثنائي', name_en: '1/6 Petrol 2WD Monster Truck',
+      desc_ar: 'شاحنة مونستر كبيرة بمقاس 1/6 تعمل بالبنزين بدفع ثنائي من FG.' + CONTACT_AR,
+      desc_en: 'A big 1/6-scale petrol monster truck with two-wheel drive, from FG.' + CONTACT_EN,
+      category: 'baja', scales: ['1/6'], level: 'pro', featured: 91, inStock: true, price: null,
+      specs: { power: PETROL, drive: '2WD' },
+      tags: ['fg', 'monster', 'truck', 'petrol', 'مونستر', 'بنزين'],
+      photos: range('baja', 214, 218)
     },
     {
-      id: 'trail-ranger-tr10',
-      model: 'Trail Ranger TR-10',
-      name_ar: 'شاحنة طرق وعرة 1/10',
-      name_en: '1/10 Scale Trail Truck',
-      desc_ar: 'شاحنة طرق وعرة بهيكل صلب بمقياس واقعي، أضواء LED تعمل وناقل حركة بسرعتين. صُممت لرحلات نهاية الأسبوع في الأودية.',
-      desc_en: 'A hard-body scale trail truck with working LED lights and a two-speed gearbox. Built for long weekend adventures in the wadi.',
-      category: 'cars', brand: 'Ridgeline',
-      price: 1349, rating: 4.7, reviews: 64, stock: 0,
-      level: 'intermediate', featured: 65, badges: ['new'],
-      specs: { scale: '1/10', speed: 20, drive: '4WD', motor: 'Brushed 45T', battery: '3S LiPo 3000mAh', runtime: 40 },
-      tags: ['scale', 'trail', 'jeep', 'crawler', 'وعرة', 'جيب'],
-      image: IMG('1629840963351-f5e2e6578f38')
-    },
-    {
-      id: 'trophy-sct',
-      model: 'Trophy SCT',
-      name_ar: 'شاحنة سباق للمسارات القصيرة 1/10',
-      name_en: '1/10 Short Course Truck',
-      desc_ar: 'شكل شاحنات السباق مع صدّامات تتحمل الاصطدامات. الخيار المثالي لأول سيارة احترافية — وكل قطعة فيها قابلة للترقية لاحقًا.',
-      desc_en: 'Race-truck looks with bumpers that shrug off crashes. The ideal first hobby-grade truck — and every part can be upgraded later.',
-      category: 'cars', brand: 'Torque Lab',
-      price: 899, rating: 4.6, reviews: 81, stock: 18,
-      level: 'beginner', featured: 60, badges: [],
-      specs: { scale: '1/10', speed: 45, drive: '4WD', motor: 'Brushed 550', battery: '2S LiPo 3000mAh', runtime: 20, range: 150 },
-      tags: ['short course', 'sct', 'truck', 'شاحنة', 'مبتدئ'],
-      image: IMG('1675301590589-c56007c935d4')
-    },
-    {
-      id: 'scout-jr',
-      model: 'Scout Jr. 4x4',
-      name_ar: 'شاحنة للمبتدئين 1/16',
-      name_en: '1/16 Starter Truck',
-      desc_ar: 'صغيرة، قوية، وممتعة بشكل لا يُصدّق. بطاريتان داخل العلبة تعني ضعف وقت اللعب للسائقين الصغار من عمر 8 سنوات.',
-      desc_en: 'Small, tough and ridiculously fun. Two batteries in the box mean double the run time for young drivers aged 8+.',
-      category: 'cars', brand: 'Ridgeline',
-      price: 449, oldPrice: 529, rating: 4.5, reviews: 302, stock: 32,
-      level: 'beginner', featured: 85, badges: ['best'],
-      specs: { scale: '1/16', speed: 30, drive: '4WD', battery: '2 × 7.4V Li-ion 1500mAh', runtime: 25, range: 80 },
-      tags: ['kids', 'gift', 'starter', 'أطفال', 'هدية', 'مبتدئ'],
-      image: IMG('1630029546304-981fdadbb842')
+      id: 'petrol-chassis-15', model: '1/5 Petrol Chassis', brands: [],
+      name_ar: 'شاسيه 1/5 بمحرك بنزين', name_en: '1/5 Petrol Chassis',
+      desc_ar: 'شاسيه بمقاس 1/5 بمحرك بنزين — اسأل حمدي عن التفاصيل والموديلات المتوافقة.',
+      desc_en: 'A 1/5-scale petrol chassis — ask Hamdy for the details and compatible models.',
+      category: 'baja', scales: ['1/5'], level: 'pro', featured: 89, inStock: true, price: null,
+      specs: { power: PETROL, version: ASK },
+      tags: ['chassis', 'petrol', 'baja', 'شاسيه', 'بنزين'],
+      photos: ['baja-121', 'baja-122', 'baja-123', 'baja-125']
     },
 
-    /* ===== Drones ===== */
+    /* ===== Off-road ===== */
     {
-      id: 'skylens-4k',
-      model: 'SkyLens 4K',
-      name_ar: 'درون تصوير قابل للطي',
-      name_en: 'Foldable Camera Drone',
-      desc_ar: 'ينطوي ليصبح أصغر من قارورة ماء، يطير 34 دقيقة ويصوّر 4K بسلاسة على جيمبال ثلاثي المحاور. لقطات رحلاتك بمستوى آخر.',
-      desc_en: 'Folds smaller than a water bottle, flies for 34 minutes and films silky 4K on a 3-axis gimbal. Your travel shots, upgraded.',
-      category: 'drones', brand: 'SkyForge',
-      price: 2799, oldPrice: 3199, rating: 4.9, reviews: 241, stock: 8,
-      level: 'intermediate', featured: 98, badges: ['best'],
-      specs: { camera: { ar: '4K 60fps · جيمبال 3 محاور', en: '4K 60fps · 3-axis gimbal' }, speed: 65, flight: 34, range: 8000, battery: 'Smart 3S 3850mAh', weight: 590 },
-      tags: ['camera', 'gimbal', 'travel', 'تصوير', 'كاميرا', 'سفر'],
-      image: IMG('1507582020474-9a35b7d455d9')
+      id: 'traxxas-x-maxx-8s', model: 'Traxxas X-Maxx 8S', brands: ['Traxxas'],
+      name_ar: 'شاحنة مونستر كهربائية 1/5 بدفع رباعي', name_en: '1/5 Electric 4WD Monster Truck',
+      desc_ar: 'شاحنة مونستر كبيرة بمقاس 1/5 كهربائية بدفع رباعي.' + CONTACT_AR,
+      desc_en: 'A big 1/5-scale electric monster truck with four-wheel drive.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/5'], level: 'pro', featured: 90, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', cells: '8S' },
+      tags: ['traxxas', 'x-maxx', 'xmaxx', 'x maxx', 'monster', 'electric', 'مونستر', 'تراكساس'],
+      photos: ['offroad-194', 'offroad-195', 'offroad-197', 'offroad-198', 'offroad-199', 'offroad-201', 'offroad-202', 'offroad-203', 'offroad-012', 'offroad-013', 'offroad-014', 'offroad-015', 'offroad-016']
     },
     {
-      id: 'hornet-x5',
-      model: 'Hornet X5',
-      name_ar: 'درون سباق FPV',
-      name_en: 'FPV Racing Drone',
-      desc_ar: 'درون سباق كربوني 5 إنش مع بث FPV رقمي عالي الدقة، مصمم ليخترق الفجوات بسرعة 140 كم/س. متوافق مع أي نظارات FPV.',
-      desc_en: 'A 5-inch carbon racer with digital HD FPV, built to rip through gaps at 140 km/h. Pairs with any FPV goggles.',
-      category: 'drones', brand: 'SkyForge',
-      price: 1890, rating: 4.8, reviews: 89, stock: 11,
-      level: 'pro', featured: 87, badges: ['new'],
-      specs: { camera: { ar: 'FPV رقمي + 4K', en: 'Digital FPV + 4K' }, speed: 140, flight: 6, range: 2000, motor: '2207 1950KV', battery: '6S LiPo 1100mAh' },
-      tags: ['fpv', 'racing', 'freestyle', 'سباق', 'فري ستايل'],
-      image: IMG('1577533870320-2c31e7e41028')
+      id: 'traxxas-maxx-v2', model: 'Traxxas Maxx V2', brands: ['Traxxas'],
+      name_ar: 'شاحنة مونستر كهربائية 1/10 بدفع رباعي', name_en: '1/10 Electric 4WD Monster Truck',
+      desc_ar: 'شاحنة مونستر بمقاس 1/10 كهربائية بدفع رباعي وبطارية 4S.' + CONTACT_AR,
+      desc_en: 'A 1/10-scale electric monster truck with four-wheel drive and 4S power.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/10'], level: 'intermediate', featured: 86, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', cells: '4S' },
+      tags: ['traxxas', 'maxx', 'monster', 'electric', 'مونستر', 'تراكساس'],
+      photos: ['offroad-028', 'offroad-029', 'offroad-031']
     },
     {
-      id: 'falcon-pro-6k',
-      model: 'Falcon Pro 6K',
-      name_ar: 'درون تصوير سينمائي',
-      name_en: 'Cinema Drone',
-      desc_ar: 'مستشعر 1 إنش، فيديو 6K HDR واستشعار عوائق من كل الاتجاهات. الدرون المناسب لصنّاع المحتوى المحترفين.',
-      desc_en: 'A 1-inch sensor, 6K HDR video and omnidirectional obstacle sensing. The drone for creators who get paid for their footage.',
-      category: 'drones', brand: 'SkyForge',
-      price: 5490, rating: 4.9, reviews: 47, stock: 3,
-      level: 'pro', featured: 84, badges: ['new'],
-      specs: { camera: { ar: '6K HDR · مستشعر 1 إنش', en: '6K HDR · 1-inch sensor' }, speed: 75, flight: 42, range: 15000, battery: 'Smart 4S 5000mAh', weight: 920 },
-      tags: ['cinema', 'camera', '6k', 'سينمائي', 'تصوير', 'محترف'],
-      image: IMG('1527977966376-1c8408f9f108')
+      id: 'arrma-mojave-6s', model: 'Arrma Mojave 6S 1/7', brands: ['Arrma'],
+      name_ar: 'شاحنة صحراوية كهربائية 1/7 بدفع رباعي', name_en: '1/7 Electric 4WD Desert Truck',
+      desc_ar: 'شاحنة صحراوية بمقاس 1/7 كهربائية بدفع رباعي.' + CONTACT_AR,
+      desc_en: 'A 1/7-scale electric desert truck with four-wheel drive.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/7'], level: 'pro', featured: 84, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', cells: '6S' },
+      tags: ['arrma', 'mojave', 'desert', 'electric', 'أرما', 'صحراء'],
+      photos: range('offroad', 98, 101)
     },
     {
-      id: 'pixie-mini',
-      model: 'Pixie Mini',
-      name_ar: 'درون داخلي للمبتدئين',
-      name_en: 'Indoor Starter Drone',
-      desc_ar: 'واقيات للمراوح، تثبيت ارتفاع وإقلاع بزر واحد — أسهل طريقة لتتعلم الطيران من داخل صالة البيت.',
-      desc_en: 'Prop guards, altitude hold and one-key take-off make this the easiest way to learn to fly — right in your living room.',
-      category: 'drones', brand: 'SkyForge',
-      price: 249, rating: 4.4, reviews: 418, stock: 45,
-      level: 'beginner', featured: 80, badges: ['best'],
-      specs: { camera: '720p', speed: 20, flight: 10, range: 80, battery: '3 × 1S 450mAh', weight: 85 },
-      tags: ['mini', 'indoor', 'kids', 'gift', 'صغير', 'أطفال', 'هدية'],
-      image: IMG('1514043454212-14c181f46583')
-    },
-
-    /* ===== Planes & helis ===== */
-    {
-      id: 'aero-trainer-1200',
-      model: 'Aero Trainer 1200',
-      name_ar: 'طائرة تدريب للمبتدئين',
-      name_en: 'Beginner Trainer Plane',
-      desc_ar: 'جناح علوي ثابت، جايرو سداسي المحاور مع زر إنقاذ فوري، وفوم EPO متين. تعلّم الطيران لم يكن آمنًا بهذا الشكل من قبل.',
-      desc_en: 'High-wing stability, a 6-axis gyro with a panic-recovery button and tough EPO foam. Learning to fly has never felt this safe.',
-      category: 'planes', brand: 'Northwind Aero',
-      price: 899, rating: 4.7, reviews: 133, stock: 12,
-      level: 'beginner', featured: 78, badges: ['best'],
-      specs: { wingspan: 1200, speed: 55, flight: 15, range: 500, motor: 'Brushless 2830 1000KV', battery: '3S LiPo 2200mAh' },
-      tags: ['trainer', 'plane', 'foam', 'تدريب', 'طائرة'],
-      image: IMG('1606370744289-16795bbded58')
+      id: 'arrma-mojave-exb', model: 'Arrma Mojave EXB 1/7', brands: ['Arrma'],
+      name_ar: 'شاحنة صحراوية كهربائية 1/7 بدفع رباعي — نسخة EXB', name_en: '1/7 Electric 4WD Desert Truck (EXB)',
+      desc_ar: 'نسخة EXB من شاحنة الصحراء بمقاس 1/7 الكهربائية بدفع رباعي.' + CONTACT_AR,
+      desc_en: 'The EXB version of the 1/7-scale electric four-wheel-drive desert truck.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/7'], level: 'pro', featured: 83, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD' },
+      tags: ['arrma', 'mojave', 'exb', 'desert', 'electric', 'أرما', 'صحراء'],
+      photos: range('offroad', 167, 171)
     },
     {
-      id: 'stryker-warbird',
-      model: 'Stryker Warbird',
-      name_ar: 'طائرة مقاتلة بطلاء مموّه',
-      name_en: 'Camo Warbird Plane',
-      desc_ar: 'طلاء مموّه واقعي، عجلات هبوط قابلة للطي، وقوة كافية للحلقات واللفات والتمريرات المنخفضة السريعة.',
-      desc_en: 'Scale camo finish, retractable landing gear and the power for loops, rolls and low, fast passes.',
-      category: 'planes', brand: 'Northwind Aero',
-      price: 1790, oldPrice: 1990, rating: 4.6, reviews: 52, stock: 5,
-      level: 'pro', featured: 68, badges: [],
-      specs: { wingspan: 1100, speed: 120, flight: 8, range: 800, motor: 'Brushless 3536 1000KV', battery: '4S LiPo 2200mAh' },
-      tags: ['warbird', 'aerobatic', 'مقاتلة', 'استعراض'],
-      image: IMG('1717645730191-b0e2d1962a2b')
+      id: 'arrma-kraton-6s-v6', model: 'Arrma Kraton 6S v6 1/8', brands: ['Arrma'],
+      name_ar: 'تراغي 1/8 كهربائية بدفع رباعي', name_en: '1/8 Electric 4WD Truggy',
+      desc_ar: 'تراغي بمقاس 1/8 كهربائية بدفع رباعي — مزيج بين الباجي والشاحنة.' + CONTACT_AR,
+      desc_en: 'A 1/8-scale electric truggy with four-wheel drive — a mix of buggy and truck.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/8'], level: 'pro', featured: 82, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', cells: '6S' },
+      tags: ['arrma', 'kraton', 'truggy', 'electric', 'أرما', 'تراغي'],
+      photos: ['offroad-103', 'offroad-105', 'offroad-229', 'offroad-230']
     },
     {
-      id: 'hover-450',
-      model: 'Hover 450',
-      name_ar: 'هليكوبتر للحركات الاستعراضية',
-      name_en: '3D Aerobatic Helicopter',
-      desc_ar: 'رأس بدون فلاي بار، تروس معدنية ومثبّت بأوضاع من المبتدئ إلى الحركات الاستعراضية. ثبّتها اليوم واقلبها غدًا.',
-      desc_en: 'Flybarless head, metal gears and a stabiliser with beginner-to-3D modes. Hover it today, flip it tomorrow.',
-      category: 'planes', brand: 'Northwind Aero',
-      price: 1390, rating: 4.5, reviews: 38, stock: 6,
-      level: 'pro', featured: 55, badges: [],
-      specs: { channels: '6CH', speed: 90, flight: 7, motor: 'Brushless 3500KV', battery: '3S LiPo 2200mAh' },
-      tags: ['helicopter', 'heli', '3d', 'هليكوبتر', 'مروحية'],
-      image: IMG('1699084582699-dfa7a31ad041')
-    },
-
-    /* ===== Boats ===== */
-    {
-      id: 'riptide-700',
-      model: 'Riptide 700',
-      name_ar: 'قارب سرعة بمحرك Brushless',
-      name_en: 'Brushless Speedboat',
-      desc_ar: 'بدن V عميق، محرك Brushless بتبريد مائي، واستعادة ذاتية عند الانقلاب. يصل إلى 70 كم/س على الماء المفتوح.',
-      desc_en: 'A deep-V hull, water-cooled brushless motor and self-righting capsize recovery. Hits 70 km/h on open water.',
-      category: 'boats', brand: 'AquaDash',
-      price: 1190, oldPrice: 1390, rating: 4.7, reviews: 76, stock: 10,
-      level: 'intermediate', featured: 76, badges: ['best'],
-      specs: { length: 700, speed: 70, runtime: 12, range: 150, motor: { ar: 'Brushless بتبريد مائي', en: 'Brushless, water-cooled' }, battery: '3S LiPo 4000mAh' },
-      tags: ['boat', 'speedboat', 'water', 'قارب', 'بحر'],
-      image: IMG('1508109261185-dd0146900a71')
+      id: 'arrma-talion-exb-6s', model: 'Arrma Talion EXB 6S 1/7', brands: ['Arrma'],
+      name_ar: 'تراغي 1/7 كهربائية بدفع رباعي', name_en: '1/7 Electric 4WD Truggy',
+      desc_ar: 'تراغي بمقاس 1/7 كهربائية بدفع رباعي للطرق الوعرة.' + CONTACT_AR,
+      desc_en: 'A 1/7-scale electric truggy with four-wheel drive for rough ground.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/7'], level: 'pro', featured: 81, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', cells: '6S' },
+      tags: ['arrma', 'talion', 'exb', 'truggy', 'electric', 'أرما', 'تراغي'],
+      photos: ['offroad-017']
     },
     {
-      id: 'coral-cruiser',
-      model: 'Coral Cruiser',
-      name_ar: 'قارب عائلي للبحيرات',
-      name_en: 'Family Lake Boat',
-      desc_ar: 'بدن ثابت ومتسامح مع محركين وأضواء LED ليلية — قارب العائلة المثالي للبحيرات والمنتجعات.',
-      desc_en: 'A stable, forgiving hull with twin motors and LED night lights — the perfect family boat for lakes and resorts.',
-      category: 'boats', brand: 'AquaDash',
-      price: 399, rating: 4.5, reviews: 58, stock: 22,
-      level: 'beginner', featured: 58, badges: ['new'],
-      specs: { length: 450, speed: 30, runtime: 15, range: 100, battery: '7.4V Li-ion 1500mAh' },
-      tags: ['boat', 'family', 'lake', 'قارب', 'عائلة'],
-      image: IMG('1562003985-145bc8353647')
+      id: 'arrma-typhon-grom', model: 'Arrma Typhon Grom', brands: ['Arrma'],
+      name_ar: 'باجي صغير 1/18 كهربائي بدفع رباعي', name_en: '1/18 Electric 4WD Mini Buggy',
+      desc_ar: 'باجي صغير بمقاس 1/18 كهربائي بدفع رباعي — حجم صغير ومتعة كبيرة.' + CONTACT_AR,
+      desc_en: 'A small 1/18-scale electric four-wheel-drive buggy — small size, big fun.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/18'], level: 'beginner', featured: 78, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD' },
+      tags: ['arrma', 'typhon', 'grom', 'mini', 'buggy', 'أرما', 'باجي'],
+      photos: ['offroad-234', 'offroad-235', 'offroad-237']
     },
     {
-      id: 'splash-mini',
-      model: 'Splash Mini',
-      name_ar: 'قارب صغير للمسابح',
-      name_en: 'Pool Racer Boat',
-      desc_ar: 'متعة بحجم المسبح مع تنبيه عند انخفاض البطارية وبدن لا يغرق. صيف السعودية صار أحلى.',
-      desc_en: 'Pool-sized fun with a low-battery alert and a hull that won’t sink. Saudi summer, sorted.',
-      category: 'boats', brand: 'AquaDash',
-      price: 219, rating: 4.3, reviews: 190, stock: 40,
-      level: 'beginner', featured: 50, badges: [],
-      specs: { length: 330, speed: 25, runtime: 10, range: 60, battery: '3.7V Li-ion 600mAh' },
-      tags: ['pool', 'kids', 'mini', 'مسبح', 'أطفال'],
-      image: IMG('1532256483510-5c2ce93c39a1')
+      id: 'traxxas-e-revo-116', model: 'Traxxas E-Revo 1/16', brands: ['Traxxas'],
+      name_ar: 'شاحنة مونستر صغيرة 1/16 كهربائية بدفع رباعي', name_en: '1/16 Electric 4WD Mini Monster Truck',
+      desc_ar: 'شاحنة مونستر صغيرة بمقاس 1/16 كهربائية بدفع رباعي.' + CONTACT_AR,
+      desc_en: 'A small 1/16-scale electric four-wheel-drive monster truck.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/16'], level: 'beginner', featured: 77, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD' },
+      tags: ['traxxas', 'e-revo', 'erevo', 'e revo', 'mini', 'monster', 'مونستر', 'تراكساس'],
+      photos: range('offroad', 150, 154)
+    },
+    {
+      id: 'traxxas-e-revo-6s', model: 'Traxxas E-Revo 6S', brands: ['Traxxas'],
+      name_ar: 'شاحنة مونستر كهربائية بدفع رباعي', name_en: 'Electric 4WD Monster Truck',
+      desc_ar: 'شاحنة مونستر كهربائية بدفع رباعي وبطارية 6S.' + CONTACT_AR,
+      desc_en: 'An electric four-wheel-drive monster truck with 6S power.' + CONTACT_EN,
+      category: 'offroad', scales: [], level: 'pro', featured: 76, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', cells: '6S' },
+      tags: ['traxxas', 'e-revo', 'erevo', 'e revo', 'monster', 'مونستر', 'تراكساس'],
+      photos: range('offroad', 186, 188)
+    },
+    {
+      id: 'traxxas-desert-truck-fox', model: 'Traxxas Desert Truck (Fox body)', brands: ['Traxxas'],
+      name_ar: 'شاحنة صحراوية بهيكل Fox', name_en: 'Desert Truck with Fox Body',
+      desc_ar: 'شاحنة صحراوية من Traxxas بهيكل Fox — اسأل حمدي عن النسخة المتاحة.',
+      desc_en: 'A Traxxas desert truck with a Fox body — ask Hamdy about the version available.',
+      category: 'offroad', scales: [], level: 'pro', featured: 75, inStock: true, price: null,
+      specs: { version: ASK },
+      tags: ['traxxas', 'desert', 'fox', 'truck', 'صحراء', 'تراكساس'],
+      photos: range('offroad', 155, 158)
+    },
+    {
+      id: 'losi-promoto-mx', model: 'Losi Promoto-MX 1/4 Motorcycle', brands: ['Losi'],
+      name_ar: 'دراجة موتوكروس 1/4 كهربائية جاهزة للتشغيل', name_en: '1/4 Electric Motocross Bike, RTR',
+      desc_ar: 'دراجة موتوكروس بمقاس 1/4 كهربائية، جاهزة للتشغيل مع البطارية والشاحن.' + CONTACT_AR,
+      desc_en: 'A 1/4-scale electric motocross bike, ready to run with battery and charger.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/4'], level: 'intermediate', featured: 74, inStock: true, price: null,
+      specs: { power: ELECTRIC, version: { ar: 'جاهزة للتشغيل مع البطارية والشاحن', en: 'RTR with battery & charger' } },
+      tags: ['losi', 'promoto', 'motorcycle', 'bike', 'motocross', 'دراجة', 'موتوسيكل'],
+      photos: ['offroad-219', 'offroad-220', 'offroad-222']
+    },
+    {
+      id: 'savage-maxx-bodies', model: 'HPI Savage & Traxxas Maxx Bodies', brands: ['HPI', 'Traxxas'],
+      name_ar: 'هياكل لشاحنات المونستر', name_en: 'Monster Truck Bodies',
+      desc_ar: 'هياكل لشاحنات المونستر من HPI Savage أو Traxxas Maxx — اسأل عن الأشكال والألوان المتاحة.',
+      desc_en: 'Bodies for HPI Savage and Traxxas Maxx monster trucks — ask about the shapes and colours available.',
+      category: 'offroad', scales: [], level: 'intermediate', featured: 60, inStock: true, price: null,
+      specs: { compat: { ar: 'HPI Savage · Traxxas Maxx', en: 'HPI Savage · Traxxas Maxx' } },
+      tags: ['body', 'bodies', 'savage', 'maxx', 'hpi', 'traxxas', 'هيكل', 'بودي'],
+      photos: range('offroad', 18, 22)
     },
 
-    /* ===== Batteries & chargers ===== */
+    /* ===== Planes ===== */
     {
-      id: 'voltcell-4s-6500',
-      model: 'VoltCell 4S 6500mAh',
-      name_ar: 'بطارية LiPo بتفريغ 120C',
-      name_en: '120C LiPo Battery',
-      desc_ar: 'طاقة عالية التفريغ في غلاف صلب لسيارات 1/8 وتحديات السرعة. خلايا معززة بالجرافين تبقى باردة تحت الضغط الكامل.',
-      desc_en: 'Hard-case, high-discharge power for 1/8 bashers and speed runs. Graphene-enhanced cells stay cool at full throttle.',
-      category: 'batteries', brand: 'VoltCell',
-      price: 459, rating: 4.8, reviews: 264, stock: 26,
-      level: 'pro', featured: 72, badges: ['best'],
-      specs: { voltage: '14.8V', capacity: '6500mAh', discharge: '120C', connector: 'XT90', weight: 680 },
-      tags: ['lipo', 'battery', '4s', 'بطارية', 'ليبو'],
-      image: IMG('1662793962594-8842ff287640')
+      id: 'foam-trainer-3ch', model: 'Foam Trainer 3CH', brands: [],
+      name_ar: 'طائرة تدريب من الفوم — 3 قنوات', name_en: '3-Channel Foam Trainer',
+      desc_ar: 'طائرة تدريب بجناح علوي مصنوعة من فوم EPO المتين، تتحمل الصدمات ومناسبة لأول طيران.',
+      desc_en: 'A high-wing trainer made of tough EPO foam — crash-resistant and ideal for your first flights.',
+      category: 'planes', scales: [], level: 'beginner', featured: 72, inStock: true, price: null,
+      specs: { build: EPO, channels: '3CH', wing: { ar: 'جناح علوي', en: 'High wing' } },
+      tags: ['plane', 'trainer', 'foam', 'epo', 'طائرة', 'فوم', 'تدريب'],
+      images: [P('3841145'), P('38551472')]
     },
     {
-      id: 'voltcell-2s-5200',
-      model: 'VoltCell 2S 5200mAh',
-      name_ar: 'بطارية LiPo بغلاف صلب',
-      name_en: 'Hardcase LiPo Battery',
-      desc_ar: 'البطارية اليومية المناسبة لمعظم سيارات وشاحنات 1/10. ضاعف وقت اللعب ببطارية احتياطية في حقيبتك.',
-      desc_en: 'The everyday pack that fits most 1/10 cars and trucks. Double your run time with a spare in your bag.',
-      category: 'batteries', brand: 'VoltCell',
-      price: 219, oldPrice: 259, rating: 4.7, reviews: 388, stock: 50,
-      level: 'beginner', featured: 62, badges: [],
-      specs: { voltage: '7.4V', capacity: '5200mAh', discharge: '60C', connector: 'XT60', weight: 290 },
-      tags: ['lipo', 'battery', '2s', 'بطارية', 'ليبو'],
-      image: IMG('1676337167629-d896b3ed5724')
+      id: 'foam-trainer-4ch-gyro', model: 'Foam Trainer 4CH + Gyro', brands: [],
+      name_ar: 'طائرة تدريب من الفوم — 4 قنوات مع جايرو', name_en: '4-Channel Foam Trainer with Gyro',
+      desc_ar: 'طائرة تدريب من فوم EPO بأربع قنوات مع جايرو يساعد على ثبات الطيران — خطوة تالية بعد طائرات الثلاث قنوات.',
+      desc_en: 'A 4-channel EPO foam trainer with a gyro that helps keep flight steady — the next step after 3-channel trainers.',
+      category: 'planes', scales: [], level: 'beginner', featured: 71, inStock: true, price: null,
+      specs: { build: EPO, channels: '4CH', extras: { ar: 'جايرو للثبات', en: 'Stabilising gyro' } },
+      tags: ['plane', 'trainer', 'foam', 'gyro', 'طائرة', 'فوم', 'جايرو'],
+      images: [P('38544886'), P('38544852')]
     },
     {
-      id: 'pulse-duo-200',
-      model: 'Pulse Duo 200W',
-      name_ar: 'شاحن ذكي بمنفذين',
-      name_en: 'Dual-Port Smart Charger',
-      desc_ar: 'منفذان مستقلان، مدخل AC/DC وشاشة ملونة واضحة. اشحن ووازن وخزّن بطاريتين في نفس الوقت.',
-      desc_en: 'Two independent ports, AC/DC input and a crisp colour screen. Charge, balance and storage-charge two packs at once.',
-      category: 'batteries', brand: 'VoltCell',
-      price: 549, rating: 4.9, reviews: 171, stock: 15,
-      level: 'beginner', featured: 74, badges: ['new'],
-      specs: { output: '2 × 100W', cells: '1–6S LiPo · LiHV · NiMH', input: 'AC 100–240V / DC 12V' },
-      tags: ['charger', 'balance', 'شاحن', 'شحن'],
-      image: IMG('1676337167498-ceac1d6dafba')
+      id: 'foam-glider-trainer', model: 'Foam Glider Trainer', brands: [],
+      name_ar: 'طائرة شراعية للتدريب من الفوم', name_en: 'Foam Glider Trainer',
+      desc_ar: 'طائرة شراعية من فوم EPO بجناح طويل وطيران هادئ وبطيء — مناسبة لتعلّم التحكم بسهولة.',
+      desc_en: 'An EPO foam glider with long wings and slow, calm flight — easy to learn with.',
+      category: 'planes', scales: [], level: 'beginner', featured: 58, inStock: true, price: null,
+      specs: { build: EPO, wing: { ar: 'جناح طويل', en: 'Long wing' } },
+      tags: ['glider', 'plane', 'foam', 'شراعية', 'طائرة', 'فوم'],
+      images: [P('8244925'), P('38544873')]
+    },
+    {
+      id: 'cessna-foam-trainer', model: 'Cessna-style Foam Trainer', brands: [],
+      name_ar: 'طائرة تدريب من الفوم بشكل الطائرات الخفيفة', name_en: 'Light-aircraft Style Foam Trainer',
+      desc_ar: 'طائرة تدريب من فوم EPO بشكل الطائرات الخفيفة ذات الجناح العلوي، متينة وسهلة الطيران.',
+      desc_en: 'An EPO foam trainer shaped like classic high-wing light aircraft — tough and easy to fly.',
+      category: 'planes', scales: [], level: 'beginner', featured: 57, inStock: true, price: null,
+      specs: { build: EPO, wing: { ar: 'جناح علوي', en: 'High wing' } },
+      tags: ['plane', 'trainer', 'foam', 'طائرة', 'فوم', 'تدريب'],
+      images: [P('38544860'), P('11917454')]
+    },
+    {
+      id: 'foam-sport-trainer', model: 'Foam Sport Trainer (aileron)', brands: [],
+      name_ar: 'طائرة فوم رياضية بجنيحات تحكم', name_en: 'Foam Sport Trainer with Ailerons',
+      desc_ar: 'طائرة من فوم EPO بجنيحات تحكم لحركات أكثر — للطيارين الذين أتقنوا طائرات التدريب.',
+      desc_en: 'An EPO foam plane with ailerons for more manoeuvres — for pilots who have mastered trainers.',
+      category: 'planes', scales: [], level: 'intermediate', featured: 56, inStock: true, price: null,
+      specs: { build: EPO, extras: { ar: 'جنيحات تحكم', en: 'Ailerons' } },
+      tags: ['plane', 'sport', 'aileron', 'foam', 'طائرة', 'فوم', 'رياضية'],
+      images: [P('38544908'), P('38544873')]
+    },
+    {
+      id: 'plane-engines', model: 'Plane Engines (glow/nitro)', brands: [],
+      name_ar: 'محركات طائرات جلو ونيترو', name_en: 'Glow / Nitro Plane Engines',
+      desc_ar: 'مجموعة محركات طائرات متاحة — اسأل عن الموديلات.',
+      desc_en: 'Selection of plane engines available — ask for models.',
+      category: 'planes', scales: [], level: 'pro', featured: 70, inStock: true, price: null,
+      specs: { power: { ar: 'جلو / نيترو', en: 'Glow / nitro' }, version: ASK },
+      tags: ['engine', 'glow', 'nitro', 'plane', 'محرك', 'محركات', 'نيترو', 'طائرة'],
+      photos: range('planes', 39, 43)
+    },
+    {
+      id: 'plane-parts', model: 'RC Plane Parts', brands: [],
+      name_ar: 'قطع غيار طائرات', name_en: 'Plane Parts',
+      desc_ar: 'قطع غيار لطائرات التحكم عن بعد — أرسل لنا موديل الطائرة والقطعة المطلوبة.',
+      desc_en: 'Parts for RC planes — send us your plane model and the part you need.',
+      category: 'planes', scales: [], level: 'intermediate', featured: 55, inStock: true, price: null,
+      specs: { version: ASK },
+      tags: ['plane', 'parts', 'طائرة', 'قطع غيار'],
+      photos: range('planes', 44, 48).concat(['planes-087'])
+    },
+    {
+      id: 'plane-accessories', model: 'RC Plane Accessories', brands: [],
+      name_ar: 'إكسسوارات وأدوات الطائرات', name_en: 'Plane Accessories & Tools',
+      desc_ar: 'إكسسوارات وأدوات لطائرات التحكم عن بعد — اسأل عن المتاح.',
+      desc_en: 'Accessories and tools for RC planes — ask what is available.',
+      category: 'planes', scales: [], level: 'beginner', featured: 54, inStock: true, price: null,
+      specs: { version: ASK },
+      tags: ['plane', 'accessories', 'tools', 'طائرة', 'إكسسوارات', 'أدوات'],
+      photos: range('planes', 135, 139)
     },
 
-    /* ===== Parts & electronics ===== */
+    /* ===== Drift & rally ===== */
     {
-      id: 'apex-120a-combo',
-      model: 'Apex 120A + 2200KV',
-      name_ar: 'طقم محرك ومنظم سرعة Brushless',
-      name_en: 'Brushless ESC + Motor Combo',
-      desc_ar: 'ترقية Brushless جاهزة للتركيب في سيارات 1/8 مع إعدادات قابلة للبرمجة للاندفاع والفرامل وحماية حرارية.',
-      desc_en: 'Drop-in brushless power for 1/8 builds with programmable punch, braking and thermal protection.',
-      category: 'parts', brand: 'Apex Works',
-      price: 699, rating: 4.6, reviews: 66, stock: 13,
-      level: 'pro', featured: 57, badges: [],
-      specs: { esc: '120A', motor: '4274 2200KV', battery: '3–6S LiPo', compat: { ar: 'سيارات وشاحنات 1/8', en: '1/8 cars & trucks' } },
-      tags: ['esc', 'motor', 'brushless', 'upgrade', 'محرك', 'ترقية'],
-      image: IMG('1518770660439-4636190af475')
+      id: 'traxxas-4-tec-drift', model: 'Traxxas 4-Tec Drift 1/10 (Mustang)', brands: ['Traxxas'],
+      name_ar: 'سيارة درفت 1/10 بدفع رباعي', name_en: '1/10 AWD Drift Car',
+      desc_ar: 'سيارة درفت بمقاس 1/10 على شاسيه 4-Tec بدفع رباعي بهيكل موستانج.' + CONTACT_AR,
+      desc_en: 'A 1/10-scale drift car on the four-wheel-drive 4-Tec chassis with a Mustang body.' + CONTACT_EN,
+      category: 'drift', scales: ['1/10'], level: 'intermediate', featured: 69, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: 'AWD' },
+      tags: ['traxxas', '4-tec', '4tec', 'drift', 'mustang', 'درفت', 'تراكساس'],
+      photos: range('drift', 32, 36)
     },
     {
-      id: 'apex-rx8',
-      model: 'Apex RX8',
-      name_ar: 'مستقبل 8 قنوات مع جايرو تثبيت',
-      name_en: '8-Channel Gyro Receiver',
-      desc_ar: '8 قنوات، جايرو تثبيت مدمج وقراءات مباشرة للجهد والإشارة. لوحة صغيرة وتحكم كبير.',
-      desc_en: '8 channels, a built-in stabilising gyro and live telemetry for voltage and signal. Small board, big control.',
-      category: 'parts', brand: 'Apex Works',
-      price: 239, rating: 4.5, reviews: 49, stock: 19,
-      level: 'intermediate', featured: 54, badges: ['new'],
-      specs: { channels: '8CH', freq: '2.4GHz', range: 1200, compat: { ar: 'سيارات، قوارب وطائرات', en: 'Cars, boats & planes' } },
-      tags: ['receiver', 'gyro', 'radio', 'مستقبل', 'جايرو'],
-      image: IMG('1562408590-e32931084e23')
+      id: 'mst-110-drift', model: 'MST 1/10 Drift', brands: ['MST'],
+      name_ar: 'سيارة درفت 1/10 بدفع خلفي', name_en: '1/10 RWD Drift Car',
+      desc_ar: 'سيارة درفت بمقاس 1/10 بدفع خلفي من MST — الأسلوب الأقرب لدرفت السيارات الحقيقية.',
+      desc_en: 'A 1/10-scale rear-wheel-drive drift car from MST — the closest style to real-car drifting.',
+      category: 'drift', scales: ['1/10'], level: 'pro', featured: 68, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: 'RWD' },
+      tags: ['mst', 'drift', 'rwd', 'درفت'],
+      photos: ['drift-037', 'drift-038']
     },
     {
-      id: 'gripx-tires',
-      model: 'Grip X',
-      name_ar: 'طقم إطارات لكل التضاريس (4 قطع)',
-      name_en: 'All-Terrain Tyre Set (×4)',
-      desc_ar: 'إطارات ملصوقة مسبقًا بمطاط ناعم ونتوءات عدوانية تعض الرمل والتراب والحصى.',
-      desc_en: 'Pre-glued soft-compound tyres with aggressive pins that bite into sand, dirt and gravel.',
-      category: 'parts', brand: 'Apex Works',
-      price: 189, oldPrice: 229, rating: 4.6, reviews: 143, stock: 21,
-      level: 'beginner', featured: 52, badges: [],
-      specs: { compat: { ar: 'شاحنات SCT وتراغي 1/10', en: '1/10 SCT & truggy' }, hex: '12mm', compound: { ar: 'ناعم — للرمل والتراب', en: 'Soft — sand & dirt' } },
-      tags: ['tires', 'tyres', 'wheels', 'إطارات', 'كفرات', 'جنوط'],
-      image: IMG('1741003788656-8bc2525272e0')
+      id: 'hpi-rs4', model: 'HPI RS4', brands: ['HPI'],
+      name_ar: 'سيارة سياحية 1/10 بدفع رباعي', name_en: '1/10 4WD Touring Car',
+      desc_ar: 'سيارة سياحية بمقاس 1/10 بدفع رباعي من HPI.' + CONTACT_AR,
+      desc_en: 'A 1/10-scale four-wheel-drive touring car from HPI.' + CONTACT_EN,
+      category: 'drift', scales: ['1/10'], level: 'intermediate', featured: 66, inStock: true, price: null,
+      specs: { drive: '4WD' },
+      tags: ['hpi', 'rs4', 'touring', 'on-road', 'سياحية'],
+      photos: range('drift', 172, 175)
+    },
+    {
+      id: 'hpi-wr8', model: 'HPI WR8 Rally', brands: ['HPI'],
+      name_ar: 'سيارة رالي 1/8 بدفع رباعي', name_en: '1/8 4WD Rally Car',
+      desc_ar: 'سيارة رالي بمقاس 1/8 بدفع رباعي من HPI.' + CONTACT_AR,
+      desc_en: 'A 1/8-scale four-wheel-drive rally car from HPI.' + CONTACT_EN,
+      category: 'drift', scales: ['1/8'], level: 'pro', featured: 65, inStock: true, price: null,
+      specs: { drive: '4WD' },
+      tags: ['hpi', 'wr8', 'rally', 'رالي'],
+      photos: range('drift', 189, 193)
+    },
+    {
+      id: 'drift-wheels-tires-110', model: '1/10 Drift Wheels & Tires', brands: [],
+      name_ar: 'جنوط وإطارات درفت 1/10', name_en: '1/10 Drift Wheels & Tyres',
+      desc_ar: 'جنوط وإطارات للدرفت والسيارات السياحية بمقاس 1/10 — اسأل عن الأشكال المتاحة.',
+      desc_en: 'Drift and on-road wheels and tyres in 1/10 scale — ask about the styles available.',
+      category: 'drift', scales: ['1/10'], level: 'beginner', featured: 63, inStock: true, price: null,
+      specs: { use: { ar: 'درفت وسياحية', en: 'Drift & on-road' } },
+      tags: ['wheels', 'tires', 'tyres', 'drift', 'جنوط', 'إطارات', 'كاوتش'],
+      photos: range('drift', 116, 120)
+    },
+    {
+      id: 'bodies-110', model: '1/10 Bodies', brands: [],
+      name_ar: 'هياكل 1/10 للدرفت والسيارات السياحية', name_en: '1/10 Drift & Touring Bodies',
+      desc_ar: 'هياكل بمقاس 1/10 لسيارات الدرفت والسيارات السياحية — اسأل عن الأشكال المتاحة.',
+      desc_en: '1/10-scale bodies for drift and touring cars — ask about the shapes available.',
+      category: 'drift', scales: ['1/10'], level: 'intermediate', featured: 61, inStock: true, price: null,
+      specs: { use: { ar: 'درفت وسياحية', en: 'Drift & touring' } },
+      tags: ['body', 'bodies', 'shell', 'drift', 'هيكل', 'بودي', 'درفت'],
+      photos: range('drift', 73, 78)
+    },
+
+    /* ===== Parts & batteries ===== */
+    {
+      id: 'parts-hpi-hsp-xray', model: 'HPI / HSP / Xray / Kyosho / Thunder Tiger Parts', brands: ['HPI', 'HSP', 'Xray', 'Kyosho', 'Thunder Tiger', 'Rovan', 'King Motor'],
+      name_ar: 'قطع غيار لعلامات متعددة', name_en: 'Parts for Several Brands',
+      desc_ar: 'قطع غيار لسيارات HPI أو HSP أو Xray أو Kyosho أو Thunder Tiger أو Rovan أو King Motor — أرسل لنا اسم الموديل والقطعة المطلوبة.',
+      desc_en: 'Parts for HPI, HSP, Xray, Kyosho, Thunder Tiger, Rovan and King Motor cars — send us your model and the part you need.',
+      category: 'parts', scales: [], level: 'intermediate', featured: 53, inStock: true, price: null,
+      specs: { compat: 'HPI · HSP · Xray · Kyosho · Thunder Tiger · Rovan · King Motor' },
+      tags: ['parts', 'hpi', 'hsp', 'xray', 'kyosho', 'thunder tiger', 'rovan', 'king motor', 'قطع غيار'],
+      photos: ['parts-002', 'parts-003'].concat(range('parts', 59, 62))
+    },
+    {
+      id: 'arrma-parts-oils', model: 'Arrma Parts & Shock Oils', brands: ['Arrma'],
+      name_ar: 'قطع غيار وزيوت مساعدات Arrma', name_en: 'Arrma Parts & Shock Oils',
+      desc_ar: 'قطع غيار لسيارات Arrma وزيوت للمساعدات — أرسل لنا اسم الموديل والقطعة المطلوبة.',
+      desc_en: 'Parts for Arrma cars plus shock oils — send us your model and the part you need.',
+      category: 'parts', scales: [], level: 'intermediate', featured: 52, inStock: true, price: null,
+      specs: { compat: 'Arrma' },
+      tags: ['arrma', 'parts', 'shock oil', 'oil', 'قطع غيار', 'زيت', 'أرما'],
+      photos: ['parts-054', 'parts-055', 'parts-056', 'parts-058']
+    },
+    {
+      id: 'traxxas-parts', model: 'Traxxas Parts', brands: ['Traxxas'],
+      name_ar: 'قطع غيار Traxxas', name_en: 'Traxxas Parts',
+      desc_ar: 'قطع غيار لسيارات Traxxas — أرسل لنا اسم الموديل والقطعة المطلوبة.',
+      desc_en: 'Parts for Traxxas cars — send us your model and the part you need.',
+      category: 'parts', scales: [], level: 'intermediate', featured: 51, inStock: true, price: null,
+      specs: { compat: 'Traxxas' },
+      tags: ['traxxas', 'parts', 'قطع غيار', 'تراكساس'],
+      photos: range('parts', 160, 163)
+    },
+    {
+      id: 'rc-tires', model: 'RC Tires 1/5 · 1/8 · 1/10 · 1/16', brands: [],
+      name_ar: 'إطارات سيارات تحكم عن بعد', name_en: 'RC Car Tyres',
+      desc_ar: 'إطارات بالمقاسات 1/5 · 1/8 · 1/10 · 1/16 — أخبرنا بموديلك ونوع الأرض لنرشّح المناسب.',
+      desc_en: 'Tyres in 1/5, 1/8, 1/10 and 1/16 — tell us your model and surface and we will suggest the right set.',
+      category: 'parts', scales: ['1/5', '1/8', '1/10', '1/16'], level: 'beginner', featured: 50, inStock: true, price: null,
+      specs: { use: { ar: 'تراب ورمال وأسفلت', en: 'Dirt, sand & tarmac' } },
+      tags: ['tires', 'tyres', 'wheels', 'إطارات', 'كاوتش', 'جنوط'],
+      photos: range('parts', 49, 53)
+    },
+    {
+      id: 'proline-badlands-15', model: 'Pro-Line Badlands 1/5 (X-Maxx)', brands: [],
+      name_ar: 'إطارات 1/5 لشاحنة X-Maxx', name_en: '1/5 Tyres for X-Maxx',
+      desc_ar: 'إطارات Pro-Line Badlands بمقاس 1/5 مناسبة لشاحنة Traxxas X-Maxx.' + CONTACT_AR,
+      desc_en: 'Pro-Line Badlands 1/5 tyres to fit the Traxxas X-Maxx.' + CONTACT_EN,
+      category: 'parts', scales: ['1/5'], level: 'pro', featured: 49, inStock: true, price: null,
+      specs: { compat: 'Traxxas X-Maxx' },
+      tags: ['pro-line', 'proline', 'badlands', 'tires', 'x-maxx', 'إطارات'],
+      photos: ['parts-239', 'parts-240']
+    },
+    {
+      id: 'batteries', model: 'Batteries (Traxxas / LiPo)', brands: ['Traxxas'],
+      name_ar: 'بطاريات Traxxas · LiPo', name_en: 'Traxxas & LiPo Batteries',
+      desc_ar: 'بطاريات من Traxxas وبطاريات LiPo لسيارات الأوف رود — أخبرنا بموديلك ونرشّح لك المناسبة.',
+      desc_en: 'Traxxas and LiPo batteries for off-road cars — tell us your model and we will suggest the right one.',
+      category: 'parts', scales: [], level: 'intermediate', featured: 48, inStock: true, price: null,
+      specs: { use: { ar: 'سيارات الأوف رود', en: 'Off-road cars' } },
+      tags: ['battery', 'batteries', 'lipo', 'traxxas', 'بطارية', 'بطاريات', 'ليبو'],
+      photos: range('parts', 140, 144)
+    },
+    {
+      id: 'bodies-traxxas-fox', model: 'Bodies (Traxxas / Fox)', brands: ['Traxxas'],
+      name_ar: 'هياكل Traxxas · Fox', name_en: 'Traxxas & Fox Bodies',
+      desc_ar: 'هياكل لسيارات Traxxas وهياكل Fox — اسأل عن الأشكال والألوان المتاحة.',
+      desc_en: 'Bodies for Traxxas cars and Fox bodies — ask about the shapes and colours available.',
+      category: 'parts', scales: [], level: 'intermediate', featured: 47, inStock: true, price: null,
+      specs: { compat: 'Traxxas' },
+      tags: ['body', 'bodies', 'traxxas', 'fox', 'هيكل', 'بودي'],
+      photos: range('parts', 145, 149)
     }
   ];
 
-  /* ---------- Deal of the week ---------- */
-  window.VOLT_DEAL = {
-    productId: 'dune-viper-x',
-    stockTotal: 22,          // units allocated to the deal (for the "claimed" meter)
-    daysAhead: 5             // countdown target, relative to page load
-  };
+  /* ---------- Featured product (+ which real photo to show large) ---------- */
+  window.VOLT_FEATURED = { productId: 'losi-5ive-t-3', photo: 'shop-011' };
 })();

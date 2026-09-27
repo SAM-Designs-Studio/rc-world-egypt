@@ -1,29 +1,17 @@
 /* ==========================================================================
-   VOLT RC — main.js
+   RC World Egypt — main.js
    --------------------------------------------------------------------------
    Vanilla JS, no modules / no build step (works from file://).
-   Depends on window.VOLT_I18N (i18n.js) and window.VOLT_PRODUCTS (products.js).
+   Depends on (loaded before this file, all with <script defer>):
+     i18n.js         → window.VOLT_I18N
+     photos.js       → window.SHOP_PHOTOS  (Hamdy's real shop photos)
+     photo-sizes.js  → window.SHOP_PHOTO_SIZES
+     products.js     → window.VOLT_PRODUCTS / VOLT_CATEGORIES / VOLT_BRANDS / VOLT_FEATURED
+   (The VOLT_* / volt.* names are internal identifiers only — never shown to visitors.)
 
-   Sections
-     0.  Shortcuts, data & constants
-     1.  Safe storage (every access wrapped in try/catch)
-     2.  i18n helpers (t, tp, applyI18n)
-     3.  Formatting helpers (money, stars, specs, search normalisation)
-     4.  State
-     5.  Overlay manager (focus trap, Esc, backdrop, scroll lock)
-     6.  Header: sticky state, scroll-spy, back-to-top, ticker
-     7.  Category & level counts
-     8.  Filters
-     9.  Product grid (render, load more, tilt)
-     10. Quick view
-     11. Cart (drawer, toast, fly-to-cart, checkout)
-     12. Search overlay
-     13. Deal of the week + countdown
-     14. Reviews carousel
-     15. Forms (newsletter + contact)
-     16. Scroll reveal + count-up
-     17. Language switching
-     18. Event wiring & init
+   This is a real shop without online payment: there are no prices on the
+   site. Visitors build an inquiry list, then contact Hamdy by phone or
+   WhatsApp, who confirms price, availability and shipping.
    ========================================================================== */
 
 (function () {
@@ -40,26 +28,47 @@
   const I18N = window.VOLT_I18N || { ar: {}, en: {} };
   const PRODUCTS = window.VOLT_PRODUCTS || [];
   const CATEGORIES = (window.VOLT_CATEGORIES || []).map((c) => c.id);
-  const DEAL = window.VOLT_DEAL || null;
+  const FEATURED = window.VOLT_FEATURED || null;
+  const BRANDS = (window.VOLT_BRANDS || []).slice();
+  const SIZES = window.SHOP_PHOTO_SIZES || {};
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
   const LEVELS = ['beginner', 'intermediate', 'pro'];
-  const BRANDS = Array.from(new Set(PRODUCTS.map((p) => p.brand))).sort();
+  const GALLERY_GROUPS = ['shop', 'baja', 'offroad', 'drift', 'planes', 'parts'];
 
-  const FREE_SHIP = 500;   // SAR — free shipping threshold
-  const SHIP_FEE = 35;     // SAR — flat shipping below threshold
-  const VAT_RATE = 0.15;   // Saudi VAT
-  const PAGE_SIZE = 12;    // products per "page" in the grid
-  const MAX_QTY = 10;      // max units per line
-  const PRICE_STEP = 50;
-
-  const prices = PRODUCTS.map((p) => p.price);
-  const PRICE_FLOOR = Math.floor(Math.min.apply(null, prices.concat([0])) / PRICE_STEP) * PRICE_STEP;
-  const PRICE_CEIL = Math.ceil(Math.max.apply(null, prices.concat([PRICE_STEP])) / PRICE_STEP) * PRICE_STEP;
+  const WA_NUMBER = '201003130449';   // Hamdy — WhatsApp (wa.me format)
+  const PAGE_SIZE = 12;                // products per "page" in the grid
+  const GALLERY_PAGE = 24;             // gallery thumbnails per "page"
+  const MAX_QTY = 10;                  // max units per inquiry line
+  const RLM = '‏';                // keeps Arabic WhatsApp lines right-to-left
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   const desktopFilters = window.matchMedia('(min-width: 1024px)');
   const YEAR = new Date().getFullYear();
+
+  /* ---------- Real shop photos ---------- */
+  const PHOTOS = (window.SHOP_PHOTOS || []).map((p) => {
+    const key = p.cat + '-' + p.id;
+    const d = SIZES[key] || [600, 450, 1280, 960];
+    return { key: key, cat: p.cat, post: String(p.post || '').trim(), full: p.full, thumb: p.thumb, tw: d[0], th: d[1], fw: d[2], fh: d[3] };
+  });
+  const photoByKey = new Map(PHOTOS.map((p) => [p.key, p]));
+
+  /** Product images: real photos (by key) or illustrative stock images. */
+  PRODUCTS.forEach((p) => {
+    if (p.photos && p.photos.length) {
+      p._imgs = p.photos.map((k) => photoByKey.get(k)).filter(Boolean).map((ph) => ({
+        src: ph.full, thumb: ph.thumb, tw: ph.tw, th: ph.th, fw: ph.fw, fh: ph.fh, real: true
+      }));
+    } else {
+      p._imgs = (p.images || []).map((im) => ({ src: im.src, thumb: im.thumb, tw: 600, th: 400, fw: 1200, fh: 800, real: false }));
+    }
+  });
+
+  const denom = (s) => parseInt(String(s).split('/')[1], 10) || 0;
+  /** Scale filter options come from the catalogue itself (largest scale first). */
+  const SCALES = Array.from(new Set([].concat.apply([], PRODUCTS.map((p) => p.scales || []))))
+    .sort((a, b) => denom(a) - denom(b));
 
   /* ---------- DOM references ---------- */
   const el = {
@@ -73,6 +82,9 @@
     toTop: $('#toTop'),
     toTopProgress: $('#toTopProgress'),
     announceTrack: $('#announceTrack'),
+    heroCount: $('#heroCount'),
+    heroScales: $('#heroScales'),
+    heroScalesLabel: $('#heroScalesLabel'),
     // shop
     grid: $('#productGrid'),
     emptyState: $('#emptyState'),
@@ -89,36 +101,19 @@
     filtersApplyLabel: $('#filtersApplyLabel'),
     activeFilterCount: $('#activeFilterCount'),
     fCategory: $('#fCategory'),
-    fLevel: $('#fLevel'),
+    fScale: $('#fScale'),
     fBrand: $('#fBrand'),
-    priceMin: $('#priceMin'),
-    priceMax: $('#priceMax'),
-    priceMinOut: $('#priceMinOut'),
-    priceMaxOut: $('#priceMaxOut'),
-    priceRange: $('#priceRange'),
-    inStock: $('#inStockOnly'),
+    fLevel: $('#fLevel'),
     // quick view
     quickView: $('#quickView'),
     qvContent: $('#qvContent'),
-    // cart
+    // inquiry list
     cartDrawer: $('#cartDrawer'),
     cartLines: $('#cartLines'),
     cartEmpty: $('#cartEmpty'),
     cartSummary: $('#cartSummary'),
     cartCount: $('#cartCount'),
-    freeShip: $('#freeShip'),
-    freeShipText: $('#freeShipText'),
-    freeShipMeter: $('#freeShipMeter'),
-    sumSubtotal: $('#sumSubtotal'),
-    sumShipping: $('#sumShipping'),
-    sumVat: $('#sumVat'),
-    sumTotal: $('#sumTotal'),
     checkoutBtn: $('#checkoutBtn'),
-    checkoutModal: $('#checkoutModal'),
-    coText: $('#coText'),
-    coOrder: $('#coOrder'),
-    coItems: $('#coItems'),
-    coTotal: $('#coTotal'),
     toast: $('#toast'),
     toastImg: $('#toastImg'),
     toastName: $('#toastName'),
@@ -130,30 +125,32 @@
     searchPopular: $('#searchPopular'),
     searchStatus: $('#searchStatus'),
     searchAll: $('#searchAll'),
-    // deal
+    // featured
     dealImg: $('#dealImg'),
-    dealTag: $('#dealTag'),
     dealName: $('#dealName'),
     dealDesc: $('#dealDesc'),
+    dealSpecs: $('#dealSpecs'),
     dealPrice: $('#dealPrice'),
-    dealMeter: $('#dealMeter'),
-    dealStockText: $('#dealStockText'),
     dealAdd: $('#dealAdd'),
     dealDetails: $('#dealDetails'),
-    countdown: $('#countdown'),
-    dealEnded: $('#dealEnded'),
-    cdDays: $('#cdDays'),
-    cdHours: $('#cdHours'),
-    cdMins: $('#cdMins'),
-    cdSecs: $('#cdSecs'),
-    // forms
-    nlForm: $('#newsletterForm'),
-    nlEmail: $('#nlEmail'),
-    nlSuccess: $('#nlSuccess'),
+    // gallery
+    galleryGrid: $('#galleryGrid'),
+    galleryMore: $('#galleryMore'),
+    galleryMoreLabel: $('#galleryMoreLabel'),
+    lightbox: $('#lightbox'),
+    lbStage: $('#lbStage'),
+    lbImg: $('#lbImg'),
+    lbCaption: $('#lbCaption'),
+    lbCount: $('#lbCount'),
+    lbPrev: $('#lbPrev'),
+    lbNext: $('#lbNext'),
+    // contact form
     contactForm: $('#contactForm'),
-    contactSuccess: $('#contactSuccess'),
-    contactSuccessText: $('#contactSuccessText'),
-    contactAgain: $('#contactAgain')
+    formStatus: $('#formStatus'),
+    cName: $('#cName'),
+    cPhone: $('#cPhone'),
+    cTopic: $('#cTopic'),
+    cMsg: $('#cMsg')
   };
 
   /* ======================================================================
@@ -177,7 +174,7 @@
   };
 
   /* ======================================================================
-     2. i18n helpers
+     2. i18n + bidi helpers
      ====================================================================== */
   const pluralCache = {};
 
@@ -193,7 +190,7 @@
     return Object.prototype.hasOwnProperty.call(fb, key) ? fb[key] : null;
   }
 
-  /** Translate a key, filling {placeholders}. */
+  /** Translate a key (dictionary markup such as <bdi> is kept), filling {placeholders}. */
   function t(key, vars) {
     let s = lookup(key);
     if (s == null) return key;
@@ -216,12 +213,12 @@
     return fill(entry[cat] || entry.other, base);
   }
 
-  /* ---------- Bidi helpers ----------
-     Brand, store and model names are always English. Inside Arabic text they
-     are isolated so they never flip the line or drag punctuation around:
+  /* ---------- Bidi ----------
+     English names inside Arabic text are isolated so they never flip the
+     line or drag punctuation around:
        • HTML contexts  → <bdi dir="ltr">Name</bdi>
-       • Plain text     → U+2068 FSI … U+2069 PDI (aria-label, alt, title, meta)
-     Dictionary strings use <bdi>…</bdi>; plain() converts them for attributes. */
+       • Plain text     → U+2068 FSI … U+2069 PDI (aria-label, alt, title,
+                          meta, WhatsApp messages)                        */
   const FSI = '⁨';
   const PDI = '⁩';
   const HAS_ARABIC = /[؀-ۿݐ-ݿ]/;
@@ -239,6 +236,13 @@
   }
   /** Plain-text translation (for attributes, document.title, textContent). */
   const tt = (key, vars) => plain(t(key, vars));
+  /** Plain-text template filled with raw (user) values — user text is never tag-stripped. */
+  function tpl(key, vars) {
+    let s = lookup(key);
+    if (s == null) return key;
+    if (typeof s === 'object') s = s.other;
+    return fill(plain(s), vars);
+  }
 
   /** Translate every static element carrying data-i18n* attributes. */
   function applyI18n(scope) {
@@ -251,82 +255,97 @@
     $$('[data-i18n-placeholder]', ctx).forEach((node) => { node.setAttribute('placeholder', tt(node.dataset.i18nPlaceholder)); });
     $$('[data-i18n-aria]', ctx).forEach((node) => { node.setAttribute('aria-label', tt(node.dataset.i18nAria)); });
     $$('[data-i18n-alt]', ctx).forEach((node) => { node.setAttribute('alt', tt(node.dataset.i18nAlt)); });
+    $$('[data-i18n-title]', ctx).forEach((node) => { node.setAttribute('title', tt(node.dataset.i18nTitle)); });
     $$('[data-i18n-content]', ctx).forEach((node) => { node.setAttribute('content', tt(node.dataset.i18nContent)); });
     $$('[data-query-key]', ctx).forEach((node) => { node.textContent = t(node.dataset.queryKey); });
   }
 
   /* ======================================================================
-     3. Formatting helpers
+     3. Formatting, WhatsApp links & search helpers
      ====================================================================== */
   const nf0 = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
-  const nf1 = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
-  const nf2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
   function fmt(n) { return nf0.format(n); }
-
-  /** Price markup. {plain:true} returns text; {decimals:true} shows halalas. */
-  function money(n, opts) {
-    const o = opts || {};
-    const num = o.decimals ? nf2.format(n) : nf0.format(Math.round(n));
-    if (o.plain) return num + ' ' + t('currency');
-    return '<span class="money"><span class="money__num">' + num + '</span> <span class="money__cur">' + esc(t('currency')) + '</span></span>';
-  }
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
+  const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+  const maxQty = (p) => (p.inStock === false ? 0 : MAX_QTY);
+  /** Largest scale of a product (smallest denominator), or null. */
+  const scaleNum = (p) => ((p.scales && p.scales.length) ? Math.min.apply(null, p.scales.map(denom)) : null);
+  const pBrands = (p) => p.brands || [];
+  const pScales = (p) => p.scales || [];
+
   /* Product naming: the English model name is shown in both languages; the
-     descriptor ("1/8 Desert Buggy" / "باجي صحراء كهربائي 1/8") is localised. */
+     descriptor ("1/5 Petrol 4WD Truck" / "شاحنة 1/5 بمحرك بنزين…") is localised. */
   const pType = (p) => (state.lang === 'en' ? p.name_en : p.name_ar);
   const pDesc = (p) => (state.lang === 'en' ? p.desc_en : p.desc_ar);
   const pModelHTML = (p) => bdi(p.model);
   const pModelText = (p) => iso(p.model);
   /** Full plain-text name for alt text: Arabic descriptor first, so the line stays RTL. */
-  const pLabel = (p) => (state.lang === 'en' ? p.model + ' ' + p.name_en : p.name_ar + ' ' + iso(p.model));
-  const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
-  const maxQty = (p) => Math.max(0, Math.min(p.stock, MAX_QTY));
-  const salePct = (p) => (p.oldPrice && p.oldPrice > p.price ? Math.round((1 - p.price / p.oldPrice) * 100) : 0);
+  const pLabel = (p) => (state.lang === 'en' ? p.model + ' — ' + p.name_en : p.name_ar + ' ' + iso(p.model));
+  const pImages = (p) => (p._imgs && p._imgs.length ? p._imgs : [{ src: '', thumb: '', tw: 600, th: 450, fw: 1200, fh: 900, real: true }]);
 
-  const STAR = '<svg aria-hidden="true"><use href="#i-star"/></svg>';
-  const STARS5 = STAR + STAR + STAR + STAR + STAR;
-
-  function starsHTML(r, extra) {
-    return '<span class="stars ' + (extra || '') + '" style="--r:' + r + '" aria-hidden="true">' +
-      '<span class="stars__base">' + STARS5 + '</span><span class="stars__fill">' + STARS5 + '</span></span>';
-  }
-
-  function ratingHTML(p) {
-    const label = t('card.ratingAria', { r: p.rating.toFixed(1), x: tp('unit.review', p.reviews) });
-    return '<div class="rating" role="img" aria-label="' + esc(label) + '">' + starsHTML(p.rating) +
-      '<span class="rating__num">' + p.rating.toFixed(1) + '</span>' +
-      '<span class="rating__count">(' + fmt(p.reviews) + ')</span></div>';
-  }
-
-  /** Localise a spec value; numbers get units by spec key. */
-  function specValue(key, v) {
+  /** Localise a spec value ({ar, en} objects; strings shown as-is). */
+  function specValue(v) {
     if (v && typeof v === 'object') return v[state.lang] || v.en || '';
-    if (typeof v === 'number') {
-      switch (key) {
-        case 'speed': return fmt(v) + ' ' + t('unit.kmh');
-        case 'runtime':
-        case 'flight': return tp('unit.min', v);
-        case 'range': return v >= 1000 ? nf1.format(v / 1000) + ' ' + t('unit.km') : fmt(v) + ' ' + t('unit.m');
-        case 'wingspan':
-        case 'length': return fmt(v) + ' ' + t('unit.mm');
-        case 'weight': return fmt(v) + ' ' + t('unit.g');
-        default: return fmt(v);
-      }
-    }
     return String(v);
   }
 
-  const HIGHLIGHT_KEYS = ['speed', 'flight', 'runtime', 'capacity', 'discharge', 'output', 'channels', 'esc', 'compat'];
+  const HIGHLIGHT_KEYS = ['power', 'drive', 'cells', 'build', 'channels', 'wing', 'extras', 'compat', 'version', 'use'];
   const SPEC_ICON = {
-    speed: 'i-gauge', flight: 'i-clock', runtime: 'i-clock', capacity: 'i-cat-batteries',
-    discharge: 'i-bolt', output: 'i-bolt', channels: 'i-signal', esc: 'i-bolt', compat: 'i-check'
+    power: 'i-bolt', drive: 'i-gauge', cells: 'i-cat-parts', version: 'i-wrench', build: 'i-check',
+    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler'
   };
-  const highlights = (p) => HIGHLIGHT_KEYS.filter((k) => p.specs && p.specs[k] != null).slice(0, 2);
+  const highlights = (p, n) => HIGHLIGHT_KEYS.filter((k) => p.specs && p.specs[k] != null).slice(0, n || 2);
+
+  function specChipsHTML(p, n) {
+    return highlights(p, n).map((k) =>
+      '<li><svg class="icon" aria-hidden="true"><use href="#' + SPEC_ICON[k] + '"/></svg><span>' + ltrHTML(specValue(p.specs[k])) + '</span></li>'
+    ).join('');
+  }
+
+  /** "Category · 1/5" meta line (scales isolated as LTR). */
+  function metaHTML(p) {
+    const sc = pScales(p);
+    return esc(t('cat.' + p.category)) + (sc.length ? '<span aria-hidden="true"> · </span>' + bdi(sc.join(' · ')) : '');
+  }
+
+  /** wa.me link with a URL-encoded (UTF-8) prefilled message. */
+  const waLink = (text) => 'https://wa.me/' + WA_NUMBER + (text ? '?text=' + encodeURIComponent(text) : '');
+
+  /** Arabic WhatsApp messages: an RLM at the start of every line keeps each line right-to-left. */
+  function waText(lines) {
+    const all = lines.join('\n').split('\n');
+    return (state.lang === 'ar' ? all.map((l) => RLM + l) : all).join('\n');
+  }
+
+  function openWhatsApp(text) {
+    const url = waLink(text);
+    let w = null;
+    try { w = window.open(url, '_blank'); } catch (e) { w = null; }
+    if (w) { try { w.opener = null; } catch (e) { /* ignore */ } } else { window.location.href = url; }
+    return url;
+  }
+
+  /** "Ask for price" block: label + small WhatsApp link that prefills "Price for {name}?". */
+  function priceAskHTML(p, extraClass) {
+    const href = waLink(waText([tpl('wa.price', { name: pModelText(p) })]));
+    return '<div class="price-ask ' + (extraClass || '') + '">' +
+      '<span class="price-ask__label">' + esc(t('price.ask')) + '</span>' +
+      '<a class="price-ask__wa" href="' + esc(href) + '" target="_blank" rel="noopener noreferrer">' +
+        '<svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>' +
+        '<span>' + esc(t('price.wa')) + '</span>' +
+        '<span class="sr-only">: ' + pModelHTML(p) + ' ' + esc(t('a11y.newTab')) + '</span>' +
+      '</a></div>';
+  }
+
+  /** Tag only on illustrative (stock) photos — real shop photos carry none. */
+  const illusTagHTML = (img) => (img && img.real ? '' :
+    '<span class="illus-tag" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg><span>' + esc(t('illus')) + '</span></span>');
+  const shopBadgeHTML = () =>
+    '<span class="shop-badge" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg><span>' + esc(t('fromShop')) + '</span></span>';
 
   /** Normalise text for forgiving AR/EN search (diacritics, alef forms, digits). */
   function norm(s) {
@@ -337,7 +356,6 @@
       .replace(/[إأآٱ]/g, 'ا')
       .replace(/ى/g, 'ي')
       .replace(/ة/g, 'ه')
-      .replace(/ڤ/g, 'ف')
       .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
       .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776))
       .replace(/\s+/g, ' ')
@@ -350,7 +368,7 @@
       return v && typeof v === 'object' ? v.ar + ' ' + v.en : v;
     }).join(' ');
     const words = [
-      p.model, p.name_ar, p.name_en, p.brand, p.category,
+      p.model, p.name_ar, p.name_en, p.category, pScales(p).join(' '), pBrands(p).join(' '),
       (I18N.ar || {})['cat.' + p.category], (I18N.en || {})['cat.' + p.category],
       (I18N.ar || {})['level.' + p.level], (I18N.en || {})['level.' + p.level],
       (p.tags || []).join(' '), specText
@@ -369,24 +387,27 @@
      ====================================================================== */
   const state = {
     lang: root.lang === 'en' ? 'en' : 'ar',
-    cart: [],
+    cart: [],                  // inquiry list: [{ id, qty }]
     f: freshFilters(),
     sort: 'featured',
     shown: PAGE_SIZE,
-    lastOrder: null,
-    contactName: ''
+    gFilter: 'all',
+    gShown: GALLERY_PAGE,
+    lbList: [],
+    lbIndex: 0,
+    formPrefilled: false
   };
 
   function freshFilters() {
-    return { cats: new Set(), brands: new Set(), levels: new Set(), min: PRICE_FLOOR, max: PRICE_CEIL, inStock: false, q: '' };
+    return { cats: new Set(), scales: new Set(), brands: new Set(), levels: new Set(), q: '' };
   }
 
   function loadCart() {
     const raw = storage.getJSON('volt.cart', []);
     if (!Array.isArray(raw)) return [];
     return raw
-      .filter((l) => l && byId.has(l.id) && byId.get(l.id).stock > 0)
-      .map((l) => ({ id: l.id, qty: clamp(parseInt(l.qty, 10) || 1, 1, maxQty(byId.get(l.id))) }));
+      .filter((l) => l && byId.has(l.id) && maxQty(byId.get(l.id)) > 0)
+      .map((l) => ({ id: l.id, qty: clamp(parseInt(l.qty, 10) || 1, 1, MAX_QTY) }));
   }
   state.cart = loadCart();
 
@@ -479,7 +500,7 @@
   function initScrollSpy() {
     if (!('IntersectionObserver' in window)) return;
     const links = $$('.nav__link, .mnav a');
-    const ids = ['home', 'categories', 'shop', 'deals', 'levels', 'reviews', 'contact'];
+    const ids = ['home', 'categories', 'shop', 'gallery', 'deals', 'levels', 'about', 'contact'];
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -506,24 +527,40 @@
   }
 
   /* ======================================================================
-     7. Category & level counts
+     7. Counts
      ====================================================================== */
-  function countBy(key) {
-    return PRODUCTS.reduce((acc, p) => { acc[p[key]] = (acc[p[key]] || 0) + 1; return acc; }, {});
+  /** Count products per key; fn may return one key or an array of keys. */
+  function countBy(fn) {
+    return PRODUCTS.reduce((acc, p) => {
+      [].concat(fn(p) || []).forEach((k) => { if (k) acc[k] = (acc[k] || 0) + 1; });
+      return acc;
+    }, {});
   }
-  const catCounts = countBy('category');
-  const levelCounts = countBy('level');
-  const brandCounts = countBy('brand');
+  const catCounts = countBy((p) => p.category);
+  const levelCounts = countBy((p) => p.level);
+  const scaleCounts = countBy((p) => pScales(p));
+  const brandCounts = countBy((p) => pBrands(p));
+
+  function setCount(node, value) {
+    if (!node) return;
+    node.dataset.count = String(value);
+    if (!node.dataset.animating) node.textContent = fmt(value);
+  }
 
   function renderCounts() {
     $$('[data-cat-count]').forEach((n) => { n.textContent = tp('unit.product', catCounts[n.dataset.catCount] || 0); });
     $$('[data-level-count]').forEach((n) => { n.textContent = '(' + fmt(levelCounts[n.dataset.levelCount] || 0) + ')'; });
+    setCount(el.heroCount, PRODUCTS.length);
+    setCount(el.heroScales, SCALES.length);
+    if (el.heroScalesLabel && SCALES.length) {
+      el.heroScalesLabel.innerHTML = t('hero.stat2', { min: bdi(SCALES[0]), max: bdi(SCALES[SCALES.length - 1]) });
+    }
   }
 
   /* ======================================================================
-     8. Filters
+     8. Filters (category / scale / brand / level)
      ====================================================================== */
-  /** labelHTML must already be escaped (brands arrive wrapped in <bdi>). */
+  /** labelHTML must already be escaped. */
   function checkHTML(name, value, labelHTML, count, checked) {
     return '<label class="check"><input type="checkbox" name="' + name + '" value="' + esc(value) + '"' + (checked ? ' checked' : '') + '>' +
       '<span class="check__box" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>' +
@@ -531,69 +568,27 @@
       '<span class="check__count">' + fmt(count) + '</span></label>';
   }
 
-  function pillHTML(name, value, label, checked) {
-    return '<label class="pill pill--' + value + '"><input type="checkbox" name="' + name + '" value="' + esc(value) + '"' + (checked ? ' checked' : '') + '>' +
-      '<span>' + esc(label) + '</span></label>';
+  function pillHTML(name, value, labelHTML, checked, extraClass, count) {
+    return '<label class="pill ' + (extraClass || '') + '"><input type="checkbox" name="' + name + '" value="' + esc(value) + '"' + (checked ? ' checked' : '') + '>' +
+      '<span>' + labelHTML + (count != null ? ' <small>' + fmt(count) + '</small>' : '') + '</span></label>';
   }
 
   function renderFilterOptions() {
     const f = state.f;
     el.fCategory.innerHTML = CATEGORIES.map((c) => checkHTML('cat', c, esc(t('cat.' + c)), catCounts[c] || 0, f.cats.has(c))).join('');
-    el.fLevel.innerHTML = LEVELS.map((l) => pillHTML('level', l, t('level.' + l), f.levels.has(l))).join('');
-    el.fBrand.innerHTML = BRANDS.map((b) => checkHTML('brand', b, bdi(b), brandCounts[b] || 0, f.brands.has(b))).join('');
+    el.fScale.innerHTML = SCALES.map((s) => pillHTML('scale', s, bdi(s), f.scales.has(s), 'pill--scale', scaleCounts[s] || 0)).join('');
+    el.fBrand.innerHTML = BRANDS.filter((b) => brandCounts[b]).map((b) => checkHTML('brand', b, bdi(b), brandCounts[b] || 0, f.brands.has(b))).join('');
+    el.fLevel.innerHTML = LEVELS.map((l) => pillHTML('level', l, esc(t('level.' + l)), f.levels.has(l), 'pill--' + l)).join('');
   }
-
-  function initPriceRange() {
-    [el.priceMin, el.priceMax].forEach((r) => {
-      r.min = PRICE_FLOOR;
-      r.max = PRICE_CEIL;
-      r.step = PRICE_STEP;
-    });
-    el.priceMin.value = state.f.min;
-    el.priceMax.value = state.f.max;
-
-    el.priceMin.addEventListener('input', () => {
-      let v = Number(el.priceMin.value);
-      if (v > state.f.max - PRICE_STEP) { v = state.f.max - PRICE_STEP; el.priceMin.value = v; }
-      state.f.min = v;
-      updateRangeUI();
-      scheduleRender();
-    });
-    el.priceMax.addEventListener('input', () => {
-      let v = Number(el.priceMax.value);
-      if (v < state.f.min + PRICE_STEP) { v = state.f.min + PRICE_STEP; el.priceMax.value = v; }
-      state.f.max = v;
-      updateRangeUI();
-      scheduleRender();
-    });
-  }
-
-  function updateRangeUI() {
-    const span = PRICE_CEIL - PRICE_FLOOR || 1;
-    el.priceRange.style.setProperty('--from', ((state.f.min - PRICE_FLOOR) / span * 100) + '%');
-    el.priceRange.style.setProperty('--to', ((PRICE_CEIL - state.f.max) / span * 100) + '%');
-    el.priceMinOut.innerHTML = money(state.f.min);
-    el.priceMaxOut.innerHTML = money(state.f.max);
-    el.priceMin.setAttribute('aria-valuetext', money(state.f.min, { plain: true }));
-    el.priceMax.setAttribute('aria-valuetext', money(state.f.max, { plain: true }));
-    // Keep the min thumb reachable when both thumbs sit at the top end.
-    el.priceMin.style.zIndex = state.f.min > PRICE_CEIL - PRICE_STEP * 3 ? '5' : '3';
-  }
-
-  function priceActive() { return state.f.min > PRICE_FLOOR || state.f.max < PRICE_CEIL; }
 
   function activeFilterTotal() {
     const f = state.f;
-    return f.cats.size + f.brands.size + f.levels.size + (priceActive() ? 1 : 0) + (f.inStock ? 1 : 0);
+    return f.cats.size + f.scales.size + f.brands.size + f.levels.size;
   }
 
   /** Push state.f back into every control (after chips, shortcuts, clear). */
   function syncFilterControls() {
     renderFilterOptions();
-    el.priceMin.value = state.f.min;
-    el.priceMax.value = state.f.max;
-    updateRangeUI();
-    el.inStock.checked = state.f.inStock;
     el.shopSearch.value = state.f.q;
     el.sortSelect.value = state.sort;
   }
@@ -602,12 +597,11 @@
 
   function renderChips() {
     const f = state.f;
-    const chips = []; // { type, value, html } — html is escaped; English names isolated with <bdi>
+    const chips = []; // { type, value, html } — html is escaped; Latin values isolated with <bdi>
     f.cats.forEach((c) => chips.push({ type: 'cat', value: c, html: esc(t('cat.' + c)) }));
-    f.levels.forEach((l) => chips.push({ type: 'level', value: l, html: esc(t('level.' + l)) }));
+    f.scales.forEach((s) => chips.push({ type: 'scale', value: s, html: t('chip.scale', { x: bdi(s) }) }));
     f.brands.forEach((b) => chips.push({ type: 'brand', value: b, html: bdi(b) }));
-    if (priceActive()) chips.push({ type: 'price', value: '', html: money(f.min) + ' – ' + money(f.max) });
-    if (f.inStock) chips.push({ type: 'stock', value: '', html: esc(t('chip.inStock')) });
+    f.levels.forEach((l) => chips.push({ type: 'level', value: l, html: esc(t('level.' + l)) }));
     if (f.q.trim()) chips.push({ type: 'q', value: '', html: t('chip.search', { q: ltrHTML(f.q.trim()) }) });
 
     let html = chips.map((c) =>
@@ -625,10 +619,9 @@
   function removeChip(type, value) {
     const f = state.f;
     if (type === 'cat') f.cats.delete(value);
-    else if (type === 'level') f.levels.delete(value);
+    else if (type === 'scale') f.scales.delete(value);
     else if (type === 'brand') f.brands.delete(value);
-    else if (type === 'price') { f.min = PRICE_FLOOR; f.max = PRICE_CEIL; }
-    else if (type === 'stock') f.inStock = false;
+    else if (type === 'level') f.levels.delete(value);
     else if (type === 'q') f.q = '';
     syncFilterControls();
     resetAndRender();
@@ -643,28 +636,25 @@
   /** Shortcut used by category tiles, level cards, hero & footer links. */
   function applyShortcut(opts) {
     state.f = freshFilters();
-    if (opts.cat) state.f.cats.add(opts.cat);
+    const cats = opts.cat ? String(opts.cat).split(',').map((c) => c.trim()).filter(Boolean) : [];
+    cats.forEach((c) => state.f.cats.add(c));        // e.g. "baja,offroad"
     if (opts.level) state.f.levels.add(opts.level);
     syncFilterControls();
     resetAndRender();
-    scrollToShop();
-    const label = opts.cat ? t('cat.' + opts.cat) : t('level.' + opts.level);
+    scrollToId('shop', el.shopTitle);
+    const label = cats.length ? cats.map((c) => t('cat.' + c)).join(' + ') : t('level.' + opts.level);
     announce(label + ' — ' + tp('unit.product', getResults().length));
   }
 
-  function scrollToShop() {
-    const target = doc.getElementById('shop');
+  function scrollToId(id, focusTarget) {
+    const target = doc.getElementById(id);
     if (!target) return;
     target.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
-    window.setTimeout(() => {
-      try { el.shopTitle.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
-    }, reduceMotion.matches ? 0 : 450);
-  }
-
-  let renderTimer = null;
-  function scheduleRender() {
-    window.clearTimeout(renderTimer);
-    renderTimer = window.setTimeout(resetAndRender, 140);
+    if (focusTarget) {
+      window.setTimeout(() => {
+        try { focusTarget.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+      }, reduceMotion.matches ? 0 : 450);
+    }
   }
 
   function resetAndRender() {
@@ -676,10 +666,10 @@
      9. Product grid
      ====================================================================== */
   const SORTERS = {
-    featured: (a, b) => (b.stock > 0) - (a.stock > 0) || b.featured - a.featured,
-    priceAsc: (a, b) => a.price - b.price || b.featured - a.featured,
-    priceDesc: (a, b) => b.price - a.price || b.featured - a.featured,
-    rating: (a, b) => b.rating - a.rating || b.reviews - a.reviews
+    featured: (a, b) => b.featured - a.featured,
+    // largest scale first = smallest denominator first; items without a scale go last
+    scaleDesc: (a, b) => (scaleNum(a) || 999) - (scaleNum(b) || 999) || b.featured - a.featured,
+    scaleAsc: (a, b) => (scaleNum(b) || -1) - (scaleNum(a) || -1) || b.featured - a.featured
   };
 
   function getResults() {
@@ -687,63 +677,43 @@
     const q = norm(f.q);
     return PRODUCTS.filter((p) =>
       (!f.cats.size || f.cats.has(p.category)) &&
-      (!f.brands.size || f.brands.has(p.brand)) &&
+      (!f.scales.size || pScales(p).some((s) => f.scales.has(s))) &&
+      (!f.brands.size || pBrands(p).some((b) => f.brands.has(b))) &&
       (!f.levels.size || f.levels.has(p.level)) &&
-      p.price >= f.min && p.price <= f.max &&
-      (!f.inStock || p.stock > 0) &&
       matches(p, q)
     ).sort(SORTERS[state.sort] || SORTERS.featured);
   }
 
-  function badgesHTML(p) {
-    const out = [];
-    const pct = salePct(p);
-    if (pct) out.push('<span class="badge badge--sale">-' + pct + '%</span>');
-    (p.badges || []).forEach((b) => out.push('<span class="badge badge--' + b + '">' + esc(t('badge.' + b)) + '</span>'));
-    return '<div class="pcard__badges">' + out.join('') + '</div>';
-  }
-
-  function stockHTML(p) {
-    if (p.stock <= 0) return '<p class="stock is-out"><span class="stock__dot"></span>' + esc(t('card.soldOut')) + '</p>';
-    if (p.stock <= 5) return '<p class="stock is-low"><span class="stock__dot"></span>' + esc(t('card.left', { n: fmt(p.stock) })) + '</p>';
-    return '<p class="stock is-ok"><span class="stock__dot"></span>' + esc(t('card.inStock')) + '</p>';
-  }
-
   function cardHTML(p, i) {
     const model = pModelHTML(p);
-    const soldOut = p.stock <= 0;
-    const pct = salePct(p);
-    const specs = highlights(p).map((k) =>
-      '<li><svg class="icon" aria-hidden="true"><use href="#' + SPEC_ICON[k] + '"/></svg><span>' + ltrHTML(specValue(k, p.specs[k])) + '</span></li>'
-    ).join('');
+    const img = pImages(p)[0];
+    const unavailable = maxQty(p) === 0;
+    const specs = specChipsHTML(p, 2);
+    const count = pImages(p).length;
 
-    return '<li class="pcard' + (soldOut ? ' is-soldout' : '') + '" style="--i:' + (i % PAGE_SIZE) + '">' +
+    return '<li class="pcard' + (unavailable ? ' is-soldout' : '') + '" style="--i:' + (i % PAGE_SIZE) + '">' +
       '<article class="pcard__inner" aria-labelledby="pn-' + p.id + ' pt-' + p.id + '">' +
         '<div class="pcard__media">' +
           '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-          '<img src="' + p.image + '" width="800" height="600" loading="lazy" decoding="async" alt="' + esc(pLabel(p)) + '">' +
-          badgesHTML(p) +
+          '<img src="' + esc(img.thumb || img.src) + '" width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt="' + esc(pLabel(p)) + '">' +
           '<span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span>' +
+          illusTagHTML(img) +
+          (count > 1 && img.real ? '<span class="photo-count" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg>' + fmt(count) + '</span>' : '') +
           '<button class="pcard__quick" type="button" data-quick="' + p.id + '">' +
             '<svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span>' + esc(t('card.quick')) + '</span>' +
             '<span class="sr-only">: ' + model + '</span></button>' +
         '</div>' +
         '<div class="pcard__body">' +
-          '<p class="pcard__brand">' + bdi(p.brand) + '</p>' +
+          '<p class="pcard__brand">' + metaHTML(p) + '</p>' +
           '<h3 class="pcard__name" id="pn-' + p.id + '"><button type="button" data-quick="' + p.id + '">' + model + '</button></h3>' +
           '<p class="pcard__type" id="pt-' + p.id + '">' + esc(pType(p)) + '</p>' +
-          ratingHTML(p) +
           (specs ? '<ul class="pcard__specs">' + specs + '</ul>' : '') +
-          '<div class="pcard__foot">' +
-            '<p class="price"><span class="price__now">' + money(p.price) + '</span>' +
-              (pct ? '<s class="price__old">' + money(p.oldPrice) + '</s>' : '') + '</p>' +
-            stockHTML(p) +
-          '</div>' +
-          '<button class="btn-add" type="button" data-add="' + p.id + '"' + (soldOut ? ' disabled' : '') + '>' +
-            '<svg class="icon icon-cart" aria-hidden="true"><use href="#i-cart"/></svg>' +
+          '<div class="pcard__foot">' + priceAskHTML(p) + '</div>' +
+          '<button class="btn-add" type="button" data-add="' + p.id + '"' + (unavailable ? ' disabled' : '') + '>' +
+            '<svg class="icon icon-cart" aria-hidden="true"><use href="#i-list"/></svg>' +
             '<svg class="icon icon-ok" aria-hidden="true"><use href="#i-check"/></svg>' +
-            '<span class="btn-add__label">' + esc(soldOut ? t('card.soldOut') : t('card.add')) + '</span>' +
-            (soldOut ? '' : '<span class="sr-only">: ' + model + '</span>') +
+            '<span class="btn-add__label">' + esc(unavailable ? t('card.soldOut') : t('card.add')) + '</span>' +
+            (unavailable ? '' : '<span class="sr-only">: ' + model + '</span>') +
           '</button>' +
         '</div>' +
       '</article>' +
@@ -808,15 +778,17 @@
   }
 
   /* ======================================================================
-     10. Quick view
+     10. Quick view (with photo thumbnails)
      ====================================================================== */
   let qvId = null;
   let qvQty = 1;
+  let qvImg = 0;
 
   function openQuickView(id, trigger) {
     if (!byId.has(id)) return;
     qvId = id;
     qvQty = 1;
+    qvImg = 0;
     renderQuickView();
     Overlay.open(el.quickView, { trigger: trigger });
   }
@@ -824,29 +796,41 @@
   function renderQuickView() {
     const p = byId.get(qvId);
     if (!p) return;
-    const pct = salePct(p);
-    const soldOut = p.stock <= 0;
-    // [label key, cell HTML] — Latin-only values are LTR-isolated, Arabic values stay in the RTL flow
-    const rows = [['brand', bdi(p.brand)], ['level', esc(t('level.' + p.level))]]
-      .concat(Object.keys(p.specs || {}).map((k) => [k, ltrHTML(specValue(k, p.specs[k]))]))
+    const imgs = pImages(p);
+    const unavailable = maxQty(p) === 0;
+    const main = imgs[clamp(qvImg, 0, imgs.length - 1)];
+    // [label key, cell HTML] — type-level facts only
+    const rows = [['category', esc(t('cat.' + p.category))]]
+      .concat(pBrands(p).length ? [['brand', pBrands(p).map(bdi).join(' · ')]] : [])
+      .concat(pScales(p).length ? [['scale', bdi(pScales(p).join(' · '))]] : [])
+      .concat([['level', esc(t('level.' + p.level))]])
+      .concat(Object.keys(p.specs || {}).map((k) => [k, ltrHTML(specValue(p.specs[k]))]))
       .map((r) => '<tr><th scope="row">' + esc(t('spec.' + r[0])) + '</th><td>' + r[1] + '</td></tr>')
       .join('');
+    const thumbs = imgs.length > 1
+      ? '<div class="qv__thumbs" role="group" aria-label="' + esc(t('qv.photos')) + '">' +
+          imgs.map((im, i) =>
+            '<button type="button" class="qv__thumb" data-qv-img="' + i + '" aria-pressed="' + (i === qvImg ? 'true' : 'false') + '" aria-label="' + esc(t('qv.thumb', { n: i + 1 })) + '">' +
+              '<img src="' + esc(im.thumb || im.src) + '" width="' + im.tw + '" height="' + im.th + '" loading="lazy" decoding="async" alt=""></button>'
+          ).join('') +
+        '</div>'
+      : '';
 
     el.qvContent.innerHTML =
-      '<div class="qv__media">' +
-        '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-        '<img src="' + (p.imageLarge || p.image) + '" width="1200" height="900" alt="' + esc(pLabel(p)) + '">' +
-        badgesHTML(p) +
-        '<span class="qv__scan" aria-hidden="true"></span>' +
+      '<div class="qv__gallery">' +
+        '<div class="qv__media">' +
+          '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
+          '<img id="qvMainImg" src="' + esc(main.src || main.thumb) + '" width="' + main.fw + '" height="' + main.fh + '" alt="' + esc(pLabel(p)) + '">' +
+          '<span id="qvTag">' + illusTagHTML(main) + '</span>' +
+          '<span class="qv__scan" aria-hidden="true"></span>' +
+        '</div>' +
+        thumbs +
       '</div>' +
       '<div class="qv__body">' +
-        '<p class="qv__brand">' + bdi(p.brand) + ' <span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span></p>' +
+        '<p class="qv__brand">' + metaHTML(p) + ' <span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span></p>' +
         '<h2 class="qv__title" id="qvTitle">' + pModelHTML(p) + '</h2>' +
         '<p class="qv__type">' + esc(pType(p)) + '</p>' +
-        ratingHTML(p) +
-        '<div class="qv__price"><span class="price__now">' + money(p.price) + '</span>' +
-          (pct ? '<s class="price__old">' + money(p.oldPrice) + '</s><span class="save-pill">' + esc(t('qv.save', { x: money(p.oldPrice - p.price, { plain: true }) })) + '</span>' : '') +
-        '</div>' +
+        priceAskHTML(p, 'price-ask--lg') +
         '<p class="qv__desc">' + esc(pDesc(p)) + '</p>' +
         '<div class="qv__buy">' +
           '<div class="qty" role="group" aria-label="' + esc(t('qv.qty')) + '">' +
@@ -854,19 +838,31 @@
             '<output class="qty__val" id="qvQty" aria-live="polite">' + qvQty + '</output>' +
             '<button type="button" data-qv-inc aria-label="' + esc(t('qv.inc')) + '"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>' +
           '</div>' +
-          '<button class="btn btn--primary qv__add" type="button" data-qv-add' + (soldOut ? ' disabled' : '') + '>' +
-            '<svg class="icon" aria-hidden="true"><use href="#i-cart"/></svg><span class="btn-add__label">' + esc(soldOut ? t('card.soldOut') : t('card.add')) + '</span></button>' +
+          '<button class="btn btn--primary qv__add" type="button" data-qv-add' + (unavailable ? ' disabled' : '') + '>' +
+            '<svg class="icon" aria-hidden="true"><use href="#i-list"/></svg><span class="btn-add__label">' + esc(unavailable ? t('card.soldOut') : t('card.add')) + '</span></button>' +
         '</div>' +
-        stockHTML(p) +
         '<ul class="qv__perks">' +
-          '<li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>' + esc(t('qv.perk1')) + '</li>' +
-          '<li><svg class="icon" aria-hidden="true"><use href="#i-test"/></svg>' + esc(t('qv.perk2')) + '</li>' +
-          '<li><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>' + esc(t('qv.perk3')) + '</li>' +
+          '<li><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg>' + esc(t('qv.perk1')) + '</li>' +
+          '<li><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>' + esc(t('qv.perk2')) + '</li>' +
+          '<li><svg class="icon" aria-hidden="true"><use href="#i-cash"/></svg>' + esc(t('qv.perk3')) + '</li>' +
         '</ul>' +
         '<h3 class="qv__specs-title">' + esc(t('qv.specs')) + '</h3>' +
         '<table class="specs-table"><tbody>' + rows + '</tbody></table>' +
       '</div>';
     updateQvQty();
+  }
+
+  function setQvImage(i) {
+    const p = byId.get(qvId);
+    if (!p) return;
+    const imgs = pImages(p);
+    qvImg = clamp(i, 0, imgs.length - 1);
+    const im = imgs[qvImg];
+    const main = $('#qvMainImg', el.qvContent);
+    if (main) { main.src = im.src || im.thumb; main.width = im.fw; main.height = im.fh; }
+    const tag = $('#qvTag', el.qvContent);
+    if (tag) tag.innerHTML = illusTagHTML(im);
+    $$('.qv__thumb', el.qvContent).forEach((b, k) => b.setAttribute('aria-pressed', k === qvImg ? 'true' : 'false'));
   }
 
   function updateQvQty() {
@@ -878,72 +874,48 @@
     const max = Math.max(1, maxQty(p));
     if (out) out.textContent = String(qvQty);
     if (dec) dec.disabled = qvQty <= 1;
-    if (inc) inc.disabled = qvQty >= max || p.stock <= 0;
+    if (inc) inc.disabled = qvQty >= max || maxQty(p) === 0;
   }
 
   /* ======================================================================
-     11. Cart
+     11. Inquiry list (no prices — Hamdy confirms price & availability)
      ====================================================================== */
   const cartCount = () => state.cart.reduce((s, l) => s + l.qty, 0);
-
-  function cartTotals() {
-    const subtotal = state.cart.reduce((s, l) => s + byId.get(l.id).price * l.qty, 0);
-    const shipping = subtotal === 0 || subtotal >= FREE_SHIP ? 0 : SHIP_FEE;
-    const vat = (subtotal + shipping) * VAT_RATE;
-    return { subtotal: subtotal, shipping: shipping, vat: vat, total: subtotal + shipping + vat };
-  }
-
   function saveCart() { storage.setJSON('volt.cart', state.cart); }
 
   function lineHTML(line) {
     const p = byId.get(line.id);
     const name = pModelText(p); // plain text (isolated) for aria-labels
-    const max = maxQty(p);
+    const img = pImages(p)[0];
     return '<li class="cline" data-id="' + p.id + '">' +
       '<div class="cline__img"><svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-        '<img src="' + p.image + '" width="800" height="600" loading="lazy" decoding="async" alt=""></div>' +
+        '<img src="' + esc(img.thumb || img.src) + '" width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt=""></div>' +
       '<div class="cline__info">' +
         '<p class="cline__name">' + pModelHTML(p) + '</p>' +
         '<p class="cline__type">' + esc(pType(p)) + '</p>' +
-        '<p class="cline__unit">' + esc(t('cart.each', { x: money(p.price, { plain: true }) })) + '</p>' +
         '<div class="qty qty--sm" role="group" aria-label="' + esc(t('qv.qty') + ': ' + name) + '">' +
-          '<button type="button" data-cart-dec="' + p.id + '" aria-label="' + esc(t('cart.dec', { name: name })) + '"><svg class="icon" aria-hidden="true"><use href="#' + (line.qty <= 1 ? 'i-trash' : 'i-minus') + '"/></svg></button>' +
-          '<span class="qty__val" aria-label="' + esc(t('cart.qty', { n: line.qty })) + '">' + line.qty + '</span>' +
-          '<button type="button" data-cart-inc="' + p.id + '" aria-label="' + esc(t('cart.inc', { name: name })) + '"' + (line.qty >= max ? ' disabled' : '') + '><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>' +
+          '<button type="button" data-cart-dec="' + p.id + '" aria-label="' + esc(t('list.dec', { name: name })) + '"><svg class="icon" aria-hidden="true"><use href="#' + (line.qty <= 1 ? 'i-trash' : 'i-minus') + '"/></svg></button>' +
+          '<span class="qty__val" aria-label="' + esc(t('list.qty', { n: line.qty })) + '">' + line.qty + '</span>' +
+          '<button type="button" data-cart-inc="' + p.id + '" aria-label="' + esc(t('list.inc', { name: name })) + '"' + (line.qty >= maxQty(p) ? ' disabled' : '') + '><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>' +
         '</div>' +
       '</div>' +
       '<div class="cline__end">' +
-        '<p class="cline__total">' + money(p.price * line.qty) + '</p>' +
-        '<button type="button" class="cline__remove" data-cart-remove="' + p.id + '" aria-label="' + esc(t('cart.remove', { name: name })) + '"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg></button>' +
+        '<button type="button" class="cline__remove" data-cart-remove="' + p.id + '" aria-label="' + esc(t('list.remove', { name: name })) + '"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg></button>' +
       '</div>' +
     '</li>';
   }
 
   function renderCart() {
     const count = cartCount();
-    const totals = cartTotals();
     const empty = count === 0;
-
     el.cartBadge.textContent = count > 99 ? '99+' : String(count);
     el.cartBadge.dataset.count = String(count);
-    el.cartOpen.setAttribute('aria-label', t('header.cart', { x: tp('unit.item', count) }));
+    el.cartOpen.setAttribute('aria-label', tt('header.list', { x: tp('unit.item', count) }));
     el.cartCount.textContent = String(count);
-
     el.cartLines.innerHTML = state.cart.map(lineHTML).join('');
     el.cartLines.hidden = empty;
     el.cartEmpty.hidden = !empty;
     el.cartSummary.hidden = empty;
-    el.freeShip.hidden = empty;
-
-    el.sumSubtotal.innerHTML = money(totals.subtotal, { decimals: true });
-    el.sumShipping.innerHTML = totals.shipping === 0 ? '<span class="is-free">' + esc(t('cart.free')) + '</span>' : money(totals.shipping, { decimals: true });
-    el.sumVat.innerHTML = money(totals.vat, { decimals: true });
-    el.sumTotal.innerHTML = money(totals.total, { decimals: true });
-
-    const done = totals.subtotal >= FREE_SHIP;
-    el.freeShip.classList.toggle('is-done', done);
-    el.freeShipText.textContent = done ? t('cart.freeDone') : t('cart.freeLeft', { x: money(FREE_SHIP - totals.subtotal, { plain: true }) });
-    el.freeShipMeter.style.width = clamp(totals.subtotal / FREE_SHIP * 100, 0, 100) + '%';
   }
 
   function bumpBadge() {
@@ -954,20 +926,19 @@
 
   function addToCart(id, qty, sourceEl) {
     const p = byId.get(id);
-    if (!p || p.stock <= 0) return false;
+    if (!p || maxQty(p) === 0) return false;
     const line = state.cart.find((l) => l.id === id);
     const current = line ? line.qty : 0;
-    const max = maxQty(p);
-    if (current >= max) {
-      announce(t('cart.max', { name: pModelText(p) }));
+    if (current >= maxQty(p)) {
+      announce(t('list.max', { name: pModelText(p) }));
       shake(sourceEl);
       return false;
     }
-    const next = Math.min(max, current + (qty || 1));
+    const next = Math.min(maxQty(p), current + (qty || 1));
     if (line) line.qty = next; else state.cart.push({ id: id, qty: next });
     saveCart();
     renderCart();
-    announce(t('cart.added', { name: pModelText(p), x: tp('unit.item', cartCount()) }));
+    announce(t('list.added', { name: pModelText(p), x: tp('unit.item', cartCount()) }));
     buttonFeedback(sourceEl);
     flyToCart(sourceEl);
     showToast(p);
@@ -980,12 +951,12 @@
     const p = byId.get(id);
     const next = line.qty + delta;
     if (next <= 0) { removeLine(id); return; }
-    if (next > maxQty(p)) { announce(t('cart.max', { name: pModelText(p) })); return; }
+    if (next > maxQty(p)) { announce(t('list.max', { name: pModelText(p) })); return; }
     line.qty = next;
     saveCart();
     renderCart();
     bumpBadge();
-    announce(t('cart.updated', { name: pModelText(p), n: next }));
+    announce(t('list.updated', { name: pModelText(p), n: next }));
     // Keep keyboard focus on the same control after re-render.
     const same = $('[data-cart-' + (delta > 0 ? 'inc' : 'dec') + '="' + id + '"]', el.cartLines);
     const fallback = $('[data-cart-dec="' + id + '"]', el.cartLines);
@@ -1001,7 +972,7 @@
     saveCart();
     renderCart();
     bumpBadge();
-    announce(t('cart.removed', { name: pModelText(p) }));
+    announce(t('list.removed', { name: pModelText(p) }));
     const lines = $$('.cline', el.cartLines);
     const nextLine = lines[Math.min(idx, lines.length - 1)];
     const target = nextLine ? $('.cline__remove', nextLine) : $('.btn', el.cartEmpty);
@@ -1030,7 +1001,7 @@
     btn.classList.add('is-shake');
   }
 
-  /** Glowing bolt that arcs from the button to the cart icon. */
+  /** Glowing dot that arcs from the button to the list icon. */
   function flyToCart(sourceEl) {
     if (reduceMotion.matches || !sourceEl || !sourceEl.getBoundingClientRect || typeof doc.body.animate !== 'function') {
       bumpBadge();
@@ -1047,7 +1018,7 @@
     const dot = doc.createElement('span');
     dot.className = 'fly-dot';
     dot.setAttribute('aria-hidden', 'true');
-    dot.innerHTML = '<svg class="icon"><use href="#i-bolt"/></svg>';
+    dot.innerHTML = '<svg class="icon"><use href="#i-check"/></svg>';
     dot.style.left = sx + 'px';
     dot.style.top = sy + 'px';
     doc.body.appendChild(dot);
@@ -1063,7 +1034,8 @@
   /* ---------- Toast ---------- */
   let toastTimer = null;
   function showToast(p) {
-    el.toastImg.src = p.image;
+    const img = pImages(p)[0];
+    el.toastImg.src = img.thumb || img.src;
     el.toastName.innerHTML = pModelHTML(p);
     el.toast.classList.add('is-show');
     window.clearTimeout(toastTimer);
@@ -1076,29 +1048,17 @@
     Overlay.open(el.cartDrawer, { trigger: trigger || el.cartOpen });
   }
 
-  /* ---------- Checkout (demo only — nothing is sent anywhere) ---------- */
-  function checkout() {
+  /** "Contact us to order": close the drawer, go to #contact and prefill the form message. */
+  function listToContact() {
     if (!state.cart.length) return;
-    const totals = cartTotals();
-    state.lastOrder = {
-      id: 'VR-' + String(Math.floor(10000 + Math.random() * 89999)),
-      items: cartCount(),
-      total: totals.total
-    };
-    state.cart = [];
-    saveCart();
-    renderCart();
-    renderCheckout();
-    Overlay.open(el.checkoutModal, { trigger: el.cartOpen, initialFocus: '.checkout .btn' });
-  }
-
-  function renderCheckout() {
-    const o = state.lastOrder;
-    if (!o) return;
-    el.coText.innerHTML = t('co.text'); // trusted dictionary markup (store name in <bdi>)
-    el.coOrder.textContent = o.id;
-    el.coItems.textContent = tp('unit.item', o.items);
-    el.coTotal.innerHTML = money(o.total, { decimals: true });
+    const lines = [tpl('wa.listIntro')].concat(state.cart.map((l) => '• ' + pModelText(byId.get(l.id)) + ' × ' + l.qty));
+    Overlay.close({ restoreFocus: false });
+    el.cMsg.value = lines.join('\n');
+    el.cTopic.value = 'order';
+    setFieldError(el.cMsg, '');
+    state.formPrefilled = true;
+    el.formStatus.textContent = t('form.prefilled');
+    scrollToId('contact', el.cName.value.trim() ? el.cMsg : el.cName);
   }
 
   /* ======================================================================
@@ -1124,15 +1084,16 @@
       el.searchResults.innerHTML = '<li class="search-results__none">' + t('search.none', { q: ltrHTML(raw) }) + '</li>';
       el.searchAll.hidden = true;
     } else {
-      el.searchResults.innerHTML = res.slice(0, 6).map((p) =>
-        '<li><button type="button" class="sresult" data-quick="' + p.id + '">' +
+      el.searchResults.innerHTML = res.slice(0, 6).map((p) => {
+        const img = pImages(p)[0];
+        return '<li><button type="button" class="sresult" data-quick="' + p.id + '">' +
           '<span class="sresult__img"><svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-          '<img src="' + p.image + '" width="800" height="600" loading="lazy" decoding="async" alt=""></span>' +
+          '<img src="' + esc(img.thumb || img.src) + '" width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt=""></span>' +
           '<span class="sresult__text"><span class="sresult__name">' + pModelHTML(p) + '</span>' +
-          '<span class="sresult__meta">' + esc(pType(p)) + ' · ' + bdi(p.brand) + '</span></span>' +
-          '<span class="sresult__price">' + money(p.price) + '</span>' +
-        '</button></li>'
-      ).join('');
+          '<span class="sresult__meta">' + esc(pType(p)) + '</span></span>' +
+          '<span class="sresult__price">' + esc(t('price.ask')) + '</span>' +
+        '</button></li>';
+      }).join('');
       el.searchAll.hidden = false;
     }
     el.searchStatus.textContent = t('search.status', { x: tp('unit.product', res.length) });
@@ -1145,196 +1106,179 @@
     state.f.q = raw;
     syncFilterControls();
     resetAndRender();
-    scrollToShop();
+    scrollToId('shop', el.shopTitle);
   }
 
   /* ======================================================================
-     13. Deal of the week + countdown
+     13. Featured product
      ====================================================================== */
-  const dealEnd = (function () {
-    const d = new Date();
-    d.setDate(d.getDate() + ((DEAL && DEAL.daysAhead) || 5));
-    d.setHours(0, 0, 0, 0); // midnight, ~5 days after page load
-    return d.getTime();
-  })();
-  let cdTimer = null;
-
   function renderDeal() {
-    const p = DEAL && byId.get(DEAL.productId);
+    const p = FEATURED && byId.get(FEATURED.productId);
     if (!p) return;
-    const pct = salePct(p);
+    const photo = FEATURED.photo && photoByKey.get(FEATURED.photo);
     el.dealName.innerHTML = pModelHTML(p) + '<span class="deal__type">' + esc(pType(p)) + '</span>';
     el.dealDesc.textContent = pDesc(p);
-    el.dealImg.alt = pLabel(p);
-    el.dealTag.textContent = pct ? '-' + pct + '%' : '';
-    el.dealTag.hidden = !pct;
-    el.dealPrice.innerHTML =
-      '<span class="deal__now">' + money(p.price) + '</span>' +
-      (p.oldPrice ? '<s class="deal__old">' + money(p.oldPrice) + '</s>' +
-        '<span class="save-pill">' + esc(t('deal.save', { x: money(p.oldPrice - p.price, { plain: true }) })) + '</span>' : '');
-    const claimed = clamp(Math.round((1 - p.stock / (DEAL.stockTotal || p.stock || 1)) * 100), 0, 100);
-    el.dealMeter.style.width = claimed + '%';
-    el.dealStockText.textContent = t('deal.claimed', { p: claimed, x: tp('unit.item', p.stock) });
-  }
-
-  function setDigit(node, v) {
-    const str = String(v).padStart(2, '0');
-    if (node.textContent === str) return;
-    node.textContent = str;
-    node.classList.remove('is-tick');
-    void node.offsetWidth;
-    node.classList.add('is-tick');
-  }
-
-  function tick() {
-    const diff = dealEnd - Date.now();
-    if (diff <= 0) {
-      el.countdown.hidden = true;
-      el.dealEnded.hidden = false;
-      window.clearInterval(cdTimer);
-      return;
+    el.dealSpecs.innerHTML = specChipsHTML(p, 4);
+    el.dealPrice.innerHTML = priceAskHTML(p, 'price-ask--lg');
+    if (photo) {
+      // thumb by default, full photo only on large / high-density screens
+      const srcset = photo.thumb + ' 600w, ' + photo.full + ' ' + photo.fw + 'w';
+      if (el.dealImg.getAttribute('srcset') !== srcset) { el.dealImg.setAttribute('srcset', srcset); el.dealImg.src = photo.thumb; }
+    } else {
+      const img = pImages(p)[0];
+      el.dealImg.removeAttribute('srcset');
+      if (img.src && el.dealImg.getAttribute('src') !== img.src) el.dealImg.src = img.src;
     }
-    const s = Math.floor(diff / 1000);
-    setDigit(el.cdDays, Math.floor(s / 86400));
-    setDigit(el.cdHours, Math.floor((s % 86400) / 3600));
-    setDigit(el.cdMins, Math.floor((s % 3600) / 60));
-    setDigit(el.cdSecs, s % 60);
-  }
-
-  function initCountdown() {
-    tick();
-    cdTimer = window.setInterval(tick, 1000);
+    el.dealImg.alt = pLabel(p);
   }
 
   /* ======================================================================
-     14. Reviews carousel (direction-aware, autoplay pauses on hover/focus)
+     14. Gallery (Hamdy's real photos) + lightbox
      ====================================================================== */
-  function initCarousel() {
-    const wrap = $('#reviewCarousel');
-    const track = $('#reviewTrack');
-    if (!wrap || !track) return null;
-    const viewport = $('.carousel__viewport', wrap);
-    const slides = $$('.review', track);
-    const dots = $('#revDots');
-    const prev = $('#revPrev');
-    const next = $('#revNext');
-    const pauseBtn = $('#revPause');
+  const galleryList = () => PHOTOS.filter((g) => state.gFilter === 'all' || g.cat === state.gFilter);
+  /* Captions come from Hamdy's post titles, tidied (spelling / "for sale" dropped).
+     A string = English model/brand names (isolated with <bdi>); [ar, en] = localised
+     trusted markup; '' = generic title → the category name alone. */
+  const L = (s) => '<bdi dir="ltr">' + s + '</bdi>';
+  const CAPTIONS = {
+    'Shop': '', 'Rc car': '', '': '',
+    'Losi 12s': 'Losi 12S',
+    'parts Hpi Arrma Traxxas': ['قطع غيار ' + L('HPI · Arrma · Traxxas'), 'HPI · Arrma · Traxxas parts'],
+    'Rc car 1/10 drift': ['سيارة درفت بمقاس ' + L('1/10'), '1/10 drift car'],
+    'Fg 1/5': 'FG 1/5',
+    'Fg': 'FG',
+    'Rofun baja 5t 1/5 32cc': 'Rofun Baja 5T 1/5 32cc',
+    'fg 1/6 monster truck 2wd': ['شاحنة مونستر ' + L('FG 1/6 2WD'), 'FG 1/6 monster truck 2WD'],
+    'Traxxas x maxx 8s 1/5': 'Traxxas X-Maxx 8S',
+    'X macc 8s': 'Traxxas X-Maxx 8S',
+    'Arrma talion exb 1/7 6s 75mph': 'Arrma Talion EXB 6S 1/7',
+    'hpi savage body traxxas maxx': ['هياكل ' + L('HPI Savage · Traxxas Maxx'), 'HPI Savage · Traxxas Maxx bodies'],
+    'For sale traxxas maxx v2': 'Traxxas Maxx V2',
+    'Arrma MOJAVE 6S 1/7': 'Arrma Mojave 6S 1/7',
+    'Arrma Mojave exb 1/7': 'Arrma Mojave EXB 1/7',
+    'Arrma KRATON 1/8 6S v6': 'Arrma Kraton 6S V6 1/8',
+    'Arrma KRATON 6S v6 1/8': 'Arrma Kraton 6S V6 1/8',
+    'Arrma typhon grom': 'Arrma Typhon Grom',
+    'E revo 1/16': 'Traxxas E-Revo 1/16',
+    'E revo 1/8 6s': 'Traxxas E-Revo 6S',
+    'Traxxas': 'Traxxas',
+    'Losi 1/4 Promoto-MX Motorcycle RTR with Battery and Charger': 'Losi Promoto-MX 1/4',
+    'New for sale traxxas 4tec 1/10 drift': 'Traxxas 4-Tec Drift 1/10',
+    'rc car 1/10 mst drift': 'MST 1/10 Drift',
+    '1/10 Drift On Road Tires': ['إطارات درفت وأون رود بمقاس ' + L('1/10'), '1/10 drift & on-road tires'],
+    'Hpi rs4': 'HPI RS4',
+    'Hpi wr8': 'HPI WR8',
+    'New for sale 1/10 body': ['هيكل بمقاس ' + L('1/10'), '1/10 body'],
+    'rc plane engine for sael': ['محركات طائرات', 'RC plane engines'],
+    'rc plane parts for sael': ['قطع غيار طائرات', 'RC plane parts'],
+    'rc plane parts': ['قطع غيار طائرات', 'RC plane parts'],
+    'rc plane accessories': ['إكسسوارات طائرات', 'RC plane accessories'],
+    'Hpi Hsp Xray thunder tiger kyosho Rovan King motor parts': ['قطع غيار ' + L('HPI · HSP · Xray · Thunder Tiger · Kyosho · Rovan · King Motor'), 'HPI · HSP · Xray · Thunder Tiger · Kyosho · Rovan · King Motor parts'],
+    'Hpi Hsp Xray thunder tiger kyosho': ['قطع غيار ' + L('HPI · HSP · Xray · Thunder Tiger · Kyosho'), 'HPI · HSP · Xray · Thunder Tiger · Kyosho parts'],
+    'arrma parts': ['قطع غيار ' + L('Arrma'), 'Arrma parts'],
+    'Rc Tires 1/5 1/8 1/10 1/16': ['إطارات بمقاسات ' + L('1/5 · 1/8 · 1/10 · 1/16'), 'Tires 1/5 · 1/8 · 1/10 · 1/16'],
+    'Proline badlands 1/5 x maxx': 'Pro-Line Badlands · X-Maxx',
+    'battery': ['بطاريات', 'Batteries'],
+    'Body': ['هياكل', 'Bodies']
+  };
+  function photoCaptionHTML(g) {
+    const c = Object.prototype.hasOwnProperty.call(CAPTIONS, g.post) ? CAPTIONS[g.post] : g.post;
+    const cap = Array.isArray(c) ? c[state.lang === 'en' ? 1 : 0] : (c ? ltrHTML(c) : '');
+    return esc(t('gallery.' + g.cat)) + (cap ? ' — ' + cap : '');
+  }
 
-    let index = 0;
-    let perView = 1;
-    let timer = null;
-    let hoverPause = false;
-    let userPaused = reduceMotion.matches; // no auto-advance for reduced motion
-    let startX = null;
+  function galleryItemHTML(g, i) {
+    return '<li class="gitem" style="--i:' + (i % 12) + '">' +
+      '<button type="button" class="gitem__btn" data-lb-index="' + i + '" aria-label="' + esc(tt('gallery.open', { x: plain(photoCaptionHTML(g)) })) + '">' +
+        '<img src="' + esc(g.thumb) + '" width="' + g.tw + '" height="' + g.th + '" loading="lazy" decoding="async" alt="">' +
+        shopBadgeHTML() +
+        '<span class="gitem__tag" aria-hidden="true">' + esc(t('gallery.' + g.cat)) + '</span>' +
+        '<span class="gitem__zoom" aria-hidden="true"><svg class="icon"><use href="#i-expand"/></svg></span>' +
+      '</button>' +
+    '</li>';
+  }
 
-    const perViewFor = () => (window.innerWidth >= 1100 ? 3 : window.innerWidth >= 720 ? 2 : 1);
-    const maxIndex = () => Math.max(0, slides.length - perView);
-
-    function buildDots() {
-      let html = '';
-      for (let i = 0; i <= maxIndex(); i++) {
-        html += '<button type="button" class="dot" data-dot="' + i + '" aria-label="' + esc(t('rev.goTo', { n: i + 1 })) + '"></button>';
-      }
-      dots.innerHTML = html;
-    }
-
-    function update() {
-      const sign = root.dir === 'rtl' ? 1 : -1;
-      track.style.transform = 'translate3d(' + (sign * index * (100 / perView)) + '%,0,0)';
-      slides.forEach((s, i) => {
-        const visible = i >= index && i < index + perView;
-        s.setAttribute('aria-label', t('rev.slide', { n: i + 1, total: slides.length }));
-        if (visible) { s.removeAttribute('inert'); s.removeAttribute('aria-hidden'); }
-        else { s.setAttribute('inert', ''); s.setAttribute('aria-hidden', 'true'); }
-      });
-      $$('.dot', dots).forEach((d, i) => d.setAttribute('aria-current', i === index ? 'true' : 'false'));
-    }
-
-    function go(i) {
-      const m = maxIndex();
-      index = i > m ? 0 : i < 0 ? m : i;
-      update();
-    }
-
-    function stop() { window.clearInterval(timer); timer = null; }
-    function start() {
-      stop();
-      if (userPaused) return;
-      timer = window.setInterval(() => {
-        if (!hoverPause && !doc.hidden) go(index + 1);
-      }, 6000);
-    }
-
-    function syncPauseBtn() {
-      pauseBtn.setAttribute('aria-pressed', userPaused ? 'true' : 'false');
-      pauseBtn.setAttribute('aria-label', t(userPaused ? 'rev.play' : 'rev.pause'));
-      pauseBtn.classList.toggle('is-paused', userPaused);
-    }
-
-    function layout() {
-      const pv = perViewFor();
-      if (pv !== perView) {
-        perView = pv;
-        wrap.style.setProperty('--per-view', String(perView));
-        buildDots();
-        index = Math.min(index, maxIndex());
-      }
-      update();
-    }
-
-    prev.addEventListener('click', () => { go(index - 1); start(); });
-    next.addEventListener('click', () => { go(index + 1); start(); });
-    dots.addEventListener('click', (e) => {
-      const d = e.target.closest('[data-dot]');
-      if (!d) return;
-      go(Number(d.dataset.dot));
-      start();
+  function renderGallery() {
+    const list = galleryList();
+    const shown = list.slice(0, state.gShown);
+    el.galleryGrid.innerHTML = shown.map(galleryItemHTML).join('');
+    const remaining = list.length - shown.length;
+    el.galleryMore.hidden = remaining <= 0;
+    el.galleryMoreLabel.textContent = t('gallery.more', { n: fmt(Math.min(GALLERY_PAGE, remaining)) });
+    $$('[data-gallery-filter]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.galleryFilter === state.gFilter ? 'true' : 'false'));
+    $$('[data-gallery-count]').forEach((n) => {
+      const g = n.dataset.galleryCount;
+      n.textContent = fmt(g === 'all' ? PHOTOS.length : PHOTOS.filter((x) => x.cat === g).length);
     });
-    pauseBtn.addEventListener('click', () => {
-      userPaused = !userPaused;
-      syncPauseBtn();
-      start();
+  }
+
+  /** Append the next 24 thumbnails without re-rendering the existing ones. */
+  function galleryMore() {
+    const list = galleryList();
+    const from = state.gShown;
+    state.gShown += GALLERY_PAGE;
+    const next = list.slice(from, state.gShown);
+    el.galleryGrid.insertAdjacentHTML('beforeend', next.map((g, i) => galleryItemHTML(g, from + i)).join(''));
+    const remaining = list.length - Math.min(state.gShown, list.length);
+    el.galleryMore.hidden = remaining <= 0;
+    el.galleryMoreLabel.textContent = t('gallery.more', { n: fmt(Math.min(GALLERY_PAGE, remaining)) });
+    const firstNew = el.galleryGrid.children[from];
+    if (firstNew) { const b = $('.gitem__btn', firstNew); if (b) b.focus({ preventScroll: false }); }
+  }
+
+  function openLightbox(index, trigger) {
+    state.lbList = galleryList();
+    if (!state.lbList.length) return;
+    state.lbIndex = clamp(index, 0, state.lbList.length - 1);
+    renderLightbox();
+    Overlay.open(el.lightbox, { trigger: trigger, initialFocus: '#lbNext' });
+  }
+
+  function renderLightbox() {
+    const g = state.lbList[state.lbIndex];
+    if (!g) return;
+    el.lbImg.src = g.full;              // full-size photo only in the lightbox
+    el.lbImg.width = g.fw;
+    el.lbImg.height = g.fh;
+    el.lbImg.alt = plain(photoCaptionHTML(g));
+    el.lbCaption.innerHTML = photoCaptionHTML(g);
+    el.lbCount.textContent = t('lb.counter', { n: fmt(state.lbIndex + 1), total: fmt(state.lbList.length) });
+  }
+
+  function lbGo(delta) {
+    const n = state.lbList.length;
+    if (!n) return;
+    state.lbIndex = (state.lbIndex + delta + n) % n;
+    renderLightbox();
+  }
+
+  function initLightboxGestures() {
+    // Keyboard: arrows follow the reading direction (in RTL, ← is "next").
+    doc.addEventListener('keydown', (e) => {
+      if (Overlay.current !== el.lightbox) return;
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const rtl = root.dir === 'rtl';
+      const forward = e.key === 'ArrowRight' ? !rtl : rtl;
+      lbGo(forward ? 1 : -1);
     });
-
-    wrap.addEventListener('mouseenter', () => { hoverPause = true; });
-    wrap.addEventListener('mouseleave', () => { hoverPause = false; });
-    wrap.addEventListener('focusin', () => { hoverPause = true; });
-    wrap.addEventListener('focusout', (e) => { if (!wrap.contains(e.relatedTarget)) hoverPause = false; });
-
     // Touch swipe (direction-aware)
-    viewport.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') startX = e.clientX; });
-    viewport.addEventListener('pointerup', (e) => {
+    let startX = null;
+    el.lbStage.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') startX = e.clientX; });
+    el.lbStage.addEventListener('pointerup', (e) => {
       if (startX == null) return;
       const dx = e.clientX - startX;
       startX = null;
       if (Math.abs(dx) < 45) return;
       const forward = root.dir === 'rtl' ? dx > 0 : dx < 0;
-      go(index + (forward ? 1 : -1));
-      start();
+      lbGo(forward ? 1 : -1);
     });
-    viewport.addEventListener('pointercancel', () => { startX = null; });
-
-    let resizeTimer = null;
-    window.addEventListener('resize', () => {
-      window.clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(layout, 120);
-    });
-
-    perView = 0; // force first layout
-    layout();
-    syncPauseBtn();
-    start();
-
-    return {
-      refresh() { buildDots(); update(); syncPauseBtn(); }
-    };
+    el.lbStage.addEventListener('pointercancel', () => { startX = null; });
   }
 
   /* ======================================================================
-     15. Forms — client-side validation, inline errors, success states.
-         Nothing is ever sent anywhere.
+     15. Contact form → WhatsApp (validation; nothing is sent from the site)
      ====================================================================== */
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   const toLatinDigits = (s) => String(s)
     .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632))
     .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776));
@@ -1354,10 +1298,10 @@
     const v = field.value.trim();
     let key = '';
     if (field.required && !v) key = 'form.errRequired';
-    else if (v && field.type === 'email' && !EMAIL_RE.test(v)) key = 'form.errEmail';
     else if (v && field.name === 'phone') {
       const digits = toLatinDigits(v).replace(/[\s\-()]/g, '');
-      if (!/^(05\d{8}|(\+|00)?9665\d{8})$/.test(digits)) key = 'form.errPhone';
+      // Egyptian mobile: 11 digits 010 / 011 / 012 / 015 (+20 / 0020 prefix normalised to 0)
+      if (!/^01[0125]\d{8}$/.test(digits.replace(/^(\+|00)20(?=1)/, '0'))) key = 'form.errPhone';
     } else if (v && field.minLength > 0 && v.length < field.minLength) {
       key = field.name === 'message' ? 'form.errMsg' : 'form.errName';
     }
@@ -1377,21 +1321,19 @@
     });
   }
 
-  function initForms() {
-    // Newsletter
-    wireLiveValidation(el.nlForm);
-    el.nlForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      el.nlEmail.dataset.touched = '1';
-      if (!validateField(el.nlEmail)) { el.nlEmail.focus(); return; }
-      el.nlSuccess.dataset.key = 'nl.success';
-      el.nlSuccess.textContent = t('nl.success');
-      el.nlForm.classList.add('is-done');
-      el.nlForm.reset();
-      delete el.nlEmail.dataset.touched;
-    });
+  /** Build the WhatsApp message from the form (current language). */
+  function contactMessage() {
+    const topic = el.cTopic.options[el.cTopic.selectedIndex];
+    const phone = el.cPhone.value.trim();
+    const lines = [tpl('wa.contactIntro'), tpl('wa.contactName', { x: el.cName.value.trim() })];
+    if (phone) lines.push(tpl('wa.contactPhone', { x: toLatinDigits(phone) }));
+    lines.push(tpl('wa.contactTopic', { x: topic ? topic.textContent.trim() : '' }));
+    lines.push(tpl('wa.contactMsg'));
+    lines.push(el.cMsg.value.trim());
+    return waText(lines);
+  }
 
-    // Contact
+  function initForms() {
     wireLiveValidation(el.contactForm);
     el.contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -1402,26 +1344,13 @@
         if (!validateField(f) && !firstBad) firstBad = f;
       });
       if (firstBad) { firstBad.focus(); return; }
-      state.contactName = $('#cName').value.trim();
-      el.contactSuccessText.innerHTML = t('form.successText', { name: ltrHTML(state.contactName) }); // user text escaped + isolated
-      el.contactForm.hidden = true;
-      el.contactSuccess.hidden = false;
-      el.contactSuccess.focus();
-      el.contactForm.reset();
-      fields.forEach((f) => { delete f.dataset.touched; });
-    });
-    el.contactAgain.addEventListener('click', () => {
-      el.contactSuccess.hidden = true;
-      el.contactForm.hidden = false;
-      state.contactName = '';
-      $('#cName').focus();
+      openWhatsApp(contactMessage()); // opens WhatsApp with the text ready — the visitor presses Send
     });
   }
 
   function refreshFormText() {
     $$('.field__error').forEach((err) => { if (err.dataset.errKey) err.textContent = t(err.dataset.errKey); });
-    if (el.nlSuccess.dataset.key) el.nlSuccess.textContent = t(el.nlSuccess.dataset.key);
-    if (!el.contactSuccess.hidden) el.contactSuccessText.innerHTML = t('form.successText', { name: ltrHTML(state.contactName) });
+    if (state.formPrefilled) el.formStatus.textContent = t('form.prefilled');
   }
 
   /* ======================================================================
@@ -1449,12 +1378,14 @@
       const target = Number(node.dataset.count) || 0;
       const duration = 1500;
       let t0 = null;
+      node.dataset.animating = '1';
       node.textContent = '0';
       const step = (now) => {
         if (t0 === null) t0 = now;
         const k = Math.min(1, (now - t0) / duration);
         node.textContent = String(Math.round(target * (1 - Math.pow(1 - k, 3))));
         if (k < 1) window.requestAnimationFrame(step);
+        else delete node.dataset.animating;
       };
       window.setTimeout(() => window.requestAnimationFrame(step), 350);
     });
@@ -1463,8 +1394,6 @@
   /* ======================================================================
      17. Language switching (instant, no reload, remembered)
      ====================================================================== */
-  let carousel = null;
-
   function setLang(lang, opts) {
     const o = opts || {};
     state.lang = lang === 'en' ? 'en' : 'ar';
@@ -1478,15 +1407,14 @@
     // Re-render everything dynamic
     renderCounts();
     renderFilterOptions();
-    updateRangeUI();
     renderProducts();
     renderCart();
     renderDeal();
-    renderCheckout();
+    renderGallery();
     refreshFormText();
-    if (carousel) carousel.refresh();
     if (Overlay.current === el.quickView && qvId) renderQuickView();
     if (Overlay.current === el.searchOverlay) renderSearch();
+    if (Overlay.current === el.lightbox) renderLightbox();
     if (el.toast.classList.contains('is-show')) hideToast();
 
     if (o.save !== false) storage.set('volt.lang', state.lang);
@@ -1498,7 +1426,7 @@
   function announce(msg) {
     el.liveRegion.textContent = '';
     window.clearTimeout(announceTimer);
-    announceTimer = window.setTimeout(() => { el.liveRegion.textContent = msg; }, 80);
+    announceTimer = window.setTimeout(() => { el.liveRegion.textContent = plain(msg); }, 80);
   }
 
   /* ======================================================================
@@ -1535,13 +1463,19 @@
       if (lvl) { e.preventDefault(); applyShortcut({ level: lvl.dataset.setLevel }); return; }
 
       const shop = tgt.closest('[data-scroll-shop]');
-      if (shop) { e.preventDefault(); scrollToShop(); return; }
+      if (shop) { e.preventDefault(); scrollToId('shop', el.shopTitle); return; }
 
       const clear = tgt.closest('[data-clear-filters]');
       if (clear) { clearFilters(); if (el.shopSearch) el.shopSearch.focus({ preventScroll: true }); return; }
 
       const chip = tgt.closest('[data-chip-type]');
       if (chip) { removeChip(chip.dataset.chipType, chip.dataset.chipValue); el.shopSearch.focus({ preventScroll: true }); return; }
+
+      const gFilter = tgt.closest('[data-gallery-filter]');
+      if (gFilter) { state.gFilter = gFilter.dataset.galleryFilter; state.gShown = GALLERY_PAGE; renderGallery(); return; }
+
+      const gItem = tgt.closest('[data-lb-index]');
+      if (gItem) { openLightbox(Number(gItem.dataset.lbIndex), gItem); return; }
 
       const langBtn = tgt.closest('[data-lang-toggle]');
       if (langBtn) { setLang(state.lang === 'ar' ? 'en' : 'ar', { announce: true }); }
@@ -1559,8 +1493,8 @@
     el.cartOpen.addEventListener('click', () => openCart(el.cartOpen));
     el.toTop.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-      const skip = $('.logo');
-      if (skip) skip.focus({ preventScroll: true });
+      const logo = $('.logo');
+      if (logo) logo.focus({ preventScroll: true });
     });
     window.addEventListener('scroll', onScroll, { passive: true });
 
@@ -1574,9 +1508,9 @@
     el.filters.addEventListener('change', (e) => {
       const f = e.target;
       if (f.name === 'cat') toggleSet(state.f.cats, f.value, f.checked);
+      else if (f.name === 'scale') toggleSet(state.f.scales, f.value, f.checked);
       else if (f.name === 'brand') toggleSet(state.f.brands, f.value, f.checked);
       else if (f.name === 'level') toggleSet(state.f.levels, f.value, f.checked);
-      else if (f.id === 'inStockOnly') state.f.inStock = f.checked;
       else return;
       resetAndRender();
     });
@@ -1611,6 +1545,8 @@
     el.qvContent.addEventListener('click', (e) => {
       const p = byId.get(qvId);
       if (!p) return;
+      const thumb = e.target.closest('[data-qv-img]');
+      if (thumb) { setQvImage(Number(thumb.dataset.qvImg)); return; }
       if (e.target.closest('[data-qv-dec]')) { qvQty = Math.max(1, qvQty - 1); updateQvQty(); }
       else if (e.target.closest('[data-qv-inc]')) { qvQty = Math.min(Math.max(1, maxQty(p)), qvQty + 1); updateQvQty(); }
       else {
@@ -1619,7 +1555,7 @@
       }
     });
 
-    // Cart controls
+    // Inquiry list controls
     el.cartLines.addEventListener('click', (e) => {
       const inc = e.target.closest('[data-cart-inc]');
       const dec = e.target.closest('[data-cart-dec]');
@@ -1628,7 +1564,7 @@
       else if (dec) changeQty(dec.dataset.cartDec, -1);
       else if (rm) removeLine(rm.dataset.cartRemove);
     });
-    el.checkoutBtn.addEventListener('click', checkout);
+    el.checkoutBtn.addEventListener('click', listToContact);
 
     // Toast
     el.toastView.addEventListener('click', () => { hideToast(); openCart(el.cartOpen); });
@@ -1655,9 +1591,15 @@
       el.searchInput.focus();
     });
 
-    // Deal
-    el.dealAdd.addEventListener('click', () => addToCart(DEAL.productId, 1, el.dealAdd));
-    el.dealDetails.addEventListener('click', () => openQuickView(DEAL.productId, el.dealDetails));
+    // Featured product
+    el.dealAdd.addEventListener('click', () => { if (FEATURED) addToCart(FEATURED.productId, 1, el.dealAdd); });
+    el.dealDetails.addEventListener('click', () => { if (FEATURED) openQuickView(FEATURED.productId, el.dealDetails); });
+
+    // Gallery + lightbox
+    el.galleryMore.addEventListener('click', galleryMore);
+    el.lbPrev.addEventListener('click', () => lbGo(-1));
+    el.lbNext.addEventListener('click', () => lbGo(1));
+    initLightboxGestures();
 
     // Broken images → hide <img>, reveal the styled fallback behind it
     doc.addEventListener('error', (e) => {
@@ -1665,7 +1607,7 @@
       if (img && img.tagName === 'IMG') img.classList.add('is-broken');
     }, true);
 
-    // Keep the cart in sync across tabs
+    // Keep the inquiry list in sync across tabs
     window.addEventListener('storage', (e) => {
       if (e.key === 'volt.cart') { state.cart = loadCart(); renderCart(); }
     });
@@ -1673,14 +1615,11 @@
 
   function init() {
     initTicker();
-    initPriceRange();
     wireEvents();
     initForms();
-    carousel = initCarousel();
     setLang(state.lang, { save: false });
     initScrollSpy();
     initTilt();
-    initCountdown();
     initReveal();
     initCountUp();
     onScroll();

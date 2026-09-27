@@ -4,14 +4,16 @@
    Plain global data (no modules) so the site works from file://.
    (window.VOLT_* are internal identifiers only — never shown to visitors.)
 
-   CATALOGUE: models Hamdy posts in the RC World Egypt Facebook group, using
-   his own naming. Real photos come from window.SHOP_PHOTOS (photos.js):
+   CATALOGUE: the shop's models, using its own naming. Shop photos come from
+   window.SHOP_PHOTOS (photos.js):
      • photos: ['<cat>-<id>', …] — the first key is the card image; all keys
        appear as quick-view thumbnails.
-     • The foam trainer planes have no real photos yet, so they keep ILLUSTRATIVE
-       stock photos (images: [...]) and the UI labels them
-       "صورة توضيحية / Illustrative photo".
-     • No prices on the site (price: null) — Hamdy confirms price and availability.
+     • Keys not yet in photos.js (e.g. 'boats-224') resolve to
+       assets/img/shop/{full,thumb}/<key>.jpg.
+     • Foam trainer planes, small drift cars and a few tools use stock photos that
+       show the item type itself (PX / U helpers, content-checked, location-neutral).
+       Tools with no matching photo show the category icon instead of a picture.
+     • No prices on the site (price: null) — the shop confirms price and availability.
      • Specs are well-known type facts only (scale, petrol / electric / nitro,
        drive, cell count when it is part of the model name). No speeds, no
        prices, no invented numbers.
@@ -19,16 +21,20 @@
    Product shape:
      id, model (English, both languages), brands [..], name_ar / name_en
      (descriptor), desc_ar / desc_en, category (baja | offroad | planes |
-     drift | parts), scales [..], level, featured (sort weight), inStock,
+     drift | parts | tools | boats), scales [..], level, featured (sort weight), inStock,
      price (null), specs, tags, photos [..] | images [{ src, thumb }]
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  /* ---------- Stock image helper (foam trainers only; URLs verified HTTP 200) ---------- */
-  var P = function (id) {
+  /* Stock photos that accurately show the item (content-checked, URLs verified HTTP 200) */
+  var PX = function (id) {
     var base = 'https://images.pexels.com/photos/' + id + '/pexels-photo-' + id + '.jpeg?auto=compress&cs=tinysrgb&w=';
+    return { src: base + '1200', thumb: base + '600' };
+  };
+  var U = function (id) {
+    var base = 'https://images.unsplash.com/photo-' + id + '?auto=format&fit=crop&q=80&w=';
     return { src: base + '1200', thumb: base + '600' };
   };
   /* Photo key range helper: range('baja', 23, 27) -> ['baja-023', … 'baja-027'] */
@@ -44,7 +50,9 @@
     { id: 'offroad' },
     { id: 'planes' },
     { id: 'drift' },
-    { id: 'parts' }
+    { id: 'parts' },
+    { id: 'tools' },
+    { id: 'boats' }
   ];
 
   /* ---------- Brands the shop deals in (shown as text only — no logos) ---------- */
@@ -54,8 +62,8 @@
   var ELECTRIC = { ar: 'كهربائي', en: 'Electric' };
   var EPO = { ar: 'فوم EPO متين', en: 'Tough EPO foam' };
   var ASK = { ar: 'اسأل عن الموديلات المتاحة', en: 'Ask for available models' };
-  var CONTACT_AR = ' تواصل مع حمدي لمعرفة السعر والتوفر.';
-  var CONTACT_EN = ' Contact Hamdy for price and availability.';
+  var CONTACT_AR = ' تواصل معنا لمعرفة السعر والتوفر.';
+  var CONTACT_EN = ' Contact us for price and availability.';
 
   /* ---------- Products ---------- */
   window.VOLT_PRODUCTS = [
@@ -113,8 +121,8 @@
     {
       id: 'petrol-chassis-15', model: '1/5 Petrol Chassis', brands: [],
       name_ar: 'شاسيه 1/5 بمحرك بنزين', name_en: '1/5 Petrol Chassis',
-      desc_ar: 'شاسيه بمقاس 1/5 بمحرك بنزين — اسأل حمدي عن التفاصيل والموديلات المتوافقة.',
-      desc_en: 'A 1/5-scale petrol chassis — ask Hamdy for the details and compatible models.',
+      desc_ar: 'شاسيه بمقاس 1/5 بمحرك بنزين — اسألنا عن التفاصيل والموديلات المتوافقة.',
+      desc_en: 'A 1/5-scale petrol chassis — ask us for the details and compatible models.',
       category: 'baja', scales: ['1/5'], level: 'pro', featured: 89, inStock: true, price: null,
       specs: { power: PETROL, version: ASK },
       tags: ['chassis', 'petrol', 'baja', 'شاسيه', 'بنزين'],
@@ -215,8 +223,8 @@
     {
       id: 'traxxas-desert-truck-fox', model: 'Traxxas Desert Truck (Fox body)', brands: ['Traxxas'],
       name_ar: 'شاحنة صحراوية بهيكل Fox', name_en: 'Desert Truck with Fox Body',
-      desc_ar: 'شاحنة صحراوية من Traxxas بهيكل Fox — اسأل حمدي عن النسخة المتاحة.',
-      desc_en: 'A Traxxas desert truck with a Fox body — ask Hamdy about the version available.',
+      desc_ar: 'شاحنة صحراوية من Traxxas بهيكل Fox — اسألنا عن النسخة المتاحة.',
+      desc_en: 'A Traxxas desert truck with a Fox body — ask us about the version available.',
       category: 'offroad', scales: [], level: 'pro', featured: 75, inStock: true, price: null,
       specs: { version: ASK },
       tags: ['traxxas', 'desert', 'fox', 'truck', 'صحراء', 'تراكساس'],
@@ -252,7 +260,7 @@
       category: 'planes', scales: [], level: 'beginner', featured: 72, inStock: true, price: null,
       specs: { build: EPO, channels: '3CH', wing: { ar: 'جناح علوي', en: 'High wing' } },
       tags: ['plane', 'trainer', 'foam', 'epo', 'طائرة', 'فوم', 'تدريب'],
-      images: [P('3841145'), P('38551472')]
+      images: [PX('3841145')]
     },
     {
       id: 'foam-trainer-4ch-gyro', model: 'Foam Trainer 4CH + Gyro', brands: [],
@@ -262,7 +270,7 @@
       category: 'planes', scales: [], level: 'beginner', featured: 71, inStock: true, price: null,
       specs: { build: EPO, channels: '4CH', extras: { ar: 'جايرو للثبات', en: 'Stabilising gyro' } },
       tags: ['plane', 'trainer', 'foam', 'gyro', 'طائرة', 'فوم', 'جايرو'],
-      images: [P('38544886'), P('38544852')]
+      images: [U('1764836671873-5e2c4b777daf')]
     },
     {
       id: 'foam-glider-trainer', model: 'Foam Glider Trainer', brands: [],
@@ -272,7 +280,7 @@
       category: 'planes', scales: [], level: 'beginner', featured: 58, inStock: true, price: null,
       specs: { build: EPO, wing: { ar: 'جناح طويل', en: 'Long wing' } },
       tags: ['glider', 'plane', 'foam', 'شراعية', 'طائرة', 'فوم'],
-      images: [P('8244925'), P('38544873')]
+      images: [U('1759072865254-d4e9b204d291')]
     },
     {
       id: 'cessna-foam-trainer', model: 'Cessna-style Foam Trainer', brands: [],
@@ -282,7 +290,7 @@
       category: 'planes', scales: [], level: 'beginner', featured: 57, inStock: true, price: null,
       specs: { build: EPO, wing: { ar: 'جناح علوي', en: 'High wing' } },
       tags: ['plane', 'trainer', 'foam', 'طائرة', 'فوم', 'تدريب'],
-      images: [P('38544860'), P('11917454')]
+      images: [U('1689092914752-36601d72b607')]
     },
     {
       id: 'foam-sport-trainer', model: 'Foam Sport Trainer (aileron)', brands: [],
@@ -292,14 +300,14 @@
       category: 'planes', scales: [], level: 'intermediate', featured: 56, inStock: true, price: null,
       specs: { build: EPO, extras: { ar: 'جنيحات تحكم', en: 'Ailerons' } },
       tags: ['plane', 'sport', 'aileron', 'foam', 'طائرة', 'فوم', 'رياضية'],
-      images: [P('38544908'), P('38544873')]
+      images: [PX('38544903'), PX('38544892')]
     },
     {
       id: 'plane-engines', model: 'Plane Engines (glow/nitro)', brands: [],
       name_ar: 'محركات طائرات جلو ونيترو', name_en: 'Glow / Nitro Plane Engines',
       desc_ar: 'مجموعة محركات طائرات متاحة — اسأل عن الموديلات.',
       desc_en: 'Selection of plane engines available — ask for models.',
-      category: 'planes', scales: [], level: 'pro', featured: 70, inStock: true, price: null,
+      category: 'planes', scales: [], level: 'pro', featured: 76, inStock: true, price: null,
       specs: { power: { ar: 'جلو / نيترو', en: 'Glow / nitro' }, version: ASK },
       tags: ['engine', 'glow', 'nitro', 'plane', 'محرك', 'محركات', 'نيترو', 'طائرة'],
       photos: range('planes', 39, 43)
@@ -319,10 +327,60 @@
       name_ar: 'إكسسوارات وأدوات الطائرات', name_en: 'Plane Accessories & Tools',
       desc_ar: 'إكسسوارات وأدوات لطائرات التحكم عن بعد — اسأل عن المتاح.',
       desc_en: 'Accessories and tools for RC planes — ask what is available.',
-      category: 'planes', scales: [], level: 'beginner', featured: 54, inStock: true, price: null,
+      category: 'planes', scales: [], level: 'beginner', featured: 75, inStock: true, price: null,
       specs: { version: ASK },
       tags: ['plane', 'accessories', 'tools', 'طائرة', 'إكسسوارات', 'أدوات'],
-      photos: range('planes', 135, 139)
+      photos: ['planes-pa02', 'planes-138']
+    },
+    {
+      id: 'plane-wheels', model: 'Plane Wheels', brands: [],
+      name_ar: 'عجلات طائرات', name_en: 'Plane wheels',
+      desc_ar: 'عجلات خفيفة لطائرات التحكم عن بعد بمقاسات مختلفة — أخبرنا بموديل طائرتك.' + CONTACT_AR,
+      desc_en: 'Lightweight wheels for RC planes in several sizes — tell us your plane model.' + CONTACT_EN,
+      category: 'planes', scales: [], level: 'beginner', featured: 74, inStock: true, price: null,
+      specs: { use: { ar: 'عجلات الهبوط', en: 'Landing gear' } },
+      tags: ['wheels', 'plane', 'عجلات', 'طائرة', 'كاوتش'],
+      photos: ['planes-pa04', 'planes-pa22', 'planes-138']
+    },
+    {
+      id: 'plane-spinners', model: 'Spinners', brands: [],
+      name_ar: 'سبينرات للمراوح', name_en: 'Propeller spinners',
+      desc_ar: 'سبينرات بلاستيك وألومنيوم بألوان ومقاسات مختلفة لتثبيت المروحة.' + CONTACT_AR,
+      desc_en: 'Plastic and aluminium spinners in different colours and sizes to finish the prop.' + CONTACT_EN,
+      category: 'planes', scales: [], level: 'beginner', featured: 73, inStock: true, price: null,
+      specs: { use: { ar: 'تثبيت المروحة', en: 'Propeller mounting' } },
+      tags: ['spinner', 'spinners', 'prop', 'سبينر', 'مروحة'],
+      photos: ['planes-pa07', 'planes-pa09', 'planes-pa10', 'planes-pa12', 'planes-pa39', 'planes-pa40']
+    },
+    {
+      id: 'plane-fuel-tanks-tubing', model: 'Fuel Tanks & Tubing', brands: [],
+      name_ar: 'خزانات وخراطيم وقود', name_en: 'Fuel tanks & tubing',
+      desc_ar: 'خزانات وقود وخراطيم لطائرات النيترو والجلو.' + CONTACT_AR,
+      desc_en: 'Fuel tanks and fuel tubing for nitro / glow planes.' + CONTACT_EN,
+      category: 'planes', scales: [], level: 'intermediate', featured: 71, inStock: true, price: null,
+      specs: { use: { ar: 'طائرات النيترو', en: 'Nitro planes' } },
+      tags: ['fuel tank', 'tank', 'tubing', 'nitro', 'خزان', 'وقود', 'خرطوم', 'نيترو'],
+      photos: ['planes-pa15', 'planes-pa20', 'planes-pa13']
+    },
+    {
+      id: 'plane-glow-plugs', model: 'Glow Plugs', brands: [],
+      name_ar: 'شمعات جلو', name_en: 'Glow plugs',
+      desc_ar: 'شمعات جلو لمحركات النيترو — اسأل عن النوع المناسب لمحركك.' + CONTACT_AR,
+      desc_en: 'Glow plugs for nitro engines — ask which type suits your engine.' + CONTACT_EN,
+      category: 'planes', scales: [], level: 'intermediate', featured: 70, inStock: true, price: null,
+      specs: { use: { ar: 'محركات النيترو والجلو', en: 'Nitro / glow engines' } },
+      tags: ['glow plug', 'glow', 'nitro', 'شمعة', 'جلو', 'نيترو'],
+      photos: ['planes-pa16', 'planes-pa17']
+    },
+    {
+      id: 'plane-control-horns', model: 'Control Horns, Hinges & Clevises', brands: [],
+      name_ar: 'قرون تحكم ومفصلات ووصلات', name_en: 'Control horns, hinges & clevises',
+      desc_ar: 'قرون تحكم ومفصلات ووصلات وأذرع ومسامير لتركيب أسطح التحكم في الطائرة.' + CONTACT_AR,
+      desc_en: 'Control horns, hinges, clevises, pushrods and hardware for fitting control surfaces.' + CONTACT_EN,
+      category: 'planes', scales: [], level: 'intermediate', featured: 69, inStock: true, price: null,
+      specs: { use: { ar: 'أسطح التحكم', en: 'Control surfaces' } },
+      tags: ['control horn', 'hinge', 'clevis', 'pushrod', 'linkage', 'قرن', 'مفصلة', 'وصلة'],
+      photos: ['planes-pa19', 'planes-pa31', 'planes-pa33', 'planes-pa38', 'planes-pa21', 'planes-pa30']
     },
 
     /* ===== Drift & rally ===== */
@@ -365,6 +423,46 @@
       specs: { drive: '4WD' },
       tags: ['hpi', 'wr8', 'rally', 'رالي'],
       photos: range('drift', 189, 193)
+    },
+    {
+      id: 'mini-drift-128', model: 'Mini Drift 1/28 RWD', brands: [],
+      name_ar: 'سيارة درفت صغيرة بحجم كف اليد', name_en: 'Palm-size RWD Drift Car',
+      desc_ar: 'سيارة درفت صغيرة بحجم كف اليد بمقاس 1/28 بدفع خلفي وجيروسكوب — مناسبة للمساحات الداخلية.' + CONTACT_AR,
+      desc_en: 'A palm-size 1/28-scale rear-wheel-drive drift car with a gyro — made for indoor tracks.' + CONTACT_EN,
+      category: 'drift', scales: ['1/28'], level: 'beginner', featured: 64, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: 'RWD', extras: { ar: 'جيروسكوب للتحكم في الانزلاق', en: 'Gyro for drift control' } },
+      tags: ['mini', 'drift', 'rwd', 'gyro', 'palm', 'ميني', 'صغيرة', 'درفت', 'جيرو'],
+      images: [PX('13047779'), PX('13047786')]
+    },
+    {
+      id: 'mini-drift-124', model: 'Mini Drift 1/24 RWD', brands: [],
+      name_ar: 'سيارة درفت صغيرة بدفع خلفي', name_en: 'Mini RWD Drift Car',
+      desc_ar: 'سيارة درفت صغيرة بمقاس 1/24 بدفع خلفي وجيروسكوب — للتدريب على الدرفت في البيت أو على حلبة صغيرة.' + CONTACT_AR,
+      desc_en: 'A small 1/24-scale rear-wheel-drive drift car with a gyro — for drift practice at home or on a small track.' + CONTACT_EN,
+      category: 'drift', scales: ['1/24'], level: 'beginner', featured: 64, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: 'RWD', extras: { ar: 'جيروسكوب للتحكم في الانزلاق', en: 'Gyro for drift control' } },
+      tags: ['mini', 'drift', 'rwd', 'gyro', 'ميني', 'صغيرة', 'درفت', 'جيرو'],
+      images: [PX('13047783')]
+    },
+    {
+      id: 'drift-116-4wd', model: 'Drift 1/16 4WD', brands: [],
+      name_ar: 'سيارة درفت بدفع رباعي', name_en: '4WD Drift Car',
+      desc_ar: 'سيارة درفت بمقاس 1/16 بدفع رباعي، سهلة التحكم وبداية مناسبة لعالم الدرفت.' + CONTACT_AR,
+      desc_en: 'A 1/16-scale four-wheel-drive drift car — easy to control and a good first step into drifting.' + CONTACT_EN,
+      category: 'drift', scales: ['1/16'], level: 'beginner', featured: 64, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD' },
+      tags: ['drift', '4wd', 'درفت', 'دفع رباعي'],
+      images: [PX('13047778'), PX('13047780')]
+    },
+    {
+      id: 'drift-114-rwd', model: 'Drift 1/14 RWD', brands: [],
+      name_ar: 'سيارة درفت بدفع خلفي', name_en: 'RWD Drift Car',
+      desc_ar: 'سيارة درفت بمقاس 1/14 بدفع خلفي — حجم وسط بين السيارات الصغيرة ومقاس 1/10.' + CONTACT_AR,
+      desc_en: 'A 1/14-scale rear-wheel-drive drift car — a size between the mini cars and 1/10.' + CONTACT_EN,
+      category: 'drift', scales: ['1/14'], level: 'intermediate', featured: 64, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: 'RWD' },
+      tags: ['drift', 'rwd', 'درفت', 'دفع خلفي'],
+      images: [PX('12765684'), PX('13047782')]
     },
     {
       id: 'drift-wheels-tires-110', model: '1/10 Drift Wheels & Tires', brands: [],
@@ -457,6 +555,219 @@
       specs: { compat: 'Traxxas' },
       tags: ['body', 'bodies', 'traxxas', 'fox', 'هيكل', 'بودي'],
       photos: range('parts', 145, 149)
+    },
+
+    /* ===== Tools ===== */
+    {
+      id: 'hex-driver-set', model: 'Hex Driver Set 1.5–3.0 mm', brands: [],
+      name_ar: 'طقم مفكات سداسية (ألن)', name_en: 'Hex driver set',
+      desc_ar: 'مفكات سداسية بمقابض مريحة بالمقاسات الأكثر استخدامًا في سيارات 1/10 · 1/8.' + CONTACT_AR,
+      desc_en: 'Hex drivers with comfortable handles in the sizes most used on 1/10 and 1/8 cars.' + CONTACT_EN,
+      category: 'tools', scales: ['1/10', '1/8'], level: 'beginner', featured: 45, inStock: true, price: null,
+      specs: { sizes: '1.5 · 2.0 · 2.5 · 3.0 mm', use: { ar: 'فك وتركيب المسامير', en: 'Everyday screw work' } },
+      tags: ['hex', 'allen', 'driver', 'tools', 'مفك', 'مفكات', 'ألن', 'عدة'],
+      photos: ['tools-pa01', 'tools-pa03', 'tools-pa06', 'planes-135', 'planes-137']
+    },
+    {
+      id: 'nut-driver-set', model: 'Nut Driver Set 5.5 / 7 / 8 mm', brands: [],
+      name_ar: 'طقم مفكات صواميل', name_en: 'Nut driver set',
+      desc_ar: 'مفكات بلقم سداسية لفك صواميل العجلات والصواميل الصغيرة.' + CONTACT_AR,
+      desc_en: 'Socket-tip drivers for wheel nuts and small nuts.' + CONTACT_EN,
+      category: 'tools', scales: ['1/10', '1/8'], level: 'beginner', featured: 44, inStock: true, price: null,
+      specs: { sizes: '5.5 · 7 · 8 mm', use: { ar: 'صواميل العجلات', en: 'Wheel nuts' } },
+      tags: ['nut driver', 'socket', 'tools', 'مفك', 'صواميل', 'عدة']
+    },
+    {
+      id: 'hex-key-set-15', model: 'Metric Hex Key Set 4 / 5 / 6 mm', brands: [],
+      name_ar: 'طقم مفاتيح ألن لمقاس 1/5', name_en: 'Hex key set for 1/5',
+      desc_ar: 'مفاتيح ألن كبيرة لمسامير سيارات الباجا ومقاس 1/5.' + CONTACT_AR,
+      desc_en: 'Larger hex keys for the screws on Baja and 1/5-scale cars.' + CONTACT_EN,
+      category: 'tools', scales: ['1/5'], level: 'intermediate', featured: 43, inStock: true, price: null,
+      specs: { sizes: '4 · 5 · 6 mm', use: { ar: 'سيارات الباجا', en: 'Baja cars' } },
+      tags: ['hex', 'allen', 'keys', 'baja', 'tools', 'ألن', 'مفاتيح', 'باجا', 'عدة'],
+      images: [PX('5691647'), PX('5691648')]
+    },
+    {
+      id: 'shock-pliers-multitool', model: 'Shock Pliers & Multi-tool', brands: [],
+      name_ar: 'زرادية مساعدات وأداة متعددة', name_en: 'Shock pliers & multi-tool',
+      desc_ar: 'زرادية لإمساك أعمدة المساعدات دون خدشها، وأداة متعددة للوصلات والكرات.' + CONTACT_AR,
+      desc_en: 'Pliers that grip shock shafts without scratching them, plus a multi-tool for links and ball ends.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 42, inStock: true, price: null,
+      specs: { use: { ar: 'المساعدات والوصلات', en: 'Shocks, links & ball ends' } },
+      tags: ['pliers', 'shock', 'multi-tool', 'tools', 'زرادية', 'بنسة', 'مساعدات', 'عدة'],
+      images: [PX('5583100')]
+    },
+    {
+      id: 'turnbuckle-wrench', model: 'Turnbuckle Wrench', brands: [],
+      name_ar: 'مفتاح ضبط الوصلات', name_en: 'Turnbuckle wrench',
+      desc_ar: 'مفتاح رفيع لضبط أطوال الوصلات (تيرن باكل) لضبط الكامبر والتو.' + CONTACT_AR,
+      desc_en: 'A thin wrench for adjusting turnbuckles when setting camber and toe.' + CONTACT_EN,
+      category: 'tools', scales: ['1/10', '1/8'], level: 'intermediate', featured: 41, inStock: true, price: null,
+      specs: { use: { ar: 'ضبط الكامبر والتو', en: 'Camber & toe adjustment' } },
+      tags: ['turnbuckle', 'wrench', 'camber', 'toe', 'tools', 'مفتاح', 'وصلات', 'عدة']
+    },
+    {
+      id: 'body-reamer', model: 'Body Reamer', brands: [],
+      name_ar: 'أداة فتح ثقوب الهيكل', name_en: 'Body reamer',
+      desc_ar: 'أداة مخروطية لفتح ثقوب نظيفة ودائرية في الهياكل.' + CONTACT_AR,
+      desc_en: 'A tapered tool for making clean, round holes in bodies.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 40, inStock: true, price: null,
+      specs: { use: { ar: 'هياكل البولي كربونات', en: 'Polycarbonate bodies' } },
+      tags: ['reamer', 'body', 'tools', 'هيكل', 'بودي', 'ثقوب', 'عدة']
+    },
+    {
+      id: 'curved-body-scissors', model: 'Curved Body Scissors', brands: [],
+      name_ar: 'مقص هياكل منحني', name_en: 'Curved body scissors',
+      desc_ar: 'مقص بشفرات منحنية لقص الهياكل حول أقواس العجلات.' + CONTACT_AR,
+      desc_en: 'Curved-blade scissors for trimming bodies around the wheel arches.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 39, inStock: true, price: null,
+      specs: { use: { ar: 'قص هياكل البولي كربونات', en: 'Trimming polycarbonate bodies' } },
+      tags: ['scissors', 'body', 'lexan', 'tools', 'مقص', 'هيكل', 'بودي', 'عدة'],
+      photos: ['tools-pa27']
+    },
+    {
+      id: 'ride-height-camber-gauge', model: 'Ride Height & Camber Gauge', brands: [],
+      name_ar: 'مقياس ارتفاع الشاسيه والكامبر', name_en: 'Ride height & camber gauge',
+      desc_ar: 'مقياس لضبط ارتفاع الشاسيه عن الأرض وزاوية الكامبر.' + CONTACT_AR,
+      desc_en: 'A gauge for setting ride height and camber angle.' + CONTACT_EN,
+      category: 'tools', scales: ['1/10', '1/8'], level: 'pro', featured: 38, inStock: true, price: null,
+      specs: { use: { ar: 'ضبط الإعدادات', en: 'Car setup' } },
+      tags: ['ride height', 'camber', 'gauge', 'setup', 'tools', 'مقياس', 'كامبر', 'عدة']
+    },
+    {
+      id: 'setup-station', model: 'Setup Station 1/10 & 1/8', brands: [],
+      name_ar: 'محطة ضبط الإعدادات', name_en: 'Setup station',
+      desc_ar: 'محطة ضبط للسيارات بمقاس 1/10 · 1/8 لقياس الكامبر والتو وارتفاع الشاسيه بدقة.' + CONTACT_AR,
+      desc_en: 'A setup station for 1/10 and 1/8 cars to measure camber, toe and ride height accurately.' + CONTACT_EN,
+      category: 'tools', scales: ['1/10', '1/8'], level: 'pro', featured: 37, inStock: true, price: null,
+      specs: { use: { ar: 'الكامبر والتو وارتفاع الشاسيه', en: 'Camber, toe & ride height' } },
+      tags: ['setup station', 'setup', 'camber', 'toe', 'tools', 'ضبط', 'إعدادات', 'عدة']
+    },
+    {
+      id: 'tire-balancer', model: 'Tire Balancer', brands: [],
+      name_ar: 'جهاز موازنة الإطارات', name_en: 'Tire balancer',
+      desc_ar: 'جهاز لموازنة العجلات والإطارات لتقليل الاهتزاز على السرعات العالية.' + CONTACT_AR,
+      desc_en: 'For balancing wheels and tyres to cut vibration at high speed.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'pro', featured: 36, inStock: true, price: null,
+      specs: { use: { ar: 'موازنة العجلات', en: 'Wheel balancing' } },
+      tags: ['tire', 'tyre', 'balancer', 'wheels', 'tools', 'إطارات', 'موازنة', 'عدة']
+    },
+    {
+      id: 'pit-mat-magnetic', model: 'Pit Mat with Magnetic Tray', brands: [],
+      name_ar: 'مفرش صيانة مع صينية مغناطيسية', name_en: 'Pit mat with magnetic tray',
+      desc_ar: 'مفرش عمل يحمي الطاولة ويجمع القطع، مع صينية مغناطيسية للمسامير.' + CONTACT_AR,
+      desc_en: 'A work mat that protects the bench and keeps parts together, with a magnetic tray for screws.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 35, inStock: true, price: null,
+      specs: { use: { ar: 'حفظ المسامير والقطع الصغيرة', en: 'Keeps screws & small parts in place' } },
+      tags: ['pit mat', 'mat', 'magnetic tray', 'tools', 'مفرش', 'صينية', 'مغناطيس', 'عدة']
+    },
+    {
+      id: 'soldering-kit', model: 'Soldering Iron & Solder Kit', brands: [],
+      name_ar: 'كاوية لحام مع قصدير', name_en: 'Soldering iron & solder kit',
+      desc_ar: 'كاوية لحام مع قصدير لتركيب الفيش والأسلاك والمحركات.' + CONTACT_AR,
+      desc_en: 'A soldering iron with solder for fitting plugs, wires and motors.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'intermediate', featured: 34, inStock: true, price: null,
+      specs: { use: { ar: 'الفيش والأسلاك', en: 'Plugs & wiring' } },
+      tags: ['soldering', 'solder', 'iron', 'tools', 'كاوية', 'لحام', 'قصدير', 'عدة'],
+      images: [U('1521798604188-0d6595d6d6ae'), U('1560846389-8c7e1d88eca8')]
+    },
+    {
+      id: 'servo-tester', model: 'Servo Tester', brands: [],
+      name_ar: 'جهاز اختبار السيرفو', name_en: 'Servo tester',
+      desc_ar: 'جهاز صغير لاختبار السيرفو وضبط نقطة المنتصف قبل التركيب.' + CONTACT_AR,
+      desc_en: 'A small tester for checking servos and centring them before fitting.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'intermediate', featured: 33, inStock: true, price: null,
+      specs: { use: { ar: 'اختبار السيرفو وضبط المنتصف', en: 'Testing & centring servos' } },
+      tags: ['servo', 'tester', 'tools', 'سيرفو', 'اختبار', 'عدة']
+    },
+    {
+      id: 'lipo-balance-charger-dual', model: 'Dual LiPo Balance Charger', brands: [],
+      name_ar: 'شاحن ليبو مزدوج بالموازنة', name_en: 'Dual LiPo balance charger',
+      desc_ar: 'شاحن بمخرجين لشحن بطاريتين في وقت واحد مع موازنة الخلايا.' + CONTACT_AR,
+      desc_en: 'A two-output charger that charges two packs at once with cell balancing.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'intermediate', featured: 32, inStock: true, price: null,
+      specs: { use: { ar: 'شحن بطاريات الليبو', en: 'LiPo charging' } },
+      tags: ['charger', 'lipo', 'balance', 'dual', 'شاحن', 'ليبو', 'بطاريات', 'عدة']
+    },
+    {
+      id: 'cellmeter-8', model: 'CellMeter 8 Battery Checker', brands: [],
+      name_ar: 'جهاز فحص البطاريات', name_en: 'Battery checker / cell meter',
+      desc_ar: 'يعرض جهد كل خلية ونسبة الشحن لبطاريات LiPo · Li-ion · LiFe · NiMH، ويعمل أيضًا جهازًا لاختبار السيرفو.' + CONTACT_AR,
+      desc_en: 'Shows the voltage of each cell and the charge level for LiPo, Li-ion, LiFe and NiMH packs, and doubles as a servo tester.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 31, inStock: true, price: null,
+      specs: { cells: '1S–8S', use: { ar: 'فحص البطاريات واختبار السيرفو', en: 'Battery checks & servo testing' } },
+      tags: ['cellmeter', 'cell meter', 'checker', 'lipo', 'battery', 'servo', 'فحص', 'بطاريات', 'ليبو', 'عدة'],
+      photos: ['tools-pa05', 'planes-139']
+    },
+    {
+      id: 'digital-tachometer', model: 'Digital Tachometer', brands: [],
+      name_ar: 'عدّاد لفات رقمي', name_en: 'Digital tachometer',
+      desc_ar: 'جهاز يدوي بشاشة رقمية لقياس سرعة دوران المحرك والمروحة.' + CONTACT_AR,
+      desc_en: 'A handheld digital meter for measuring engine and propeller RPM.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'intermediate', featured: 30, inStock: true, price: null,
+      specs: { use: { ar: 'قياس سرعة الدوران', en: 'Measuring RPM' } },
+      tags: ['tachometer', 'rpm', 'meter', 'عداد', 'لفات', 'سرعة الدوران'],
+      photos: ['tools-pa14']
+    },
+    {
+      id: 'charge-leads-servo-extensions', model: 'Charge Leads & Servo Extensions', brands: [],
+      name_ar: 'أسلاك شحن ووصلات تمديد سيرفو', name_en: 'Charge leads & servo extensions',
+      desc_ar: 'أسلاك شحن متعددة المخارج بفيش موز، ووصلات تمديد للسيرفو بأطوال مختلفة.' + CONTACT_AR,
+      desc_en: 'Multi-plug charge leads with banana plugs, and servo extension leads in several lengths.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 29, inStock: true, price: null,
+      specs: { use: { ar: 'الشحن والتوصيلات', en: 'Charging & wiring' } },
+      tags: ['charge lead', 'leads', 'banana', 'servo extension', 'extension', 'أسلاك', 'شحن', 'سيرفو', 'وصلات'],
+      photos: ['tools-pa24', 'tools-pa25']
+    },
+    {
+      id: 'lipo-safe-bag', model: 'LiPo Safe Bag', brands: [],
+      name_ar: 'حقيبة أمان لبطاريات الليبو', name_en: 'LiPo safe bag',
+      desc_ar: 'حقيبة مقاومة للحرارة لشحن بطاريات الليبو وتخزينها بأمان أكبر.' + CONTACT_AR,
+      desc_en: 'A heat-resistant bag for safer charging and storage of LiPo packs.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 30, inStock: true, price: null,
+      specs: { use: { ar: 'شحن وتخزين البطاريات', en: 'Charging & storage' } },
+      tags: ['lipo bag', 'safe bag', 'battery', 'حقيبة', 'ليبو', 'بطاريات', 'أمان']
+    },
+    {
+      id: 'glow-igniter-plug-driver', model: 'Glow Igniter & Glow Plug Driver', brands: [],
+      name_ar: 'مشعل شمعات جلو ومفتاح شمعات', name_en: 'Glow igniter & glow plug driver',
+      desc_ar: 'مشعل لتسخين شمعة الجلو عند تشغيل محركات النيترو، مع مفتاح لفك وتركيب الشمعات.' + CONTACT_AR,
+      desc_en: 'An igniter that heats the glow plug to start nitro engines, plus a driver for fitting and removing plugs.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'intermediate', featured: 29, inStock: true, price: null,
+      specs: { use: { ar: 'محركات النيترو والجلو', en: 'Nitro / glow engines' } },
+      tags: ['glow', 'igniter', 'glow plug', 'nitro', 'جلو', 'شمعة', 'نيترو', 'عدة'],
+      photos: ['tools-pa29', 'tools-pa18']
+    },
+    {
+      id: 'spark-plug-clutch-tool', model: 'Spark Plug Wrench & Clutch Tool', brands: [],
+      name_ar: 'مفتاح بوجيه وأداة كلتش', name_en: 'Spark plug wrench & clutch tool',
+      desc_ar: 'مفتاح لفك البوجيه وأداة لفك الكلتش في محركات البنزين لسيارات الباجا.' + CONTACT_AR,
+      desc_en: 'A spark plug wrench and a clutch tool for the petrol engines on Baja cars.' + CONTACT_EN,
+      category: 'tools', scales: ['1/5'], level: 'intermediate', featured: 28, inStock: true, price: null,
+      specs: { use: { ar: 'محركات البنزين', en: 'Petrol engines' } },
+      tags: ['spark plug', 'clutch', 'petrol', 'baja', 'tools', 'بوجيه', 'كلتش', 'بنزين', 'باجا', 'عدة']
+    },
+    {
+      id: 'shock-oil-thread-lock', model: 'Shock Oil, Diff Oil & Thread Lock', brands: ['Traxxas'],
+      name_ar: 'زيوت مساعدات وديفرنس ومثبت مسامير', name_en: 'Shock oil, diff oil & thread lock',
+      desc_ar: 'أطقم زيوت مساعدات وزيوت ديفرنس بلزوجات مختلفة، مع مثبت مسامير للمسامير المعدنية.' + CONTACT_AR,
+      desc_en: 'Shock oil and diff oil sets in different weights, plus thread lock for metal screws.' + CONTACT_EN,
+      category: 'tools', scales: [], level: 'beginner', featured: 27, inStock: true, price: null,
+      specs: { use: { ar: 'المساعدات والديفرنس والمسامير', en: 'Shocks, diffs & screws' } },
+      tags: ['shock oil', 'diff oil', 'thread lock', 'oil', 'traxxas', 'زيت', 'زيوت', 'مساعدات', 'ديفرنس', 'عدة'],
+      photos: ['parts-054', 'parts-055', 'parts-056', 'parts-058']
+    },
+
+    /* ===== Boats ===== */
+    {
+      id: 'traxxas-m41-6s', model: 'Traxxas M41 6S', brands: ['Traxxas'],
+      name_ar: 'قارب سباق كاتاماران بمحرك براشلس', name_en: 'Brushless Catamaran Race Boat',
+      desc_ar: 'قارب سباق كاتاماران من Traxxas بمحرك كهربائي بدون فرش (براشلس) يعمل على بطاريات 6S.' + CONTACT_AR,
+      desc_en: 'A Traxxas catamaran race boat with a brushless electric motor running on 6S LiPo.' + CONTACT_EN,
+      category: 'boats', scales: [], level: 'pro', featured: 26, inStock: true, price: null,
+      specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, cells: '6S', hull: { ar: 'كاتاماران', en: 'Catamaran' } },
+      tags: ['traxxas', 'm41', 'boat', 'catamaran', 'brushless', 'قارب', 'لانش', 'مركب', 'تراكساس'],
+      photos: ['boats-225', 'boats-226', 'boats-228', 'boats-224', 'boats-227']
     }
   ];
 

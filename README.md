@@ -15,13 +15,13 @@ A bilingual (Arabic / English) website for **RC World Egypt**, a specialist RC h
 ## Features
 
 - **Arabic & English**: one-click language switch with a full right-to-left / left-to-right layout, remembered between visits
-- **Real shop photos**: products, gallery, hero and "About the shop" use the owner's own photos from the shop
-- **Catalogue from real brands**: Losi, Arrma, Traxxas, HPI, Rovan, King Motor, FG, Rofun, MST, HSP, Xray, Kyosho and Thunder Tiger, with filters by category, scale, brand and skill level, plus live search and sorting
+- **Shop photography**: products, gallery, hero and "About the shop" feature the shop's own photos
+- **Catalogue from well-known brands**: Losi, Arrma, Traxxas, HPI, Rovan, King Motor, FG, Rofun, MST, HSP, Xray, Kyosho and Thunder Tiger, with filters by category, scale, brand and skill level, plus live search and sorting
 - **Order through WhatsApp**: no online payment and no listed prices. Visitors build an inquiry list and send it in one WhatsApp message, or tap "Ask for price" on any product. Cash on delivery, delivery to every governorate
-- **Photo gallery**: 184 shop photos in 7 categories with "Show more", a full-size lightbox and swipe / arrow-key navigation
+- **Inside the shop gallery**: 184 photos in 7 categories with "Show more", a full-size lightbox and swipe / arrow-key navigation
 - **Quick view**: a product pop-up with a photo strip and a specs table
-- **Contact**: call, WhatsApp and Facebook group buttons, a Google Maps location and a contact form that opens WhatsApp with the message ready
-- **Community band**: links to the shop's Facebook group
+- **Contact**: call, WhatsApp and Facebook community buttons, a Google Maps location and a contact form that opens WhatsApp with the message ready
+- **Community band**: invites hobbyists to the shop's Facebook community to share tips, setups and new arrivals
 - **Responsive & accessible**: works from phones to wide screens, is keyboard friendly and respects reduced-motion settings
 
 ## Built with
@@ -43,12 +43,12 @@ HTML5 · CSS3 · vanilla JavaScript: no frameworks, no build step.
 ### المزايا
 
 - **العربية والإنجليزية** — تبديل فوري بين اللغتين مع تغيير اتجاه الصفحة بالكامل وحفظ الاختيار
-- **صور حقيقية من المحل** — المنتجات والمعرض وواجهة الموقع وقسم «عن المحل» بصور صاحب المحل نفسه
-- **منتجات من علامات حقيقية** — فلترة حسب القسم والمقاس والعلامة ومستوى المهارة، مع بحث مباشر وترتيب
+- **صور المحل** — المنتجات والمعرض وواجهة الموقع وقسم «عن المحل» بصور المحل نفسه
+- **منتجات من علامات معروفة** — فلترة حسب القسم والمقاس والعلامة ومستوى المهارة، مع بحث مباشر وترتيب
 - **الطلب عبر واتساب** — لا دفع إلكتروني ولا أسعار معروضة: يضيف الزائر ما يريده إلى قائمة الطلب ويرسلها في رسالة واتساب واحدة، أو يضغط «اسأل عن السعر» في أي منتج. الدفع عند الاستلام والتوصيل لجميع المحافظات
-- **معرض صور** — ‏184 صورة من المحل في 7 أقسام مع زر «عرض المزيد» وعارض صور بالحجم الكامل
+- **معرض «من داخل المحل»** — ‏184 صورة في 7 أقسام مع زر «عرض المزيد» وعارض صور بالحجم الكامل
 - **عرض سريع** — نافذة منبثقة بصور المنتج وجدول مواصفات
-- **التواصل** — أزرار اتصال وواتساب ومجموعة فيسبوك، وخريطة جوجل للموقع، ونموذج تواصل يفتح واتساب والرسالة جاهزة
+- **التواصل** — أزرار اتصال وواتساب ومجتمعنا على فيسبوك، وخريطة جوجل للموقع، ونموذج تواصل يفتح واتساب والرسالة جاهزة
 - **تصميم متجاوب وسهل الاستخدام** — من الجوال حتى الشاشات العريضة، ويدعم التنقل بلوحة المفاتيح
 
 ### التقنيات المستخدمة

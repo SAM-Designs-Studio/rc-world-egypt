@@ -2979,7 +2979,7 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
   }
   .cat-tile--lead { grid-column: span 2; grid-row: span 2; min-height: 0; }
   .cat-tile--tall { grid-row: span 2; }
-  .cat-tile--banner { grid-column: 1 / -1; }
+  .cat-tile--banner { grid-column: span 2; }
   .contact__grid { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: start; }
 }
 
@@ -3064,7 +3064,7 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
   .logo__badge { font-size: .5rem; padding: 2px 4px 1px; }
 }
 
-/* ---------- Brand strip: real brands as text badges (no logos) ---------- */
+/* ---------- Brand strip: brands as text badges (no logos) ---------- */
 .brands {
   margin-top: 0;
   padding-block: 22px;
@@ -3092,32 +3092,9 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 
 /* ---------- Category tiles (5): lead / tall / banner ---------- */
 .cat-tile--banner > a { min-height: 190px; }
+/* 6th tile (tools) fills the last row on 2-column phones; parts + tools share the last row on desktop */
+.cat-tile--wide { grid-column: span 2; }
 
-/* ---------- "Illustrative photo" tag ---------- */
-.illus-tag {
-  position: absolute;
-  z-index: 2;
-  bottom: 10px;
-  inset-inline-start: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, .16);
-  background: rgba(8, 9, 11, .74);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  font-family: var(--font-body);
-  font-size: .68rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--c-text-2);
-  pointer-events: none;
-  white-space: nowrap;
-}
-.illus-tag .icon { width: 12px; height: 12px; }
-.illus-tag--hero { top: 14px; bottom: auto; inset-inline-start: 20%; }
 
 /* ---------- Price on request ---------- */
 .price-ask {
@@ -3417,8 +3394,7 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
     linear-gradient(0deg, var(--c-bg) 0%, rgba(8, 9, 11, 0) 40%);
 }
 
-/* ---------- "From our shop" badge + photo count ---------- */
-.shop-badge,
+/* ---------- Photo count ---------- */
 .photo-count {
   position: absolute;
   z-index: 2;
@@ -3434,18 +3410,7 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
   white-space: nowrap;
   pointer-events: none;
 }
-.shop-badge {
-  top: 10px;
-  inset-inline-end: 10px;
-  border: 1px solid rgba(212, 255, 58, .45);
-  background: rgba(8, 9, 11, .78);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  color: var(--c-volt);
-}
-.shop-badge .icon,
 .photo-count .icon { width: 12px; height: 12px; }
-.shop-badge--hero { top: 14px; inset-inline-end: auto; inset-inline-start: 20%; }
 .photo-count {
   bottom: 10px;
   inset-inline-end: 10px;
@@ -3454,9 +3419,6 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
   color: var(--c-text);
   font-family: "Chakra Petch", sans-serif;
 }
-.gitem__btn .shop-badge { top: 8px; inset-inline-end: 8px; font-size: .62rem; padding: 2px 7px; }
-.lightbox__stage .shop-badge { top: 12px; inset-inline-end: 12px; }
-.deal__media .shop-badge { top: 14px; }
 
 /* ---------- Gallery: show more ---------- */
 .gallery__more { display: flex; justify-content: center; margin-top: 28px; }

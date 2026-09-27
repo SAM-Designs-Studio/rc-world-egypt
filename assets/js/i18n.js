@@ -16,7 +16,7 @@
        WhatsApp messages.
      – Never glue an Arabic prefix letter (و ب ل ك ف) onto a Latin word or a
        number+Latin token — rephrase instead.
-   • Real shop in Egypt (Baja, off-road, foam trainer planes, some drift,
+   • Shop in Egypt (Baja, off-road, foam trainer planes, some drift,
      parts): no online payment and no prices on the site — the cart is an
      inquiry list; price, availability and shipping are confirmed by Hamdy by
      phone / WhatsApp.
@@ -30,7 +30,7 @@ window.VOLT_I18N = {
   ar: {
     /* Meta */
     'meta.title': 'باجا وأوف رود وطائرات فوم للتحكم عن بعد في مصر | <bdi>RC World Egypt</bdi>',
-    'meta.desc': 'متجر <bdi>RC World Egypt</bdi>: باجا بمقاس 1/5 تعمل بالبنزين وسيارات أوف رود من علامات معروفة، وطائرات تدريب من الفوم، مع درفت وقطع غيار وبطاريات. السعر والتوفر عند التواصل مع حمدي عبر واتساب، وتوصيل لجميع المحافظات.',
+    'meta.desc': 'متجر <bdi>RC World Egypt</bdi>: باجا بمقاس 1/5 تعمل بالبنزين وسيارات أوف رود من علامات معروفة، وطائرات تدريب من الفوم، مع درفت وقطع غيار وعدد وأدوات. السعر والتوفر عند التواصل معنا عبر واتساب، وتوصيل لجميع المحافظات.',
 
     /* Accessibility helpers */
     'a11y.skip': 'تخطَّ إلى المحتوى الرئيسي',
@@ -66,7 +66,7 @@ window.VOLT_I18N = {
     /* Hero */
     'hero.eyebrow': 'محل هوايات التحكم عن بعد — الشيخ زايد',
     'hero.title': 'عالم <em>الباجا والأوف رود</em> في مصر',
-    'hero.lead': 'باجا بمقاس 1/5 تعمل بالبنزين وسيارات أوف رود من علامات معروفة، وطائرات تدريب من الفوم مثالية لأول طيران، مع قطع غيار وبطاريات. تواصل مع حمدي عبر واتساب لمعرفة السعر والتوفر.',
+    'hero.lead': 'باجا بمقاس 1/5 تعمل بالبنزين وسيارات أوف رود من علامات معروفة، وطائرات تدريب من الفوم مثالية لأول طيران، مع قطع غيار وعدد وأدوات. تواصل معنا عبر واتساب لمعرفة السعر والتوفر.',
     'hero.cta1': 'الباجا والأوف رود',
     'hero.cta2': 'طائرات الفوم',
     'hero.stat1unit': 'موديلًا',
@@ -78,7 +78,6 @@ window.VOLT_I18N = {
     'hero.imgAlt': 'من داخل محل <bdi>RC World Egypt</bdi> في الشيخ زايد',
     'hud.scale': 'مقاس الباجا',
     'hud.planes': 'طائرات فوم للتدريب',
-    'illus': 'صورة توضيحية',
 
     /* Units */
     'unit.product': { zero: 'لا توجد منتجات', one: 'منتج واحد', two: 'منتجان', few: '{n} منتجات', many: '{n} منتجًا', other: '{n} منتج' },
@@ -97,7 +96,11 @@ window.VOLT_I18N = {
     'cat.drift': 'درفت ورالي',
     'cat.drift.tag': 'سيارات درفت ورالي بمقاس 1/10 أو 1/8',
     'cat.parts': 'قطع غيار وبطاريات',
+    'cat.boats': 'قوارب',
+    'cat.tools': 'عدد وأدوات',
     'cat.parts.tag': 'قطع غيار، إطارات، هياكل وبطاريات',
+    'cat.boats.tag': 'قوارب سباق كهربائية',
+    'cat.tools.tag': 'مفكات وأدوات ضبط، شواحن وأجهزة فحص، وأدوات النيترو والبنزين',
     'brands.label': 'علامات نتعامل معها',
 
     /* Shop */
@@ -178,6 +181,8 @@ window.VOLT_I18N = {
     'spec.extras': 'إضافات',
     'spec.cells': 'عدد الخلايا',
     'spec.compat': 'متوافق مع',
+    'spec.hull': 'البدن',
+    'spec.sizes': 'المقاسات',
     'spec.level': 'مستوى المهارة',
 
     /* Quick view */
@@ -198,8 +203,8 @@ window.VOLT_I18N = {
 
     /* Gallery */
     'gallery.eyebrow': 'المعرض',
-    'gallery.title': 'صور حقيقية من المحل',
-    'gallery.sub': 'كل الصور هنا من المحل مباشرة، من منشورات حمدي في مجموعتنا على فيسبوك — اضغط على أي صورة لعرضها بالحجم الكامل.',
+    'gallery.title': 'من داخل المحل',
+    'gallery.sub': 'جولة سريعة بين الموديلات المتوفرة وقطع الغيار والتجهيزات في المحل — اضغط على أي صورة لعرضها بالحجم الكامل.',
     'gallery.filterLabel': 'تصفية الصور',
     'gallery.all': 'الكل',
     'gallery.baja': 'باجا',
@@ -208,8 +213,9 @@ window.VOLT_I18N = {
     'gallery.drift': 'درفت ورالي',
     'gallery.shop': 'المحل',
     'gallery.parts': 'قطع غيار',
+    'gallery.boats': 'قوارب',
+    'gallery.tools': 'عدد وأدوات',
     'gallery.open': 'عرض الصورة بالحجم الكامل: {x}',
-    'fromShop': 'من المحل',
     'gallery.more': 'عرض المزيد ({n})',
     'lb.title': 'عارض الصور',
     'lb.prev': 'الصورة السابقة',
@@ -225,7 +231,7 @@ window.VOLT_I18N = {
     'why.f2.title': 'قطع غيار عند الطلب',
     'why.f2.text': 'قطع غيار لأشهر علامات الباجا والأوف رود، مع الإطارات والهياكل والبطاريات — أرسل لنا اسم الموديل والقطعة التي تحتاجها.',
     'why.f3.title': 'اطلب بسهولة عبر واتساب',
-    'why.f3.text': 'أضف ما تريده إلى قائمة الطلب وأرسلها في رسالة واحدة، ويرد عليك حمدي بالسعر والتوفر.',
+    'why.f3.text': 'أضف ما تريده إلى قائمة الطلب وأرسلها في رسالة واحدة، ونرد عليك بالسعر والتوفر.',
     'why.f4.title': 'الدفع عند الاستلام',
     'why.f4.text': 'ادفع نقدًا عند الاستلام. توصيل لجميع المحافظات — تفاصيل الشحن عند التواصل.',
 
@@ -237,24 +243,24 @@ window.VOLT_I18N = {
     'about.eyebrow': 'عن المحل',
     'about.imgAlt': 'سيارات تحكم عن بعد في محل <bdi>RC World Egypt</bdi>',
     'about.partsLabel': 'قطع غيار لعلامات:',
-    'about.cta': 'تواصل مع حمدي',
+    'about.cta': 'تواصل معنا',
     'comm.eyebrow': 'المجتمع',
     'comm.title': 'مجتمع <bdi>RC World Egypt</bdi>',
-    'comm.f1': 'أكثر من 690 عضوًا في مجموعتنا على فيسبوك',
-    'comm.f2': 'يديرها حمدي منذ مايو 2025',
-    'comm.f3': 'كل صور المعرض من المحل مباشرة',
-    'comm.cta': 'انضم للمجموعة',
-    'comm.stripLabel': 'صور من المحل',
+    'comm.f1': 'أكثر من 690 هاويًا في مجتمعنا على فيسبوك',
+    'comm.f2': 'نتبادل الخبرات والنصائح وأخبار الموديلات الجديدة',
+    'comm.f3': 'استشارة قبل الشراء',
+    'comm.cta': 'انضم للمجتمع',
+    'comm.stripLabel': 'لقطات من داخل المحل',
 
     /* Contact */
     'contact.eyebrow': 'تواصل معنا',
-    'contact.title': 'تواصل مع حمدي مباشرة',
+    'contact.title': 'تواصل مع مالك <bdi>RC World Egypt</bdi> مباشرة',
     'contact.sub': 'اسأل عن السعر والتوفر أو أرسل قائمة طلبك — اتصل بنا أو راسلنا عبر واتساب.',
-    'contact.call': 'اتصل بحمدي',
+    'contact.call': 'اتصل بنا',
     'contact.whatsapp': 'واتساب',
     'contact.whatsappSub': 'راسلنا مباشرة',
-    'contact.facebook': 'مجموعتنا على فيسبوك',
-    'contact.facebookSub': 'انضم وتابع الجديد',
+    'contact.facebook': 'مجتمعنا على فيسبوك',
+    'contact.facebookSub': 'انضم لمجتمع الهواة',
     'contact.address': 'العنوان',
     'contact.addressValue': 'مدينة الشيخ زايد، 6 أكتوبر، القاهرة الكبرى، مصر',
     'contact.mapTitle': 'خريطة: مدينة الشيخ زايد، الجيزة، مصر',
@@ -282,7 +288,7 @@ window.VOLT_I18N = {
 
     /* WhatsApp message templates (plain text) */
     'wa.price': 'أريد السعر لـ {name}',
-    'wa.contactIntro': 'مرحبًا حمدي، رسالة من موقع <bdi>RC World Egypt</bdi>:',
+    'wa.contactIntro': 'مرحبًا <bdi>RC World Egypt</bdi>، رسالة من الموقع:',
     'wa.contactName': 'الاسم: {x}',
     'wa.contactPhone': 'رقم الهاتف: {x}',
     'wa.contactTopic': 'الموضوع: {x}',
@@ -307,7 +313,7 @@ window.VOLT_I18N = {
     'list.empty': 'قائمتك فارغة… أضف ما يعجبك من المتجر!',
     'list.emptyText': 'ابدأ بالباجا أو الأوف رود أو طائرات الفوم، ثم تواصل معنا لمعرفة السعر والتوفر.',
     'list.emptyCta': 'تصفّح المتجر',
-    'list.note': 'سيؤكد لك حمدي السعر والتوفر',
+    'list.note': 'سنؤكد لك السعر والتوفر',
     'list.checkout': 'تواصل لإتمام الطلب',
     'list.remove': 'إزالة {name} من القائمة',
     'list.inc': 'زيادة كمية {name}',
@@ -326,7 +332,7 @@ window.VOLT_I18N = {
     'footer.blurb': '<bdi>RC World Egypt</bdi> — متجر لهواة التحكم عن بعد في مصر: باجا وأوف رود وطائرات تدريب من الفوم، مع درفت وقطع غيار وبطاريات.',
     'footer.contact': 'تواصل',
     'footer.follow': 'تابعنا',
-    'footer.facebook': 'مجموعتنا على فيسبوك',
+    'footer.facebook': 'مجتمعنا على فيسبوك',
     'footer.whatsappIcon': 'واتساب',
     'footer.shop': 'تسوّق',
     'footer.help': 'المساعدة',
@@ -348,7 +354,7 @@ window.VOLT_I18N = {
   en: {
     /* Meta */
     'meta.title': 'RC World Egypt | Baja, Off-road & Foam Trainer Planes',
-    'meta.desc': 'RC World Egypt: 1/5 petrol Baja and off-road RC from well-known brands, foam trainer planes, drift, parts and batteries. Ask Hamdy on WhatsApp for price and availability — delivery across Egypt.',
+    'meta.desc': 'RC World Egypt: 1/5 petrol Baja and off-road RC from well-known brands, foam trainer planes, drift, parts and tools. Ask us on WhatsApp for price and availability — delivery across Egypt.',
 
     /* Accessibility helpers */
     'a11y.skip': 'Skip to main content',
@@ -384,7 +390,7 @@ window.VOLT_I18N = {
     /* Hero */
     'hero.eyebrow': 'RC hobby shop — Sheikh Zayed, Egypt',
     'hero.title': 'Egypt’s <em>Baja &amp; off-road</em> RC world',
-    'hero.lead': '1/5 petrol Baja and off-road RC from well-known brands, plus foam trainer planes that make ideal first planes — with parts and batteries. Message Hamdy on WhatsApp for price and availability.',
+    'hero.lead': '1/5 petrol Baja and off-road RC from well-known brands, plus foam trainer planes that make ideal first planes — with parts and tools. Message us on WhatsApp for price and availability.',
     'hero.cta1': 'Baja & off-road',
     'hero.cta2': 'Foam planes',
     'hero.stat1unit': 'models',
@@ -396,7 +402,6 @@ window.VOLT_I18N = {
     'hero.imgAlt': 'Inside the RC World Egypt shop in Sheikh Zayed',
     'hud.scale': 'Baja scale',
     'hud.planes': 'Foam trainer planes',
-    'illus': 'Illustrative photo',
 
     /* Units */
     'unit.product': { zero: 'no products', one: '{n} product', other: '{n} products' },
@@ -415,7 +420,11 @@ window.VOLT_I18N = {
     'cat.drift': 'Drift & rally',
     'cat.drift.tag': '1/10 and 1/8 drift & rally cars',
     'cat.parts': 'Parts & batteries',
+    'cat.boats': 'Boats',
+    'cat.tools': 'Tools',
     'cat.parts.tag': 'Parts, tyres, bodies & batteries',
+    'cat.boats.tag': 'Electric race boats',
+    'cat.tools.tag': 'Drivers, setup tools, chargers, checkers, nitro & petrol tools',
     'brands.label': 'Brands we deal in',
 
     /* Shop */
@@ -496,6 +505,8 @@ window.VOLT_I18N = {
     'spec.extras': 'Extras',
     'spec.cells': 'Cells',
     'spec.compat': 'Compatible with',
+    'spec.hull': 'Hull',
+    'spec.sizes': 'Sizes',
     'spec.level': 'Skill level',
 
     /* Quick view */
@@ -516,8 +527,8 @@ window.VOLT_I18N = {
 
     /* Gallery */
     'gallery.eyebrow': 'Gallery',
-    'gallery.title': 'Real photos from our shop',
-    'gallery.sub': 'Every photo here comes straight from our shop, from Hamdy\'s posts in our Facebook group — tap any photo to view it full size.',
+    'gallery.title': 'Inside the shop',
+    'gallery.sub': 'Take a quick look around the shop: models in stock, parts and gear. Tap any photo to view it full size.',
     'gallery.filterLabel': 'Filter photos',
     'gallery.all': 'All',
     'gallery.baja': 'Baja',
@@ -526,8 +537,9 @@ window.VOLT_I18N = {
     'gallery.drift': 'Drift & rally',
     'gallery.shop': 'Shop',
     'gallery.parts': 'Parts',
+    'gallery.boats': 'Boats',
+    'gallery.tools': 'Tools',
     'gallery.open': 'View full size: {x}',
-    'fromShop': 'From our shop',
     'gallery.more': 'Show more ({n})',
     'lb.title': 'Photo viewer',
     'lb.prev': 'Previous photo',
@@ -543,7 +555,7 @@ window.VOLT_I18N = {
     'why.f2.title': 'Spare parts on request',
     'why.f2.text': 'Parts for the best-known Baja and off-road brands, plus tyres, bodies and batteries — just send us the model and the part you need.',
     'why.f3.title': 'Order easily on WhatsApp',
-    'why.f3.text': 'Add what you want to your inquiry list and send it in one message — Hamdy replies with price and availability.',
+    'why.f3.text': 'Add what you want to your inquiry list and send it in one message — we reply with price and availability.',
     'why.f4.title': 'Cash on delivery',
     'why.f4.text': 'Pay in cash on delivery. Delivery across Egypt — shipping details on contact.',
 
@@ -555,24 +567,24 @@ window.VOLT_I18N = {
     'about.eyebrow': 'About the shop',
     'about.imgAlt': 'RC cars at the RC World Egypt shop',
     'about.partsLabel': 'Spare parts for:',
-    'about.cta': 'Contact Hamdy',
+    'about.cta': 'Contact us',
     'comm.eyebrow': 'Community',
     'comm.title': 'The RC World Egypt community',
-    'comm.f1': '690+ members in our Facebook group',
-    'comm.f2': 'Run by Hamdy since May 2025',
-    'comm.f3': 'Every gallery photo is straight from our shop',
-    'comm.cta': 'Join the group',
-    'comm.stripLabel': 'Photos from our shop',
+    'comm.f1': '690+ hobbyists in our Facebook community',
+    'comm.f2': 'We share tips, setups and new arrivals',
+    'comm.f3': 'Advice before you buy',
+    'comm.cta': 'Join the community',
+    'comm.stripLabel': 'Around the shop',
 
     /* Contact */
     'contact.eyebrow': 'Contact',
-    'contact.title': 'Talk to Hamdy directly',
+    'contact.title': 'Contact the RC World Egypt owner directly',
     'contact.sub': 'Ask about price and availability or send your inquiry list — call us or message us on WhatsApp.',
-    'contact.call': 'Call Hamdy',
+    'contact.call': 'Call us',
     'contact.whatsapp': 'WhatsApp',
     'contact.whatsappSub': 'Message us directly',
-    'contact.facebook': 'Join our Facebook group',
-    'contact.facebookSub': 'Join and follow what’s new',
+    'contact.facebook': 'Our Facebook community',
+    'contact.facebookSub': 'Join fellow hobbyists',
     'contact.address': 'Address',
     'contact.addressValue': 'Sheikh Zayed City, 6th of October, Greater Cairo, Egypt',
     'contact.mapTitle': 'Map: Sheikh Zayed City, Giza, Egypt',
@@ -600,7 +612,7 @@ window.VOLT_I18N = {
 
     /* WhatsApp message templates (plain text) */
     'wa.price': 'Price for {name}?',
-    'wa.contactIntro': 'Hi Hamdy, a message from the RC World Egypt website:',
+    'wa.contactIntro': 'Hello RC World Egypt, a message from the website:',
     'wa.contactName': 'Name: {x}',
     'wa.contactPhone': 'Phone: {x}',
     'wa.contactTopic': 'Topic: {x}',
@@ -625,7 +637,7 @@ window.VOLT_I18N = {
     'list.empty': 'Your list is empty — add anything you like from the shop!',
     'list.emptyText': 'Start with Baja, off-road or foam planes, then contact us for price and availability.',
     'list.emptyCta': 'Browse the shop',
-    'list.note': 'Hamdy will confirm price and availability',
+    'list.note': 'We\'ll confirm price and availability',
     'list.checkout': 'Contact us to order',
     'list.remove': 'Remove {name} from the list',
     'list.inc': 'Increase quantity of {name}',
@@ -644,7 +656,7 @@ window.VOLT_I18N = {
     'footer.blurb': 'RC World Egypt is an RC hobby store in Egypt — Baja, off-road and foam trainer planes, plus drift, parts and batteries.',
     'footer.contact': 'Contact',
     'footer.follow': 'Follow us',
-    'footer.facebook': 'Our Facebook group',
+    'footer.facebook': 'Our Facebook community',
     'footer.whatsappIcon': 'WhatsApp',
     'footer.shop': 'Shop',
     'footer.help': 'Help',

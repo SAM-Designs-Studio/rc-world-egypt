@@ -4,12 +4,12 @@
    Vanilla JS, no modules / no build step (works from file://).
    Depends on (loaded before this file, all with <script defer>):
      i18n.js         → window.VOLT_I18N
-     photos.js       → window.SHOP_PHOTOS  (Hamdy's real shop photos)
+     photos.js       → window.SHOP_PHOTOS  (the shop's photo library)
      photo-sizes.js  → window.SHOP_PHOTO_SIZES
      products.js     → window.VOLT_PRODUCTS / VOLT_CATEGORIES / VOLT_BRANDS / VOLT_FEATURED
    (The VOLT_* / volt.* names are internal identifiers only — never shown to visitors.)
 
-   This is a real shop without online payment: there are no prices on the
+   The shop takes no online payment: there are no prices on the
    site. Visitors build an inquiry list, then contact Hamdy by phone or
    WhatsApp, who confirms price, availability and shipping.
    ========================================================================== */
@@ -33,7 +33,6 @@
   const SIZES = window.SHOP_PHOTO_SIZES || {};
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
   const LEVELS = ['beginner', 'intermediate', 'pro'];
-  const GALLERY_GROUPS = ['shop', 'baja', 'offroad', 'drift', 'planes', 'parts'];
 
   const WA_NUMBER = '201003130449';   // Hamdy — WhatsApp (wa.me format)
   const PAGE_SIZE = 12;                // products per "page" in the grid
@@ -46,22 +45,22 @@
   const desktopFilters = window.matchMedia('(min-width: 1024px)');
   const YEAR = new Date().getFullYear();
 
-  /* ---------- Real shop photos ---------- */
+  /* ---------- Shop photo library ---------- */
   const PHOTOS = (window.SHOP_PHOTOS || []).map((p) => {
     const key = p.cat + '-' + p.id;
     const d = SIZES[key] || [600, 450, 1280, 960];
-    return { key: key, cat: p.cat, post: String(p.post || '').trim(), full: p.full, thumb: p.thumb, tw: d[0], th: d[1], fw: d[2], fh: d[3] };
+    return { key: key, cat: p.cat, title: String(p.post || '').trim(), full: p.full, thumb: p.thumb, tw: d[0], th: d[1], fw: d[2], fh: d[3] };
   });
   const photoByKey = new Map(PHOTOS.map((p) => [p.key, p]));
 
-  /** Product images: real photos (by key) or illustrative stock images. */
+  /** Product images: shop photos (by key) or stock photos of the item type (no photo → category icon). */
   PRODUCTS.forEach((p) => {
     if (p.photos && p.photos.length) {
       p._imgs = p.photos.map((k) => photoByKey.get(k)).filter(Boolean).map((ph) => ({
-        src: ph.full, thumb: ph.thumb, tw: ph.tw, th: ph.th, fw: ph.fw, fh: ph.fh, real: true
+        src: ph.full, thumb: ph.thumb, tw: ph.tw, th: ph.th, fw: ph.fw, fh: ph.fh
       }));
     } else {
-      p._imgs = (p.images || []).map((im) => ({ src: im.src, thumb: im.thumb, tw: 600, th: 400, fw: 1200, fh: 800, real: false }));
+      p._imgs = (p.images || []).map((im) => ({ src: im.src, thumb: im.thumb, tw: 600, th: 400, fw: 1200, fh: 800 }));
     }
   });
 
@@ -285,7 +284,9 @@
   const pModelText = (p) => iso(p.model);
   /** Full plain-text name for alt text: Arabic descriptor first, so the line stays RTL. */
   const pLabel = (p) => (state.lang === 'en' ? p.model + ' — ' + p.name_en : p.name_ar + ' ' + iso(p.model));
-  const pImages = (p) => (p._imgs && p._imgs.length ? p._imgs : [{ src: '', thumb: '', tw: 600, th: 450, fw: 1200, fh: 900, real: true }]);
+  const pImages = (p) => (p._imgs && p._imgs.length ? p._imgs : [{ src: '', thumb: '', tw: 600, th: 450, fw: 1200, fh: 900, none: true }]);
+  /** <img> for a product image, or '' when the product has no photo (the category icon behind it shows instead). */
+  const imgTag = (im, attrs, large) => (im.none ? '' : '<img src="' + esc(large ? (im.src || im.thumb) : (im.thumb || im.src)) + '" ' + attrs + '>');
 
   /** Localise a spec value ({ar, en} objects; strings shown as-is). */
   function specValue(v) {
@@ -293,10 +294,10 @@
     return String(v);
   }
 
-  const HIGHLIGHT_KEYS = ['power', 'drive', 'cells', 'build', 'channels', 'wing', 'extras', 'compat', 'version', 'use'];
+  const HIGHLIGHT_KEYS = ['power', 'drive', 'cells', 'hull', 'build', 'channels', 'wing', 'sizes', 'extras', 'compat', 'version', 'use'];
   const SPEC_ICON = {
     power: 'i-bolt', drive: 'i-gauge', cells: 'i-cat-parts', version: 'i-wrench', build: 'i-check',
-    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler'
+    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler', sizes: 'i-ruler', hull: 'i-cat-boats'
   };
   const highlights = (p, n) => HIGHLIGHT_KEYS.filter((k) => p.specs && p.specs[k] != null).slice(0, n || 2);
 
@@ -341,11 +342,6 @@
       '</a></div>';
   }
 
-  /** Tag only on illustrative (stock) photos — real shop photos carry none. */
-  const illusTagHTML = (img) => (img && img.real ? '' :
-    '<span class="illus-tag" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg><span>' + esc(t('illus')) + '</span></span>');
-  const shopBadgeHTML = () =>
-    '<span class="shop-badge" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg><span>' + esc(t('fromShop')) + '</span></span>';
 
   /** Normalise text for forgiving AR/EN search (diacritics, alef forms, digits). */
   function norm(s) {
@@ -695,10 +691,9 @@
       '<article class="pcard__inner" aria-labelledby="pn-' + p.id + ' pt-' + p.id + '">' +
         '<div class="pcard__media">' +
           '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-          '<img src="' + esc(img.thumb || img.src) + '" width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt="' + esc(pLabel(p)) + '">' +
+          imgTag(img, 'width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt="' + esc(pLabel(p)) + '"') +
           '<span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span>' +
-          illusTagHTML(img) +
-          (count > 1 && img.real ? '<span class="photo-count" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg>' + fmt(count) + '</span>' : '') +
+          (count > 1 ? '<span class="photo-count" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg>' + fmt(count) + '</span>' : '') +
           '<button class="pcard__quick" type="button" data-quick="' + p.id + '">' +
             '<svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span>' + esc(t('card.quick')) + '</span>' +
             '<span class="sr-only">: ' + model + '</span></button>' +
@@ -820,8 +815,7 @@
       '<div class="qv__gallery">' +
         '<div class="qv__media">' +
           '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-          '<img id="qvMainImg" src="' + esc(main.src || main.thumb) + '" width="' + main.fw + '" height="' + main.fh + '" alt="' + esc(pLabel(p)) + '">' +
-          '<span id="qvTag">' + illusTagHTML(main) + '</span>' +
+          imgTag(main, 'id="qvMainImg" width="' + main.fw + '" height="' + main.fh + '" alt="' + esc(pLabel(p)) + '"', true) +
           '<span class="qv__scan" aria-hidden="true"></span>' +
         '</div>' +
         thumbs +
@@ -860,8 +854,6 @@
     const im = imgs[qvImg];
     const main = $('#qvMainImg', el.qvContent);
     if (main) { main.src = im.src || im.thumb; main.width = im.fw; main.height = im.fh; }
-    const tag = $('#qvTag', el.qvContent);
-    if (tag) tag.innerHTML = illusTagHTML(im);
     $$('.qv__thumb', el.qvContent).forEach((b, k) => b.setAttribute('aria-pressed', k === qvImg ? 'true' : 'false'));
   }
 
@@ -889,7 +881,7 @@
     const img = pImages(p)[0];
     return '<li class="cline" data-id="' + p.id + '">' +
       '<div class="cline__img"><svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-        '<img src="' + esc(img.thumb || img.src) + '" width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt=""></div>' +
+        imgTag(img, 'width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt=""') + '</div>' +
       '<div class="cline__info">' +
         '<p class="cline__name">' + pModelHTML(p) + '</p>' +
         '<p class="cline__type">' + esc(pType(p)) + '</p>' +
@@ -1035,7 +1027,8 @@
   let toastTimer = null;
   function showToast(p) {
     const img = pImages(p)[0];
-    el.toastImg.src = img.thumb || img.src;
+    el.toastImg.hidden = !!img.none;
+    if (!img.none) el.toastImg.src = img.thumb || img.src;
     el.toastName.innerHTML = pModelHTML(p);
     el.toast.classList.add('is-show');
     window.clearTimeout(toastTimer);
@@ -1088,7 +1081,7 @@
         const img = pImages(p)[0];
         return '<li><button type="button" class="sresult" data-quick="' + p.id + '">' +
           '<span class="sresult__img"><svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-          '<img src="' + esc(img.thumb || img.src) + '" width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt=""></span>' +
+          imgTag(img, 'width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt=""') + '</span>' +
           '<span class="sresult__text"><span class="sresult__name">' + pModelHTML(p) + '</span>' +
           '<span class="sresult__meta">' + esc(pType(p)) + '</span></span>' +
           '<span class="sresult__price">' + esc(t('price.ask')) + '</span>' +
@@ -1133,12 +1126,12 @@
   }
 
   /* ======================================================================
-     14. Gallery (Hamdy's real photos) + lightbox
+     14. Gallery (inside the shop) + lightbox
      ====================================================================== */
   const galleryList = () => PHOTOS.filter((g) => state.gFilter === 'all' || g.cat === state.gFilter);
-  /* Captions come from Hamdy's post titles, tidied (spelling / "for sale" dropped).
-     A string = English model/brand names (isolated with <bdi>); [ar, en] = localised
-     trusted markup; '' = generic title → the category name alone. */
+  /* Photo captions: tidy model / brand names per photo group (keys = the
+     group titles in photos.js). A string = English model/brand names (isolated
+     with <bdi>); [ar, en] = localised trusted markup; '' = category name alone. */
   const L = (s) => '<bdi dir="ltr">' + s + '</bdi>';
   const CAPTIONS = {
     'Shop': '', 'Rc car': '', '': '',
@@ -1179,10 +1172,31 @@
     'Rc Tires 1/5 1/8 1/10 1/16': ['إطارات بمقاسات ' + L('1/5 · 1/8 · 1/10 · 1/16'), 'Tires 1/5 · 1/8 · 1/10 · 1/16'],
     'Proline badlands 1/5 x maxx': 'Pro-Line Badlands · X-Maxx',
     'battery': ['بطاريات', 'Batteries'],
-    'Body': ['هياكل', 'Bodies']
+    'Body': ['هياكل', 'Bodies'],
+    'Hex drivers 1.5-3.0 mm': ['مفكات سداسية ' + L('1.5–3.0 mm'), 'Hex drivers 1.5–3.0 mm'],
+    'Hex driver set': ['طقم مفكات سداسية', 'Hex driver set'],
+    'Driver set': ['طقم مفكات', 'Driver set'],
+    'CellMeter 8': 'CellMeter 8',
+    'Digital tachometer': ['عدّاد لفات رقمي', 'Digital tachometer'],
+    'Glow plug driver': ['مفتاح شمعات جلو', 'Glow plug driver'],
+    'Glow igniter': ['مشعل شمعات جلو', 'Glow igniter'],
+    'Charge leads': ['أسلاك شحن متعددة', 'Multi charge leads'],
+    'Servo extension leads': ['وصلات تمديد سيرفو', 'Servo extension leads'],
+    'Curved body scissors': ['مقص هياكل منحني', 'Curved body scissors'],
+    'Plane accessories': ['إكسسوارات طائرات', 'RC plane accessories'],
+    'Plane wheels': ['عجلات طائرات', 'Plane wheels'],
+    'Spinners': ['سبينرات للمراوح', 'Propeller spinners'],
+    'Fuel tubing': ['خراطيم وقود', 'Fuel tubing'],
+    'Fuel tanks': ['خزانات وقود', 'Fuel tanks'],
+    'Glow plugs': ['شمعات جلو', 'Glow plugs'],
+    'Control horns & hinges': ['قرون تحكم ومفصلات', 'Control horns & hinges'],
+    'Pushrods & linkages': ['أذرع ووصلات تحكم', 'Pushrods & linkages'],
+    'Linkage hardware': ['مسامير ووصلات', 'Linkage hardware'],
+    'Traxxas M41': 'Traxxas M41 6S',
+    'Traxxas TQi transmitter': ['جهاز تحكم ' + L('Traxxas TQi'), 'Traxxas TQi transmitter']
   };
   function photoCaptionHTML(g) {
-    const c = Object.prototype.hasOwnProperty.call(CAPTIONS, g.post) ? CAPTIONS[g.post] : g.post;
+    const c = Object.prototype.hasOwnProperty.call(CAPTIONS, g.title) ? CAPTIONS[g.title] : g.title;
     const cap = Array.isArray(c) ? c[state.lang === 'en' ? 1 : 0] : (c ? ltrHTML(c) : '');
     return esc(t('gallery.' + g.cat)) + (cap ? ' — ' + cap : '');
   }
@@ -1191,7 +1205,6 @@
     return '<li class="gitem" style="--i:' + (i % 12) + '">' +
       '<button type="button" class="gitem__btn" data-lb-index="' + i + '" aria-label="' + esc(tt('gallery.open', { x: plain(photoCaptionHTML(g)) })) + '">' +
         '<img src="' + esc(g.thumb) + '" width="' + g.tw + '" height="' + g.th + '" loading="lazy" decoding="async" alt="">' +
-        shopBadgeHTML() +
         '<span class="gitem__tag" aria-hidden="true">' + esc(t('gallery.' + g.cat)) + '</span>' +
         '<span class="gitem__zoom" aria-hidden="true"><svg class="icon"><use href="#i-expand"/></svg></span>' +
       '</button>' +

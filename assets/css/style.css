@@ -3598,3 +3598,6 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
   .announce__track { animation: none !important; }
   .announce__list:not(:first-child) { display: none; }
 }
+
+/* Keep English brand/product names in one piece inside headings (no "RC / World Egypt" split) */
+:is(h1, h2, h3) bdi { white-space: nowrap; }

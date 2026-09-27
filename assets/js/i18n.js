@@ -299,7 +299,7 @@ window.VOLT_I18N = {
     'form.messagePh': 'اكتب سؤالك هنا…',
     'form.submit': 'إرسال عبر واتساب',
     'form.errRequired': 'هذا الحقل مطلوب',
-    'form.errPhone': 'أدخل رقم هاتف محمول مصري صحيح من 11 رقمًا، يبدأ بأحد الأرقام 010 أو 011 أو 012 أو 015',
+    'form.errPhone': 'أدخل رقم محمول مصري صحيح يبدأ بـ ⁨+20⁩، مثل ⁨+20 10 1234 5678⁩',
     'form.errName': 'الاسم قصير جدًا (حرفان على الأقل)',
     'form.errMsg': 'الرسالة قصيرة جدًا (10 أحرف على الأقل)',
 
@@ -642,7 +642,7 @@ window.VOLT_I18N = {
     'form.messagePh': 'Type your question here…',
     'form.submit': 'Send via WhatsApp',
     'form.errRequired': 'This field is required',
-    'form.errPhone': 'Enter a valid Egyptian mobile number: 11 digits starting with 010, 011, 012 or 015',
+    'form.errPhone': 'Enter a valid Egyptian mobile number starting with +20, e.g. +20 10 1234 5678',
     'form.errName': 'Name is too short (at least 2 characters)',
     'form.errMsg': 'Message is too short (at least 10 characters)',
 

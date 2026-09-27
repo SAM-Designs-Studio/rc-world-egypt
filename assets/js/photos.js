@@ -1533,5 +1533,145 @@ window.SHOP_PHOTOS = [
   "post": "Traxxas TQi transmitter",
   "full": "assets/img/shop/full/boats-227.jpg",
   "thumb": "assets/img/shop/thumb/boats-227.jpg"
+ },
+ {
+  "id": "n19",
+  "cat": "baja",
+  "post": "HPI Baja 5B",
+  "full": "assets/img/shop/full/baja-n19.jpg",
+  "thumb": "assets/img/shop/thumb/baja-n19.jpg"
+ },
+ {
+  "id": "n04",
+  "cat": "offroad",
+  "post": "FG 1/6 Monster Truck",
+  "full": "assets/img/shop/full/offroad-n04.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n04.jpg"
+ },
+ {
+  "id": "n01",
+  "cat": "offroad",
+  "post": "FG 1/6 Monster Truck",
+  "full": "assets/img/shop/full/offroad-n01.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n01.jpg"
+ },
+ {
+  "id": "n06",
+  "cat": "offroad",
+  "post": "Arrma Kraton 6S",
+  "full": "assets/img/shop/full/offroad-n06.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n06.jpg"
+ },
+ {
+  "id": "n18",
+  "cat": "offroad",
+  "post": "Arrma Kraton 6S",
+  "full": "assets/img/shop/full/offroad-n18.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n18.jpg"
+ },
+ {
+  "id": "n09",
+  "cat": "offroad",
+  "post": "Traxxas Slash VXL",
+  "full": "assets/img/shop/full/offroad-n09.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n09.jpg"
+ },
+ {
+  "id": "n10",
+  "cat": "offroad",
+  "post": "Traxxas TRX-4M High Trail",
+  "full": "assets/img/shop/full/offroad-n10.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n10.jpg"
+ },
+ {
+  "id": "n17",
+  "cat": "offroad",
+  "post": "Arrma Big Rock 6S",
+  "full": "assets/img/shop/full/offroad-n17.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n17.jpg"
+ },
+ {
+  "id": "n14",
+  "cat": "offroad",
+  "post": "Arrma Kraton EXB Roller",
+  "full": "assets/img/shop/full/offroad-n14.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n14.jpg"
+ },
+ {
+  "id": "n12",
+  "cat": "offroad",
+  "post": "Arrma Kraton EXB Roller",
+  "full": "assets/img/shop/full/offroad-n12.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n12.jpg"
+ },
+ {
+  "id": "n13",
+  "cat": "offroad",
+  "post": "Arrma Kraton EXB Roller",
+  "full": "assets/img/shop/full/offroad-n13.jpg",
+  "thumb": "assets/img/shop/thumb/offroad-n13.jpg"
+ },
+ {
+  "id": "n03",
+  "cat": "boats",
+  "post": "Pro Boat Blackjack 42",
+  "full": "assets/img/shop/full/boats-n03.jpg",
+  "thumb": "assets/img/shop/thumb/boats-n03.jpg"
+ },
+ {
+  "id": "n02",
+  "cat": "electronics",
+  "post": "Spektrum DX8 + AR8010T",
+  "full": "assets/img/shop/full/electronics-n02.jpg",
+  "thumb": "assets/img/shop/thumb/electronics-n02.jpg"
+ },
+ {
+  "id": "n20",
+  "cat": "electronics",
+  "post": "Traxxas Link",
+  "full": "assets/img/shop/full/electronics-n20.jpg",
+  "thumb": "assets/img/shop/thumb/electronics-n20.jpg"
+ },
+ {
+  "id": "n16",
+  "cat": "drift",
+  "post": "Panther touring car",
+  "full": "assets/img/shop/full/drift-n16.jpg",
+  "thumb": "assets/img/shop/thumb/drift-n16.jpg"
+ },
+ {
+  "id": "n11",
+  "cat": "parts",
+  "post": "Zenoah G320RC",
+  "full": "assets/img/shop/full/parts-n11.jpg",
+  "thumb": "assets/img/shop/thumb/parts-n11.jpg"
+ },
+ {
+  "id": "n05",
+  "cat": "parts",
+  "post": "Zenoah G320RC",
+  "full": "assets/img/shop/full/parts-n05.jpg",
+  "thumb": "assets/img/shop/thumb/parts-n05.jpg"
+ },
+ {
+  "id": "n08",
+  "cat": "parts",
+  "post": "DDM petrol engine",
+  "full": "assets/img/shop/full/parts-n08.jpg",
+  "thumb": "assets/img/shop/thumb/parts-n08.jpg"
+ },
+ {
+  "id": "n07",
+  "cat": "parts",
+  "post": "DDM petrol engine",
+  "full": "assets/img/shop/full/parts-n07.jpg",
+  "thumb": "assets/img/shop/thumb/parts-n07.jpg"
+ },
+ {
+  "id": "n15",
+  "cat": "parts",
+  "post": "LiPo 4S 1500mAh 100C",
+  "full": "assets/img/shop/full/parts-n15.jpg",
+  "thumb": "assets/img/shop/thumb/parts-n15.jpg"
  }
 ];

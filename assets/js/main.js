@@ -314,10 +314,10 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     return String(v);
   }
 
-  const HIGHLIGHT_KEYS = ['power', 'drive', 'cells', 'hull', 'build', 'channels', 'wing', 'sizes', 'extras', 'compat', 'version', 'use'];
+  const HIGHLIGHT_KEYS = ['power', 'drive', 'cells', 'hull', 'build', 'channels', 'system', 'plug', 'wing', 'sizes', 'extras', 'compat', 'version', 'radio', 'use'];
   const SPEC_ICON = {
     power: 'i-bolt', drive: 'i-gauge', cells: 'i-cat-parts', version: 'i-wrench', build: 'i-check',
-    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler', sizes: 'i-ruler', hull: 'i-cat-boats'
+    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler', sizes: 'i-ruler', hull: 'i-cat-boats', radio: 'i-cat-electronics', system: 'i-cat-electronics', plug: 'i-bolt'
   };
   const highlights = (p, n) => HIGHLIGHT_KEYS.filter((k) => p.specs && p.specs[k] != null).slice(0, n || 2);
 
@@ -1213,6 +1213,9 @@ const BANK_DETAILS = { bankName: '', accountName: '', accountNumber: '', iban: '
     'Pushrods & linkages': ['أذرع ووصلات تحكم', 'Pushrods & linkages'],
     'Linkage hardware': ['مسامير ووصلات', 'Linkage hardware'],
     'Traxxas M41': 'Traxxas M41 6S',
+    'FG 1/6 Monster Truck': ['شاحنة مونستر ' + L('FG 1/6'), 'FG 1/6 monster truck'],
+    'Panther touring car': ['سيارة سياحية ' + L('Panther'), 'Panther touring car'],
+    'DDM petrol engine': ['محرك بنزين ' + L('DDM'), 'DDM petrol engine'],
     'Traxxas TQi transmitter': ['جهاز تحكم ' + L('Traxxas TQi'), 'Traxxas TQi transmitter']
   };
   function photoCaptionHTML(g) {

@@ -98,9 +98,11 @@ window.VOLT_I18N = {
     'cat.parts': 'قطع غيار وبطاريات',
     'cat.boats': 'قوارب',
     'cat.tools': 'عدد وأدوات',
+    'cat.electronics': 'أجهزة تحكم وإلكترونيات',
     'cat.parts.tag': 'قطع غيار، إطارات، هياكل وبطاريات',
     'cat.boats.tag': 'قوارب سباق كهربائية',
     'cat.tools.tag': 'مفكات وأدوات ضبط، شواحن وأجهزة فحص، وأدوات النيترو والبنزين',
+    'cat.electronics.tag': 'أجهزة تحكم ورسيفرات ووحدات تليمتري',
     'brands.label': 'علامات نتعامل معها',
 
     /* Shop */
@@ -182,6 +184,9 @@ window.VOLT_I18N = {
     'spec.cells': 'عدد الخلايا',
     'spec.compat': 'متوافق مع',
     'spec.hull': 'البدن',
+    'spec.plug': 'الفيشة',
+    'spec.system': 'النظام',
+    'spec.radio': 'جهاز التحكم',
     'spec.sizes': 'المقاسات',
     'spec.level': 'مستوى المهارة',
 
@@ -215,6 +220,7 @@ window.VOLT_I18N = {
     'gallery.parts': 'قطع غيار',
     'gallery.boats': 'قوارب',
     'gallery.tools': 'عدد وأدوات',
+    'gallery.electronics': 'أجهزة تحكم وإلكترونيات',
     'gallery.open': 'عرض الصورة بالحجم الكامل: {x}',
     'gallery.more': 'عرض المزيد ({n})',
     'lb.title': 'عارض الصور',
@@ -435,9 +441,11 @@ window.VOLT_I18N = {
     'cat.parts': 'Parts & batteries',
     'cat.boats': 'Boats',
     'cat.tools': 'Tools',
+    'cat.electronics': 'Radios & electronics',
     'cat.parts.tag': 'Parts, tyres, bodies & batteries',
     'cat.boats.tag': 'Electric race boats',
     'cat.tools.tag': 'Drivers, setup tools, chargers, checkers, nitro & petrol tools',
+    'cat.electronics.tag': 'Radios, receivers & telemetry modules',
     'brands.label': 'Brands we deal in',
 
     /* Shop */
@@ -519,6 +527,9 @@ window.VOLT_I18N = {
     'spec.cells': 'Cells',
     'spec.compat': 'Compatible with',
     'spec.hull': 'Hull',
+    'spec.plug': 'Connector',
+    'spec.system': 'System',
+    'spec.radio': 'Radio',
     'spec.sizes': 'Sizes',
     'spec.level': 'Skill level',
 
@@ -552,6 +563,7 @@ window.VOLT_I18N = {
     'gallery.parts': 'Parts',
     'gallery.boats': 'Boats',
     'gallery.tools': 'Tools',
+    'gallery.electronics': 'Radios & electronics',
     'gallery.open': 'View full size: {x}',
     'gallery.more': 'Show more ({n})',
     'lb.title': 'Photo viewer',

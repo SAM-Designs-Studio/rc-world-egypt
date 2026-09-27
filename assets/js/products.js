@@ -22,7 +22,7 @@
    Product shape:
      id, model (English, both languages), brands [..], name_ar / name_en
      (descriptor), desc_ar / desc_en, category (baja | offroad | planes |
-     drift | parts | tools | boats), scales [..], level, featured (sort weight), inStock,
+     drift | parts | tools | electronics | boats), scales [..], level, featured (sort weight), inStock,
      price (null), specs, tags, photos [..] | images [{ src, thumb }] | art
    ========================================================================== */
 
@@ -53,11 +53,12 @@
     { id: 'drift' },
     { id: 'parts' },
     { id: 'tools' },
+    { id: 'electronics' },
     { id: 'boats' }
   ];
 
   /* ---------- Brands the shop deals in (shown as text only — no logos) ---------- */
-  window.VOLT_BRANDS = ['Losi', 'Arrma', 'Traxxas', 'HPI', 'Rovan', 'King Motor', 'FG', 'Rofun', 'MST', 'HSP', 'Xray', 'Kyosho', 'Thunder Tiger'];
+  window.VOLT_BRANDS = ['Losi', 'Arrma', 'Traxxas', 'HPI', 'Rovan', 'King Motor', 'FG', 'Rofun', 'MST', 'HSP', 'Xray', 'Kyosho', 'Thunder Tiger', 'Spektrum', 'Pro Boat', 'Zenoah', 'DDM'];
 
   var PETROL = { ar: 'بنزين', en: 'Petrol' };
   var ELECTRIC = { ar: 'كهربائي', en: 'Electric' };
@@ -116,8 +117,8 @@
       desc_en: 'A big 1/6-scale petrol monster truck with two-wheel drive, from FG.' + CONTACT_EN,
       category: 'baja', scales: ['1/6'], level: 'pro', featured: 91, inStock: true, price: null,
       specs: { power: PETROL, drive: '2WD' },
-      tags: ['fg', 'monster', 'truck', 'petrol', 'مونستر', 'بنزين'],
-      photos: range('baja', 214, 218)
+      tags: ['jeep', 'rubicon', 'led', 'fg', 'monster', 'truck', 'petrol', 'مونستر', 'بنزين'],
+      photos: ['offroad-n04', 'offroad-n01'].concat(range('baja', 214, 218))
     },
     {
       id: 'petrol-chassis-15', model: '1/5 Petrol Chassis', brands: [],
@@ -126,8 +127,8 @@
       desc_en: 'A 1/5-scale petrol chassis — ask us for the details and compatible models.',
       category: 'baja', scales: ['1/5'], level: 'pro', featured: 89, inStock: true, price: null,
       specs: { power: PETROL, version: ASK },
-      tags: ['chassis', 'petrol', 'baja', 'شاسيه', 'بنزين'],
-      photos: ['baja-121', 'baja-122', 'baja-123', 'baja-125']
+      tags: ['baja 5b', 'chassis', 'petrol', 'baja', 'شاسيه', 'بنزين'],
+      photos: ['baja-121', 'baja-122', 'baja-123', 'baja-125', 'baja-n19']
     },
 
     /* ===== Off-road ===== */
@@ -150,6 +151,26 @@
       specs: { power: ELECTRIC, drive: '4WD', cells: '4S' },
       tags: ['traxxas', 'maxx', 'monster', 'electric', 'مونستر', 'تراكساس'],
       photos: ['offroad-028', 'offroad-029', 'offroad-031']
+    },
+    {
+      id: 'traxxas-slash-vxl', model: 'Traxxas Slash VXL', brands: ['Traxxas'],
+      name_ar: 'شاحنة شورت كورس 1/10 بدفع خلفي', name_en: '1/10 2WD Short-Course Truck',
+      desc_ar: 'شاحنة شورت كورس بمقاس 1/10 بدفع خلفي ومحرك براشلس، مع جهاز التحكم TQi.' + CONTACT_AR,
+      desc_en: 'A 1/10-scale two-wheel-drive short-course truck with a brushless motor and the TQi radio.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/10'], level: 'intermediate', featured: 89, inStock: true, price: null,
+      specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, drive: '2WD', radio: 'Traxxas TQi' },
+      tags: ['traxxas', 'slash', 'vxl', 'short course', 'brushless', 'شورت كورس', 'تراكساس'],
+      photos: ['offroad-n09']
+    },
+    {
+      id: 'traxxas-trx4m-high-trail', model: 'Traxxas TRX-4M High Trail Cheyenne', brands: ['Traxxas'],
+      name_ar: 'سيارة كراولر وتريل 1/18', name_en: '1/18 Scale & Trail Crawler',
+      desc_ar: 'سيارة كراولر وتريل صغيرة بمقاس 1/18 بهيكل شاحنة كلاسيكي، للتسلق والطرق الوعرة.' + CONTACT_AR,
+      desc_en: 'A small 1/18-scale scale-and-trail crawler with a classic pickup body, for crawling and rough trails.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/18'], level: 'beginner', featured: 87, inStock: true, price: null,
+      specs: { power: ELECTRIC, drive: '4WD', use: { ar: 'التسلق والطرق الوعرة', en: 'Crawling & trails' } },
+      tags: ['traxxas', 'trx-4m', 'trx4m', 'crawler', 'trail', 'cheyenne', 'كراولر', 'تسلق'],
+      photos: ['offroad-n10']
     },
     {
       id: 'arrma-mojave-6s', model: 'Arrma Mojave 6S 1/7', brands: ['Arrma'],
@@ -179,7 +200,27 @@
       category: 'offroad', scales: ['1/8'], level: 'pro', featured: 82, inStock: true, price: null,
       specs: { power: ELECTRIC, drive: '4WD', cells: '6S' },
       tags: ['arrma', 'kraton', 'truggy', 'electric', 'أرما', 'تراغي'],
-      photos: ['offroad-103', 'offroad-105', 'offroad-229', 'offroad-230']
+      photos: ['offroad-103', 'offroad-105', 'offroad-229', 'offroad-230', 'offroad-n06', 'offroad-n18']
+    },
+    {
+      id: 'arrma-big-rock-6s', model: 'Arrma Big Rock Crew Cab 6S BLX', brands: ['Arrma'],
+      name_ar: 'شاحنة مونستر 1/7 بدفع رباعي جاهزة للتشغيل', name_en: '1/7 4WD Monster Truck RTR',
+      desc_ar: 'شاحنة مونستر بمقاس 1/7 بدفع رباعي ومحرك براشلس تعمل على بطاريات 6S، جاهزة للتشغيل.' + CONTACT_AR,
+      desc_en: 'A 1/7-scale four-wheel-drive brushless monster truck for 6S, ready to run.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/7'], level: 'pro', featured: 90, inStock: true, price: null,
+      specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, drive: '4WD', cells: '6S', version: 'RTR' },
+      tags: ['arrma', 'big rock', 'crew cab', '6s', 'blx', 'monster', 'rtr', 'مونستر', 'أرما'],
+      photos: ['offroad-n17']
+    },
+    {
+      id: 'arrma-kraton-exb-roller', model: 'Arrma Kraton EXB Roller', brands: ['Arrma'],
+      name_ar: 'شاسيه 1/8 بدفع رباعي بدون إلكترونيات', name_en: '1/8 4WD Roller (no electronics)',
+      desc_ar: 'نسخة Full Option Roller: شاسيه كامل بدون محرك أو سيرفو أو جهاز تحكم، لتركّب الإلكترونيات التي تختارها.' + CONTACT_AR,
+      desc_en: 'The Full Option Roller: a complete rolling chassis without motor, servo or radio, so you fit the electronics you choose.' + CONTACT_EN,
+      category: 'offroad', scales: ['1/8'], level: 'pro', featured: 84, inStock: true, price: null,
+      specs: { drive: '4WD', version: { ar: 'رولر بدون إلكترونيات', en: 'Roller — no electronics' } },
+      tags: ['arrma', 'kraton', 'exb', 'roller', 'رولر', 'شاسيه', 'أرما'],
+      photos: ['offroad-n14', 'offroad-n12', 'offroad-n13']
     },
     {
       id: 'arrma-talion-exb-6s', model: 'Arrma Talion EXB 6S 1/7', brands: ['Arrma'],
@@ -485,6 +526,16 @@
       tags: ['body', 'bodies', 'shell', 'drift', 'هيكل', 'بودي', 'درفت'],
       photos: range('drift', 73, 78)
     },
+    {
+      id: 'panther-touring-rtr', model: 'Panther Brushless Touring Car RTR', brands: [],
+      name_ar: 'سيارة سياحية براشلس جاهزة للتشغيل', name_en: 'Brushless On-road Touring Car RTR',
+      desc_ar: 'سيارة سياحية للطرق الممهدة بمحرك براشلس، جاهزة للتشغيل.' + CONTACT_AR,
+      desc_en: 'A brushless on-road touring car, ready to run.' + CONTACT_EN,
+      category: 'drift', scales: [], level: 'intermediate', featured: 60, inStock: true, price: null,
+      specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, version: 'RTR' },
+      tags: ['panther', 'touring', 'on-road', 'brushless', 'rtr', 'سياحية', 'براشلس'],
+      photos: ['drift-n16']
+    },
 
     /* ===== Parts & batteries ===== */
     {
@@ -496,6 +547,26 @@
       specs: { compat: 'HPI · HSP · Xray · Kyosho · Thunder Tiger · Rovan · King Motor' },
       tags: ['parts', 'hpi', 'hsp', 'xray', 'kyosho', 'thunder tiger', 'rovan', 'king motor', 'قطع غيار'],
       photos: ['parts-002', 'parts-003'].concat(range('parts', 59, 62))
+    },
+    {
+      id: 'zenoah-g320rc', model: 'Zenoah G320RC 32cc Engine', brands: ['Zenoah'],
+      name_ar: 'محرك بنزين 32cc لمقاس 1/5', name_en: '1/5 32cc Petrol Engine',
+      desc_ar: 'محرك بنزين 32cc لسيارات 1/5 مع الكلتش والكاربراتير.' + CONTACT_AR,
+      desc_en: 'A 32cc petrol engine for 1/5 cars, with clutch and carburettor.' + CONTACT_EN,
+      category: 'parts', scales: ['1/5'], level: 'pro', featured: 53, inStock: true, price: null,
+      specs: { power: PETROL, extras: { ar: 'كلتش وكاربراتير', en: 'Clutch & carburettor' }, use: { ar: 'سيارات الباجا', en: 'Baja cars' } },
+      tags: ['zenoah', 'g320rc', '32cc', 'engine', 'petrol', 'baja', 'محرك', 'بنزين', 'زينوا'],
+      photos: ['parts-n11', 'parts-n05']
+    },
+    {
+      id: 'ddm-petrol-engine-15', model: 'DDM Petrol Engine for 1/5', brands: ['DDM'],
+      name_ar: 'محرك بنزين لمقاس 1/5 بتشغيل بالشد', name_en: '1/5 Pull-start Petrol Engine',
+      desc_ar: 'محرك بنزين لسيارات 1/5 يعمل بالتشغيل بالشد.' + CONTACT_AR,
+      desc_en: 'A pull-start petrol engine for 1/5 cars.' + CONTACT_EN,
+      category: 'parts', scales: ['1/5'], level: 'pro', featured: 52, inStock: true, price: null,
+      specs: { power: PETROL, extras: { ar: 'تشغيل بالشد', en: 'Pull start' }, use: { ar: 'سيارات الباجا', en: 'Baja cars' } },
+      tags: ['ddm', 'engine', 'petrol', 'pull start', 'baja', 'محرك', 'بنزين'],
+      photos: ['parts-n08', 'parts-n07']
     },
     {
       id: 'arrma-parts-oils', model: 'Arrma Parts & Shock Oils', brands: ['Arrma'],
@@ -546,6 +617,16 @@
       specs: { use: { ar: 'سيارات الأوف رود', en: 'Off-road cars' } },
       tags: ['battery', 'batteries', 'lipo', 'traxxas', 'بطارية', 'بطاريات', 'ليبو'],
       photos: range('parts', 140, 144)
+    },
+    {
+      id: 'lipo-4s-1500-100c', model: 'LiPo 4S 1500mAh 100C', brands: [],
+      name_ar: 'بطارية ليبو 4S', name_en: '4S LiPo battery',
+      desc_ar: 'بطارية ليبو 4S بجهد 14.8 فولت وسعة 1500mAh، بفيشة XT60.' + CONTACT_AR,
+      desc_en: 'A 4S 14.8V 1500mAh LiPo pack with an XT60 plug.' + CONTACT_EN,
+      category: 'parts', scales: [], level: 'intermediate', featured: 47, inStock: true, price: null,
+      specs: { cells: '4S · 14.8V', plug: 'XT60', sizes: '1500mAh · 100C' },
+      tags: ['lipo', '4s', '1500mah', '100c', 'xt60', 'battery', 'بطارية', 'ليبو'],
+      photos: ['parts-n15']
     },
     {
       id: 'bodies-traxxas-fox', model: 'Bodies (Traxxas / Fox)', brands: ['Traxxas'],
@@ -770,6 +851,28 @@
       photos: ['parts-054', 'parts-055', 'parts-056', 'parts-058']
     },
 
+    /* ===== Radios & electronics ===== */
+    {
+      id: 'spektrum-dx8-ar8010t', model: 'Spektrum DX8 + AR8010T Receiver', brands: ['Spektrum'],
+      name_ar: 'جهاز تحكم 8 قنوات مع رسيفر', name_en: '8-channel radio with receiver',
+      desc_ar: 'جهاز تحكم 8 قنوات بتردد 2.4 جيجاهرتز ونظام DSMX مع رسيفر AR8010T، للطائرات والسيارات.' + CONTACT_AR,
+      desc_en: 'An 8-channel 2.4GHz DSMX radio with the AR8010T receiver, for planes and cars.' + CONTACT_EN,
+      category: 'electronics', scales: [], level: 'intermediate', featured: 46, inStock: true, price: null,
+      specs: { channels: '8', system: '2.4GHz DSMX', use: { ar: 'طائرات وسيارات', en: 'Planes & cars' } },
+      tags: ['spektrum', 'dx8', 'ar8010t', 'radio', 'transmitter', 'receiver', 'dsmx', 'ريموت', 'جهاز تحكم', 'رسيفر'],
+      photos: ['electronics-n02']
+    },
+    {
+      id: 'traxxas-link-module', model: 'Traxxas Link Wireless Module', brands: ['Traxxas'],
+      name_ar: 'وحدة بلوتوث لجهاز التحكم', name_en: 'Bluetooth telemetry module',
+      desc_ar: 'وحدة لاسلكية تضيف البلوتوث وقراءات التليمتري إلى جهاز التحكم TQi.' + CONTACT_AR,
+      desc_en: 'A wireless module that adds Bluetooth and telemetry readouts to the TQi radio.' + CONTACT_EN,
+      category: 'electronics', scales: [], level: 'intermediate', featured: 45, inStock: true, price: null,
+      specs: { system: 'Bluetooth', compat: 'Traxxas TQi' },
+      tags: ['traxxas', 'link', 'bluetooth', 'telemetry', 'tqi', 'بلوتوث', 'تليمتري'],
+      photos: ['electronics-n20']
+    },
+
     /* ===== Boats ===== */
     {
       id: 'traxxas-m41-6s', model: 'Traxxas M41 6S', brands: ['Traxxas'],
@@ -780,6 +883,16 @@
       specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, cells: '6S', hull: { ar: 'كاتاماران', en: 'Catamaran' } },
       tags: ['traxxas', 'm41', 'boat', 'catamaran', 'brushless', 'قارب', 'لانش', 'مركب', 'تراكساس'],
       photos: ['boats-225', 'boats-226', 'boats-228', 'boats-224', 'boats-227']
+    },
+    {
+      id: 'proboat-blackjack-42', model: 'Pro Boat Blackjack 42 8S', brands: ['Pro Boat'],
+      name_ar: 'قارب كاتاماران 42 بوصة براشلس', name_en: '42-inch Brushless Catamaran',
+      desc_ar: 'قارب سباق كاتاماران بطول 42 بوصة بمحرك براشلس يعمل على 8S، جاهز للتشغيل مع تقنية Spektrum Smart.' + CONTACT_AR,
+      desc_en: 'A 42-inch brushless catamaran race boat for 8S, ready to run with Spektrum Smart technology.' + CONTACT_EN,
+      category: 'boats', scales: [], level: 'pro', featured: 25, inStock: true, price: null,
+      specs: { power: { ar: 'كهربائي براشلس', en: 'Brushless electric' }, cells: '8S', hull: { ar: 'كاتاماران', en: 'Catamaran' }, version: 'RTR' },
+      tags: ['pro boat', 'proboat', 'blackjack', '42', '8s', 'catamaran', 'spektrum', 'قارب', 'لانش', 'مركب'],
+      photos: ['boats-n03']
     }
   ];
 

@@ -70,7 +70,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   const PHOTOS = (window.SHOP_PHOTOS || []).map((p) => {
     const key = p.cat + '-' + p.id;
     const d = SIZES[key] || [600, 450, 1280, 960];
-    return { key: key, cat: p.cat, title: String(p.post || '').trim(), full: p.full, thumb: p.thumb, tw: d[0], th: d[1], fw: d[2], fh: d[3] };
+    return { key: key, cat: p.cat, title: String(p.post || '').trim(), full: p.full, thumb: p.thumb, tw: d[0], th: d[1], fw: d[2], fh: d[3], inGallery: p.gallery !== false };
   });
   const photoByKey = new Map(PHOTOS.map((p) => [p.key, p]));
 
@@ -1374,7 +1374,9 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   /* ======================================================================
      14. Gallery (inside the shop) + lightbox
      ====================================================================== */
-  const galleryList = () => PHOTOS.filter((g) => state.gFilter === 'all' || g.cat === state.gFilter);
+  // Gallery shows a curated set (photos.js marks zoom/angle repeats with gallery:false); products still use every photo.
+  const GALLERY_PHOTOS = PHOTOS.filter((g) => g.inGallery);
+  const galleryList = () => GALLERY_PHOTOS.filter((g) => state.gFilter === 'all' || g.cat === state.gFilter);
   /* Photo captions: tidy model / brand names per photo group (keys = the
      group titles in photos.js). A string = English model/brand names (isolated
      with <bdi>); [ar, en] = localised trusted markup; '' = category name alone. */
@@ -1471,7 +1473,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     $$('[data-gallery-filter]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.galleryFilter === state.gFilter ? 'true' : 'false'));
     $$('[data-gallery-count]').forEach((n) => {
       const g = n.dataset.galleryCount;
-      n.textContent = fmt(g === 'all' ? PHOTOS.length : PHOTOS.filter((x) => x.cat === g).length);
+      n.textContent = fmt(g === 'all' ? GALLERY_PHOTOS.length : GALLERY_PHOTOS.filter((x) => x.cat === g).length);
     });
   }
 

@@ -4,7 +4,7 @@
 
 **Online store for RC World Egypt, Egypt — designed and developed by Sam**
 
-**[▶ Live site](https://sam-designs-studio.github.io/volt-rc-store/)**
+**[▶ Live site](https://sam-designs-studio.github.io/rc-world-egypt/)**
 
 ![RC World Egypt — desktop](screenshots/desktop.png)
 
@@ -18,9 +18,10 @@ A bilingual (Arabic / English) website for **RC World Egypt**, a specialist RC h
 - **Shop photography**: products, gallery, hero and "About the shop" feature the shop's own photos
 - **Catalogue from well-known brands**: Losi, Arrma, Traxxas, HPI, Rovan, King Motor, FG, Rofun, MST, HSP, Xray, Kyosho and Thunder Tiger, with filters by category, scale, brand and skill level, plus live search and sorting
 - **Order through WhatsApp**: no online payment and no listed prices. Visitors build an inquiry list and send it in one WhatsApp message, or tap "Ask for price" on any product. Payment methods: cash on delivery or bank transfer (CIB), delivery to every governorate
-- **Inside the shop gallery**: 184 photos in 7 categories with "Show more", a full-size lightbox and swipe / arrow-key navigation
-- **Quick view**: a product pop-up with a photo strip and a specs table
+- **Inside the shop gallery**: a curated set of 137 photos in 10 categories (one shot per item, no repeated angles or zooms) with "Show more", a full-size lightbox and swipe / arrow-key navigation
+- **Quick view**: a product pop-up with every photo of that item in a strip and a specs table (125 products)
 - **Videos**: the owner's own clips in 16:9 cards. Muted 8-second previews play only while a card is on screen (never with reduced motion, Save-Data or 2G), and a tap opens a full player with sound and a "View product" link. The list lives in `assets/js/videos.js`
+- **Workshop & maintenance**: a dedicated section for servicing, cleaning, upgrades, lights, tires and rims, carburettor tuning and starter repair, with the workshop's own edited promo video
 - **About us**: the shop story since 2007, animated stats (years, brands, community), a services grid, the owner's message and the brands the shop supplies
 - **Contact**: call, WhatsApp and Facebook community buttons, a Google Maps location and a contact form that opens WhatsApp with the message ready
 - **Community band**: invites hobbyists to the shop's Facebook community to share tips, setups and new arrivals
@@ -40,7 +41,7 @@ HTML5 · CSS3 · vanilla JavaScript: no frameworks, no build step.
 
 ‏RC World Egypt متجر متخصص في سيارات وطائرات الريموت كنترول في مدينة الشيخ زايد منذ 2007. صُمّم الموقع خصيصًا للسوق المصري، من تصميم وتطوير **Sam**.
 
-**[▶ زيارة الموقع](https://sam-designs-studio.github.io/volt-rc-store/)**
+**[▶ زيارة الموقع](https://sam-designs-studio.github.io/rc-world-egypt/)**
 
 ### خدمات المتجر
 
@@ -52,9 +53,10 @@ HTML5 · CSS3 · vanilla JavaScript: no frameworks, no build step.
 - **صور حقيقية من المتجر**: المنتجات والمعرض وواجهة الموقع وقسم «من نحن»، جميعها بصور المتجر نفسه
 - **منتجات من علامات تجارية معروفة**: تصفية حسب القسم والمقاس والعلامة التجارية والمستوى، مع بحث فوري وخيارات للترتيب
 - **الطلب عبر واتساب**: لا دفع إلكتروني ولا أسعار معروضة. يضيف الزائر ما يريده إلى قائمة الطلب ويرسلها في رسالة واتساب واحدة، أو يضغط «اسأل عن السعر» في أي منتج
-- **معرض «من داخل المتجر»**: ‏184 صورة في 7 أقسام، مع زر «اعرض المزيد» وعرض الصور بالحجم الكامل
-- **نظرة سريعة**: نافذة لكل منتج تعرض صوره وجدول مواصفاته
+- **معرض «من داخل المتجر»**: ‏137 صورة مختارة في 10 أقسام، صورة واحدة لكل منتج دون تكرار للزوايا أو اللقطات المقرّبة، مع زر «اعرض المزيد» وعرض الصور بالحجم الكامل
+- **نظرة سريعة**: نافذة لكل منتج تعرض جميع صوره وجدول مواصفاته (‏125 منتجًا)
 - **مقاطع الفيديو**: مقاطع صاحب المتجر في بطاقات بنسبة 16:9، مع معاينة صامتة قصيرة أثناء ظهورها على الشاشة، ومشغّل كامل بالصوت وزر «اعرض المنتج»
+- **الورشة والصيانة**: قسم مخصص للصيانة والتنظيف والتطوير وتركيب الإضاءة واستبدال الإطارات والجنوط وضبط الكاربراتير وإصلاح أنظمة بدء التشغيل، مع فيديو ترويجي من داخل الورشة
 - **من نحن**: قصة المتجر منذ 2007، وأرقام متحركة (سنوات الخبرة والعلامات التجارية وأعضاء المجموعة)، وبطاقات الخدمات، وكلمة صاحب المتجر
 - **التواصل**: أزرار للاتصال وواتساب ومجموعة فيسبوك، وخريطة جوجل، ونموذج تواصل يفتح واتساب والرسالة جاهزة
 - **تصميم متجاوب وسهل الاستخدام**: يعمل على الهواتف المحمولة والشاشات الكبيرة على حد سواء، ويدعم التنقل بلوحة المفاتيح

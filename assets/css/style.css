@@ -1645,7 +1645,8 @@ html[lang="en"] .fgroup__title { text-transform: uppercase; letter-spacing: .12e
   line-height: 1.4;
 }
 .pcard__specs .icon { width: 14px; height: 14px; color: var(--c-volt); }
-.pcard__specs span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* long specs (e.g. engine bore x stroke) wrap inside the chip instead of being cut off on phones */
+.pcard__specs span { min-width: 0; overflow-wrap: break-word; }
 
 .pcard__foot {
   display: flex;

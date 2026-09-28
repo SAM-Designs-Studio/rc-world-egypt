@@ -392,3 +392,7 @@ html.no-js #maintenance:empty { display: none; }
   #maintenance .maint__shot:hover img,
   #maintenance .maint-card:hover .maint-card__media img { transform: none; }
 }
+
+/* Workshop promo video as the main maintenance tile */
+#maintenance .maint__shot--video { background: #000; }
+#maintenance .maint__shot--video video { display: block; width: 100%; height: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #000; }

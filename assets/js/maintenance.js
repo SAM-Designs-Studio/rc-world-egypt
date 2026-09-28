@@ -34,77 +34,78 @@
       nav: 'الصيانة',
       footer: 'خدمات الصيانة',
       eyebrow: 'خدمات الصيانة',
-      title: 'ورشة فاهمة في الموتور',
-      intro: 'عربيتك وقفت، الموتور مش بيدوّر، أو عايز تطلّع منها أكتر؟ في ورشتنا بنشتغل على العربيات والطيارات وموتورات البنزين والنيترو بنفس الاهتمام اللي بنبيع بيه.',
-      collageAlt: 'شاسيه باجا بنزين من غير البودي',
+      title: 'ورشة متخصصة في المحركات',
+      intro: 'توقفت سيارتك، أو لا يعمل المحرك، أو تريد أداءً أعلى؟ في ورشتنا نتعامل مع السيارات والطائرات ومحركات البنزين والنيترو بالعناية نفسها التي نبيع بها.',
+      collageAlt: 'شاسيه باجا بنزين دون الهيكل الخارجي (البودي)',
+      promoLabel: 'فيديو من ورشة RC World Egypt: صيانة كاملة لسيارة 1/5 بنزين',
       chipsLabel: 'أبرز خدمات الصيانة',
       chips: [
-        'صيانة وتنظيف كاملة',
-        'تطويرات وقطع <bdi>Upgrade</bdi>',
+        'صيانة وتنظيف شامل',
+        'ترقيات وقطع <bdi>Upgrade</bdi>',
         'تركيب إضاءة <bdi>LED</bdi>',
-        'تغيير كاوتش وجنوط',
-        'صيانة وضبط الكاربراتير',
-        'إصلاح الإستارتر'
+        'تغيير الإطارات والجنوط',
+        'صيانة الكاربراتير وضبطه',
+        'إصلاح مارش السحب (الإستارتر)'
       ],
       groups: [
         {
-          title: 'عربيات كهرباء',
+          title: 'سيارات كهربائية',
           items: [
-            'تغيير رولمان بلي',
-            'صيانة المساعدين وتغيير الزيت',
-            'صيانة وتزييت الدفرنس',
-            'تغيير التروس وضبط التعشيق',
-            'تركيب وضبط السيرفو',
-            'تركيب وبرمجة الموتور والاسبيد كنترول',
-            'ربط وضبط الريموت',
-            'تركيب وتلحيم أفياش البطاريات',
+            'تغيير المحامل (رولمان بلي)',
+            'صيانة ممتصات الصدمات وتغيير الزيت',
+            'صيانة الترس التفاضلي (الدفرنس) وتزييته',
+            'تغيير التروس وضبط تعشيقها',
+            'تركيب السيرفو وضبطه',
+            'تركيب المحرك ومنظم السرعة (ESC) وبرمجتهما',
+            'ربط جهاز التحكم وضبطه',
+            'تركيب أطراف توصيل البطاريات ولحامها',
             'فحص بطاريات الليبو',
-            'عزل الإلكترونيات ضد المياه'
+            'عزل الإلكترونيات ضد الماء'
           ]
         },
         {
-          title: 'موتورات بنزين ونيترو',
+          title: 'محركات البنزين والنيترو',
           items: [
-            'تنظيف وضبط الكاربراتير',
-            'إصلاح وتغيير الإستارتر',
-            'صيانة الكلتش وجرس الكلتش',
-            'تغيير البوجيه (بنزين أو جلو)',
-            'تنظيف وتغيير فلتر الهوا',
-            'تغيير خراطيم وتنك البنزين',
-            'ضبط وتظبيط الموتور — لموتورات <bdi>Zenoah</bdi> و <bdi>DDM</bdi> و <bdi>Rovan</bdi> وغيرها'
+            'تنظيف الكاربراتير وضبطه',
+            'إصلاح مارش السحب (الإستارتر) أو استبداله',
+            'صيانة القابض (الكلتش) وجرس القابض',
+            'تغيير شمعة الإشعال (البوجيه) لمحركات البنزين أو الجلو',
+            'تنظيف فلتر الهواء أو تغييره',
+            'تغيير خراطيم وخزان الوقود',
+            'ضبط المحرك — لمحركات <bdi>Zenoah</bdi> و <bdi>DDM</bdi> و <bdi>Rovan</bdi> وغيرها'
           ]
         },
         {
-          title: 'ضبط وتطويرات',
+          title: 'الضبط والترقيات',
           items: [
-            'تركيب قطع الـ <bdi>Upgrade</bdi>',
-            'ضبط العفشة (<bdi>Camber</bdi> / <bdi>Toe</bdi> / الارتفاع)',
-            'تغيير وتركيب كاوتش وجنوط',
+            'تركيب قطع الترقية (<bdi>Upgrade</bdi>)',
+            'ضبط التعليق (<bdi>Camber</bdi> / <bdi>Toe</bdi> / الارتفاع)',
+            'تغيير الإطارات والجنوط وتركيبها',
             'تركيب إضاءة <bdi>LED</bdi>',
-            'تركيب وتظبيط البودي',
-            'فحص شامل وتنظيف كامل للعربية'
+            'تركيب الهيكل الخارجي (البودي) وضبطه',
+            'فحص شامل وتنظيف كامل للسيارة'
           ]
         },
         {
-          title: 'طيارات ومحركات',
+          title: 'الطائرات والمحركات',
           items: [
-            'صيانة وضبط موتورات الجلو',
-            'إصلاح السيرفوهات والوصلات',
-            'تركيب وضبط المراوح والسبينر'
+            'صيانة محركات الجلو وضبطها',
+            'إصلاح السيرفو والوصلات',
+            'تركيب المراوح والسبينر وضبطها'
           ]
         }
       ],
       stepsLabel: 'خطوات حجز الصيانة',
       steps: [
-        'ابعتلنا صورة أو فيديو للمشكلة على واتساب',
-        'نتفق على المطلوب',
-        'صيانة على إيد متخصصين'
+        'أرسل صورة أو فيديو للمشكلة عبر واتساب',
+        'نتفق معك على المطلوب',
+        'صيانة على يد متخصصين'
       ],
-      cta: 'احجز صيانة على واتساب',
+      cta: 'احجز موعد صيانة عبر واتساب',
       call: 'اتصل بنا',
       newTab: '(يفتح في صفحة جديدة)',
       // U+2068/U+2069 isolate the Latin store name, like main.js does for WhatsApp text
-      waMsg: 'مرحبًا ⁨RC World Egypt⁩، عايز أحجز صيانة لعربية: '
+      waMsg: 'مرحبًا ⁨RC World Egypt⁩، أرغب في حجز موعد صيانة لسيارة: '
     },
     en: {
       nav: 'Maintenance',
@@ -113,6 +114,7 @@
       title: 'A workshop that knows engines',
       intro: 'Car stopped, engine won\'t fire, or want more out of it? In our workshop we work on cars, planes and petrol & nitro engines with the same care we sell with.',
       collageAlt: 'A petrol Baja chassis with the body off',
+      promoLabel: 'RC World Egypt workshop video: full service of a 1/5 petrol car',
       chipsLabel: 'Service highlights',
       chips: [
         'Full maintenance &amp; cleaning',
@@ -285,9 +287,15 @@
 
     const waHref = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(d.waMsg);
 
-    const collage = COLLAGE.map((p, i) => (
-      '<figure class="maint__shot' + (i === 0 ? ' maint__shot--main' : '') + '"' + (i === 0 ? '' : ' aria-hidden="true"') + '>' +
-        imgTag(p, i === 0 ? '(min-width: 1024px) 640px, 92vw' : '(min-width: 1024px) 210px, 31vw', i === 0 ? d.collageAlt : '') +
+    // The main tile is the workshop promo video (poster first, loads only when played).
+    const promo =
+      '<figure class="maint__shot maint__shot--main maint__shot--video">' +
+        '<video src="assets/video/maintenance-promo.mp4" poster="assets/video/maintenance-promo.jpg" controls playsinline preload="none" ' +
+          'width="1280" height="720" aria-label="' + attr(d.promoLabel) + '"></video>' +
+      '</figure>';
+    const collage = promo + COLLAGE.slice(1).map((p) => (
+      '<figure class="maint__shot" aria-hidden="true">' +
+        imgTag(p, '(min-width: 1024px) 210px, 31vw', '') +
       '</figure>'
     )).join('');
 

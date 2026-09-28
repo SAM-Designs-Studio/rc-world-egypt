@@ -34,8 +34,8 @@
       nav: 'الصيانة',
       footer: 'خدمات الصيانة',
       eyebrow: 'خدمات الصيانة',
-      title: 'صيانة لكل أنواع عربيات الريموت كنترول',
-      intro: 'من التنظيف والتطويرات لحد صيانة موتورات البنزين والنيترو — بنرجّع عربيتك تجري زي الأول وأحسن.',
+      title: 'ورشة فاهمة في الموتور',
+      intro: 'عربيتك وقفت، الموتور مش بيدوّر، أو عايز تطلّع منها أكتر؟ في ورشتنا بنشتغل على العربيات والطيارات وموتورات البنزين والنيترو بنفس الاهتمام اللي بنبيع بيه.',
       collageAlt: 'شاسيه باجا بنزين من غير البودي',
       chipsLabel: 'أبرز خدمات الصيانة',
       chips: [
@@ -110,8 +110,8 @@
       nav: 'Maintenance',
       footer: 'Maintenance service',
       eyebrow: 'Maintenance',
-      title: 'Service for every kind of RC car',
-      intro: 'From cleaning and upgrades to petrol and nitro engine work — we get your car running like new, or better.',
+      title: 'A workshop that knows engines',
+      intro: 'Car stopped, engine won\'t fire, or want more out of it? In our workshop we work on cars, planes and petrol & nitro engines with the same care we sell with.',
       collageAlt: 'A petrol Baja chassis with the body off',
       chipsLabel: 'Service highlights',
       chips: [

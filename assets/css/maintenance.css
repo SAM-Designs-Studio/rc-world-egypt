@@ -1,0 +1,394 @@
+/* ==========================================================================
+   RC World Egypt — Maintenance section
+   Rendered by assets/js/maintenance.js into <section id="maintenance">.
+   Builds on style.css tokens and primitives (.section, .container,
+   .section-head, .eyebrow, .section-title, .section-sub, .btn, [data-reveal]).
+   Everything here is scoped under #maintenance. Logical properties only, so
+   Arabic (RTL) and English (LTR) share the same rules.
+   ========================================================================== */
+
+/* No JS → the placeholder stays empty; don't leave a blank band */
+html.no-js #maintenance:empty { display: none; }
+
+#maintenance {
+  border-top: 1px solid var(--c-line);
+  background:
+    radial-gradient(720px 420px at 100% 0%, rgba(61, 224, 255, .05), transparent 65%),
+    radial-gradient(640px 420px at 0% 100%, rgba(212, 255, 58, .045), transparent 65%);
+}
+[dir="rtl"] #maintenance {
+  background:
+    radial-gradient(720px 420px at 0% 0%, rgba(61, 224, 255, .05), transparent 65%),
+    radial-gradient(640px 420px at 100% 100%, rgba(212, 255, 58, .045), transparent 65%);
+}
+
+/* ---------- Intro + photo collage ---------- */
+#maintenance .maint__intro {
+  display: grid;
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+}
+#maintenance .maint__head { margin-bottom: 0; }
+#maintenance .eyebrow .icon { width: 18px; height: 18px; }
+
+#maintenance .maint__collage {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+#maintenance .maint__shot {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  border: 1px solid var(--c-line);
+  background: var(--c-surface);
+  overflow: hidden;
+}
+#maintenance .maint__shot--main {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius-lg);
+  border-color: var(--c-line-2);
+}
+#maintenance .maint__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+  transition: transform .8s var(--ease-out);
+}
+#maintenance .maint__shot:hover img { transform: scale(1.04); }
+
+/* Viewfinder corners on the main photo (decorative, never over text) */
+#maintenance .maint__shot--main::before,
+#maintenance .maint__shot--main::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--c-volt);
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(212, 255, 58, .45));
+}
+#maintenance .maint__shot--main::before {
+  top: 12px;
+  inset-inline-start: 12px;
+  border-bottom: 0;
+  border-inline-end: 0;
+  border-start-start-radius: 8px;
+}
+#maintenance .maint__shot--main::after {
+  bottom: 12px;
+  inset-inline-end: 12px;
+  border-top: 0;
+  border-inline-start: 0;
+  border-end-end-radius: 8px;
+}
+
+/* ---------- Highlight chips (the owner's six) ---------- */
+#maintenance .maint__chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: clamp(32px, 5vw, 64px);
+}
+#maintenance .maint-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--c-line);
+  background: linear-gradient(180deg, var(--c-surface-2), var(--c-surface));
+  transition: border-color .3s, box-shadow .35s, transform .35s var(--ease-out);
+}
+#maintenance .maint-chip:hover {
+  border-color: rgba(212, 255, 58, .4);
+  box-shadow: 0 22px 44px -30px rgba(212, 255, 58, .5);
+  transform: translateY(-3px);
+}
+#maintenance .maint-chip__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 255, 58, .3);
+  background: radial-gradient(circle at 30% 20%, rgba(212, 255, 58, .22), rgba(212, 255, 58, .04));
+  color: var(--c-volt);
+  transition: transform .5s var(--ease-snap), box-shadow .4s;
+}
+#maintenance .maint-chip__icon .icon { width: 28px; height: 28px; }
+#maintenance .maint-chip:hover .maint-chip__icon {
+  transform: rotate(calc(-8deg * var(--dir))) scale(1.06);
+  box-shadow: 0 0 24px -4px var(--c-volt-glow);
+}
+#maintenance .maint-chip__label {
+  min-width: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+/* ---------- Service group cards ---------- */
+#maintenance .maint__groups {
+  display: grid;
+  gap: 14px;
+  margin-top: clamp(28px, 4vw, 48px);
+}
+#maintenance .maint-card {
+  --mc: var(--c-volt);
+  --mc-rgb: 212, 255, 58;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-line);
+  background: linear-gradient(180deg, var(--c-surface), rgba(20, 23, 28, .5));
+  overflow: hidden;
+  transition: border-color .35s, box-shadow .4s;
+}
+#maintenance .maint-card--electric { --mc: var(--c-ice); --mc-rgb: 61, 224, 255; }
+#maintenance .maint-card--engines { --mc: var(--c-hot); --mc-rgb: 255, 91, 58; }
+#maintenance .maint-card--setup { --mc: var(--c-volt); --mc-rgb: 212, 255, 58; }
+#maintenance .maint-card--planes { --mc: var(--c-amber); --mc-rgb: 255, 181, 71; }
+
+#maintenance .maint-card::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--mc), transparent 75%);
+}
+[dir="rtl"] #maintenance .maint-card::before { background: linear-gradient(270deg, var(--mc), transparent 75%); }
+#maintenance .maint-card:hover {
+  border-color: rgba(var(--mc-rgb), .38);
+  box-shadow: 0 30px 60px -42px rgba(var(--mc-rgb), .55);
+}
+
+#maintenance .maint-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+#maintenance .maint-card__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 1px solid rgba(var(--mc-rgb), .35);
+  background: radial-gradient(circle at 30% 20%, rgba(var(--mc-rgb), .22), rgba(var(--mc-rgb), .04));
+  color: var(--mc);
+}
+#maintenance .maint-card__icon .icon { width: 26px; height: 26px; }
+#maintenance .maint-card__title {
+  min-width: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+#maintenance .maint-card__list { display: grid; gap: 9px; }
+#maintenance .maint-card__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  color: var(--c-text-2);
+  font-size: .95rem;
+  line-height: 1.55;
+}
+#maintenance .maint-card__list li > span { min-width: 0; overflow-wrap: break-word; }
+#maintenance .maint-card__list .icon {
+  width: 18px;
+  height: 18px;
+  margin-top: .2em;
+  color: var(--mc);
+}
+
+/* Photo: on phones a banner on top; from 640px it fills the card's leftover
+   height at the bottom, so cards in a row end level whatever their list length */
+#maintenance .maint-card__media {
+  position: relative;
+  order: -1;
+  margin: -6px -6px 0;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  border: 1px solid var(--c-line);
+  background: var(--c-surface-2);
+  overflow: hidden;
+}
+#maintenance .maint-card__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: calc(100% + var(--trim, 0%)); /* --trim pushes a watermark strip out of view */
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+  transition: transform .8s var(--ease-out);
+}
+#maintenance .maint-card:hover .maint-card__media img { transform: scale(1.04); }
+#maintenance .maint-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(8, 9, 11, .45));
+  pointer-events: none;
+}
+
+/* ---------- Steps + booking CTA ---------- */
+#maintenance .maint__book {
+  margin-top: clamp(28px, 4vw, 48px);
+  padding: clamp(16px, 3vw, 32px);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(37, 211, 102, .28);
+  background:
+    radial-gradient(520px 240px at 0% 0%, rgba(37, 211, 102, .10), transparent 70%),
+    linear-gradient(180deg, var(--c-surface-2), var(--c-surface));
+}
+[dir="rtl"] #maintenance .maint__book {
+  background:
+    radial-gradient(520px 240px at 100% 0%, rgba(37, 211, 102, .10), transparent 70%),
+    linear-gradient(180deg, var(--c-surface-2), var(--c-surface));
+}
+#maintenance .maint__steps { display: grid; gap: 10px; }
+#maintenance .maint-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--c-line);
+  background: rgba(8, 9, 11, .35);
+}
+#maintenance .maint-step__num {
+  flex-shrink: 0;
+  padding: 3px 8px 2px;
+  font-family: var(--font-tech);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .04em;
+  line-height: 1.4;
+  color: var(--c-volt-ink);
+  background: var(--c-volt);
+  transform: skewX(var(--skew));
+}
+#maintenance .maint-step__icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--c-line-2);
+  background: rgba(255, 255, 255, .04);
+  color: var(--c-text);
+}
+#maintenance .maint-step__icon .icon { width: 22px; height: 22px; }
+#maintenance .maint-step--whatsapp .maint-step__icon { color: #25D366; border-color: rgba(37, 211, 102, .45); background: rgba(37, 211, 102, .1); }
+#maintenance .maint-step--agree .maint-step__icon { color: var(--c-ice); border-color: rgba(61, 224, 255, .4); background: rgba(61, 224, 255, .08); }
+#maintenance .maint-step--wrench .maint-step__icon { color: var(--c-volt); border-color: rgba(212, 255, 58, .4); background: rgba(212, 255, 58, .08); }
+#maintenance .maint-step__text {
+  min-width: 0;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+}
+
+#maintenance .maint__cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 16px;
+  margin-top: 22px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 559.98px) {
+  /* Full-width buttons; labels may wrap instead of being clipped */
+  #maintenance .maint__cta .btn {
+    flex: 1 1 100%;
+    white-space: normal;
+    padding-inline: 1.1em;
+  }
+}
+
+@media (max-width: 399.98px) {
+  #maintenance .maint__cta .btn { gap: .5em; padding-inline: .7em; font-size: 1rem; }
+}
+
+@media (max-width: 379.98px) {
+  #maintenance .maint-chip { padding: 14px 12px; }
+  #maintenance .maint-chip__icon { width: 46px; height: 46px; border-radius: 12px; }
+  #maintenance .maint-chip__icon .icon { width: 25px; height: 25px; }
+  #maintenance .maint-chip__label { font-size: .94rem; }
+  #maintenance .maint-card { padding: 18px 16px; }
+  #maintenance .maint-step { gap: 10px; padding: 12px; }
+}
+
+@media (min-width: 640px) {
+  #maintenance .maint__chips { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  #maintenance .maint__groups { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  #maintenance .maint-card { padding: 22px; }
+  #maintenance .maint-card__media {
+    order: 0;
+    flex: 1 0 auto;
+    margin: auto 0 0;
+    min-height: 170px;
+    aspect-ratio: auto;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1199.98px) {
+  /* Three per row: icon beside the label */
+  #maintenance .maint-chip { flex-direction: row; align-items: center; }
+}
+
+@media (min-width: 760px) {
+  #maintenance .maint-step { padding: 16px; }
+}
+
+@media (min-width: 1024px) {
+  #maintenance .maint__intro { grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); }
+  #maintenance .maint__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+}
+
+@media (min-width: 1200px) {
+  #maintenance .maint__chips { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  #maintenance .maint__groups { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  #maintenance .maint-card__media { min-height: 150px; }
+}
+
+/* Touch screens: no hover lift */
+@media (hover: none) {
+  #maintenance .maint-chip:hover,
+  #maintenance .maint-chip:hover .maint-chip__icon { transform: none; }
+  #maintenance .maint__shot:hover img,
+  #maintenance .maint-card:hover .maint-card__media img { transform: none; }
+}
+
+/* Reduced motion: style.css already neutralises animations/transitions and
+   shows [data-reveal] blocks; also drop the hover movement here */
+@media (prefers-reduced-motion: reduce) {
+  #maintenance .maint-chip:hover,
+  #maintenance .maint-chip:hover .maint-chip__icon,
+  #maintenance .maint__shot:hover img,
+  #maintenance .maint-card:hover .maint-card__media img { transform: none; }
+}

@@ -3943,3 +3943,7 @@ html[lang="en"] .astat__plus { order: 2; margin-inline: 2px 0; }
 /* Keep English brand/product names in one piece inside headings (no "RC / World Egypt" split) */
 :is(h1, h2, h3):not(.pcard__name) bdi { white-space: nowrap; }
 .pcard__name bdi { white-space: normal; }
+
+/* Nav fits 9 links on one line (incl. Maintenance) */
+.nav__link { white-space: nowrap; }
+@media (min-width: 1280px) and (max-width: 1439.98px) { .nav__link { padding-inline: 8px; } }

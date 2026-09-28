@@ -30,6 +30,7 @@
   <link rel="preload" as="image" href="assets/img/shop/full/shop-206.jpg" fetchpriority="high">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Chakra+Petch:ital,wght@0,500;0,600;0,700;1,700&family=Changa:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/maintenance.css">
 
   <!-- Apply saved language before first paint (no flash of the wrong direction) -->
   <script>
@@ -47,6 +48,7 @@
   <script src="assets/js/products.js" defer></script>
   <script src="assets/js/videos.js" defer></script>
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/maintenance.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main" data-i18n="a11y.skip">انتقل للمحتوى الرئيسي</a>
@@ -160,6 +162,7 @@
           <li><a class="nav__link" href="#videos" data-i18n="nav.videos">فيديوهات</a></li>
           <li><a class="nav__link" href="#deals" data-i18n="nav.deals">منتج مميّز</a></li>
           <li><a class="nav__link" href="#levels" data-i18n="nav.levels">حسب مستواك</a></li>
+          <li><a class="nav__link" href="#maintenance" data-maint-i18n="nav">الصيانة</a></li>
           <li><a class="nav__link" href="#contact" data-i18n="nav.contact">تواصل معنا</a></li>
         </ul>
       </nav>
@@ -731,6 +734,11 @@
     </section>
 
     <!-- ===================================================================
+         Maintenance & repair (rendered by assets/js/maintenance.js)
+         =================================================================== -->
+    <section class="section maintenance" id="maintenance" aria-labelledby="maintTitle"></section>
+
+    <!-- ===================================================================
          07 — About the shop
          =================================================================== -->
     <section class="section about" id="about" aria-labelledby="aboutTitle">
@@ -1036,6 +1044,7 @@
           <ul>
             <li><a href="#contact" data-i18n="footer.delivery">التوصيل والشحن</a></li>
             <li><a href="#levels" data-i18n="footer.guide">اختار حسب مستواك</a></li>
+            <li><a href="#maintenance" data-maint-i18n="footer">خدمات الصيانة</a></li>
             <li><a href="#contact" data-i18n="nav.contact">تواصل معنا</a></li>
           </ul>
         </nav>
@@ -1091,7 +1100,8 @@
           <li><a href="#videos"><span class="mnav__num">05</span><span data-i18n="nav.videos">فيديوهات</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
           <li><a href="#deals"><span class="mnav__num">06</span><span data-i18n="nav.deals">منتج مميّز</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
           <li><a href="#levels"><span class="mnav__num">07</span><span data-i18n="nav.levels">حسب مستواك</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
-          <li><a href="#contact"><span class="mnav__num">08</span><span data-i18n="nav.contact">تواصل معنا</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#maintenance"><span class="mnav__num">08</span><span data-maint-i18n="nav">الصيانة</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+          <li><a href="#contact"><span class="mnav__num">09</span><span data-i18n="nav.contact">تواصل معنا</span><svg class="icon dir-icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
         </ul>
       </nav>
       <div class="mnav__foot">

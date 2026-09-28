@@ -387,7 +387,27 @@
       category: 'planes', scales: [], level: null, featured: 76, inStock: true, price: null,
       specs: { power: { ar: 'جلو / نيترو', en: 'Glow / nitro' }, version: ASK },
       tags: ['engine', 'glow', 'nitro', 'plane', 'محرك', 'محركات', 'نيترو', 'طائرة'],
-      photos: range('planes', 39, 43)
+      photos: ['planes-pe02', 'planes-pe01', 'planes-pe13', 'planes-pe20', 'planes-pe29', 'planes-pe34', 'planes-pe06', 'planes-pe21'].concat(range('planes', 39, 43))
+    },
+    {
+      id: 'plane-engine-prop-set', model: 'Engine + Propeller & Spinner Set', brands: [],
+      name_ar: 'محرك مع مروحة وسبينر', name_en: 'Engine with propeller & spinner',
+      desc_ar: 'محرك جلو ثنائي الأشواط لطائرات التحكم عن بعد، مع مروحة وسبينر.' + CONTACT_AR,
+      desc_en: 'A 2-stroke glow RC plane engine supplied with a propeller and spinner.' + CONTACT_EN,
+      category: 'planes', scales: [], level: null, featured: 75, inStock: true, price: null,
+      specs: { power: { ar: 'جلو ثنائي الأشواط', en: '2-stroke glow' }, extras: { ar: 'مروحة وسبينر', en: 'Propeller & spinner' } },
+      tags: ['engine', 'glow', 'nitro', '2-stroke', 'propeller', 'prop', 'spinner', 'محرك', 'مروحة', 'سبينر', 'جلو'],
+      photos: ['planes-pe29', 'planes-pe28', 'planes-pe30', 'planes-pe33']
+    },
+    {
+      id: 'plane-engine-mufflers', model: 'Engine Mufflers & Exhaust Parts', brands: [],
+      name_ar: 'شكمانات وقطع عادم للمحركات', name_en: 'Engine mufflers & exhaust parts',
+      desc_ar: 'شكمانات وقطع عادم لمحركات الطائرات الجلو — أخبرنا بموديل المحرك.' + CONTACT_AR,
+      desc_en: 'Mufflers and exhaust parts for glow plane engines — tell us your engine model.' + CONTACT_EN,
+      category: 'planes', scales: [], level: null, featured: 70, inStock: true, price: null,
+      specs: { use: { ar: 'محركات الجلو', en: 'Glow engines' } },
+      tags: ['muffler', 'exhaust', 'pipe', 'engine', 'glow', 'شكمان', 'عادم', 'محرك'],
+      photos: ['planes-pe24', 'planes-pe23']
     },
     {
       id: 'plane-parts', model: 'RC Plane Parts', brands: [],

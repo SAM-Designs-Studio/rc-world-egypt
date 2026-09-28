@@ -53,7 +53,9 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   const byId = new Map(PRODUCTS.map((p) => [p.id, p]));
   const LEVELS = ['beginner', 'intermediate', 'pro'];
 
-  const WA_NUMBER = '201003130449';   // Hamdy — WhatsApp (wa.me format)
+  // Two numbers: WhatsApp Business "rc world Egypt" (orders, inquiry list, contact form, price questions,
+  // bank receipts — every wa.me link) and a separate number for calls (tel:+201003130449 in index.html).
+  const WA_NUMBER = '201009000193';   // WhatsApp (wa.me format)
   const PAGE_SIZE = 12;                // products per "page" in the grid
   const GALLERY_PAGE = 24;             // gallery thumbnails per "page"
   const MAX_QTY = 10;                  // max units per inquiry line
@@ -1403,6 +1405,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     'FG 1/6 Monster Truck': ['شاحنة مونستر ' + L('FG 1/6'), 'FG 1/6 monster truck'],
     'Panther touring car': ['سيارة سياحية ' + L('Panther'), 'Panther touring car'],
     'DDM petrol engine': ['محرك بنزين ' + L('DDM'), 'DDM petrol engine'],
+    '2-stroke glow plane engines': ['محركات طائرات جلو ثنائية الأشواط', '2-stroke glow plane engines'],
     'Traxxas TQi transmitter': ['جهاز تحكم ' + L('Traxxas TQi'), 'Traxxas TQi transmitter']
   };
   function photoCaptionHTML(g) {

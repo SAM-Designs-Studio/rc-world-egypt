@@ -334,6 +334,8 @@ window.VOLT_I18N = {
     'wa.contactTopic': 'الموضوع: {x}',
     'wa.contactMsg': 'الرسالة:',
     'wa.listIntro': 'أرغب في طلب المنتجات التالية:',
+    'wa.catalogSub': 'على حساب واتساب للأعمال',
+    'wa.catalog': 'تصفح كتالوج المنتجات على واتساب',
     'wa.bankSent': 'أرسلت تحويلًا بنكيًا لطلبي',
 
     /* Search */
@@ -385,6 +387,8 @@ window.VOLT_I18N = {
     'footer.about': 'لماذا نحن',
     'footer.pay': 'طرق الدفع',
     'footer.cod': 'الدفع عند الاستلام',
+    'footer.waLabel': 'واتساب',
+    'footer.callLabel': 'اتصال',
     'credits.source': 'المصدر',
     'credits.intro': 'بعض صور العدد والأدوات منشورة برخص المشاع الإبداعي، ونذكر أصحابها ورخصها هنا.',
     'footer.photoCredits': 'حقوق الصور',
@@ -704,6 +708,8 @@ window.VOLT_I18N = {
     'wa.contactTopic': 'Topic: {x}',
     'wa.contactMsg': 'Message:',
     'wa.listIntro': 'I’d like to order the following:',
+    'wa.catalogSub': 'On our WhatsApp Business account',
+    'wa.catalog': 'Browse our WhatsApp catalog',
     'wa.bankSent': 'I\'ve sent a bank transfer for my order',
 
     /* Search */
@@ -755,6 +761,8 @@ window.VOLT_I18N = {
     'footer.about': 'Why us',
     'footer.pay': 'Payment',
     'footer.cod': 'Cash on delivery',
+    'footer.waLabel': 'WhatsApp',
+    'footer.callLabel': 'Call',
     'credits.source': 'Source',
     'credits.intro': 'Some tool photos are published under Creative Commons licenses; their authors and licenses are credited here.',
     'footer.photoCredits': 'Photo credits',

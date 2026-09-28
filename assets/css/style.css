@@ -3741,4 +3741,5 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 }
 
 /* Keep English brand/product names in one piece inside headings (no "RC / World Egypt" split) */
-:is(h1, h2, h3) bdi { white-space: nowrap; }
+:is(h1, h2, h3):not(.pcard__name) bdi { white-space: nowrap; }
+.pcard__name bdi { white-space: normal; }

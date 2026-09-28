@@ -24,7 +24,7 @@
    Product shape:
      id, model (English, both languages), brands [..], name_ar / name_en
      (descriptor), desc_ar / desc_en, category (baja | offroad | planes |
-     drift | parts | tools | electronics | boats), scales [..], level, featured (sort weight), inStock,
+     drift | parts | power | tools | electronics | boats), scales [..], level, featured (sort weight), inStock,
      price (null), specs, tags, photos [..] | images [{ src, thumb }] | art
    ========================================================================== */
 
@@ -74,13 +74,14 @@
     { id: 'planes' },
     { id: 'drift' },
     { id: 'parts' },
+    { id: 'power' },
     { id: 'tools' },
     { id: 'electronics' },
     { id: 'boats' }
   ];
 
   /* ---------- Brands the shop deals in (shown as text only — no logos) ---------- */
-  window.VOLT_BRANDS = ['Losi', 'Arrma', 'Traxxas', 'HPI', 'Rovan', 'King Motor', 'FG', 'Rofun', 'MST', 'HSP', 'Xray', 'Kyosho', 'Thunder Tiger', 'Spektrum', 'Pro Boat', 'Zenoah', 'DDM'];
+  window.VOLT_BRANDS = ['Losi', 'Arrma', 'Traxxas', 'HPI', 'Rovan', 'King Motor', 'FG', 'Rofun', 'MST', 'HSP', 'Xray', 'Kyosho', 'Thunder Tiger', 'Spektrum', 'Pro Boat', 'Zenoah', 'DDM', 'SkyRC', 'HTRC', 'Radiolink', 'CNHL', 'HRB', 'Dynamite', 'Turbo Racing', 'Venom', 'HUDY', 'Pro-Line', 'iMAX', 'AustarHobby', 'Pineal Model', 'Outerwears'];
 
   var PETROL = { ar: 'بنزين', en: 'Petrol' };
   var ELECTRIC = { ar: 'كهربائي', en: 'Electric' };
@@ -957,6 +958,481 @@
       photos: ['boats-n03']
     }
   ];
+
+
+  /* ==========================================================================
+     WhatsApp Business catalog merge (generated from
+     hamdy-kit/whatsapp-catalog/merge-plan.json — cleaned & deduplicated)
+     • MERGE: append catalog photos to existing products, add missing spec keys
+       (manufacturer data), replace the description only where it was shorter.
+     • NEW: products from the catalog (entries without photos were skipped).
+     ========================================================================== */
+  var CATALOG_MERGE = [
+    {"id":"arrma-kraton-6s-v6","photos":["offroad-wa-001-arrma-kraton-6s-v6-1-8-1","offroad-wa-001-arrma-kraton-6s-v6-1-8-2","offroad-wa-001-arrma-kraton-6s-v6-1-8-4","offroad-wa-001-arrma-kraton-6s-v6-1-8-5","offroad-wa-001-arrma-kraton-6s-v6-1-8-7","offroad-wa-001-arrma-kraton-6s-v6-1-8-8"],"specs":{"motor":"Firma 2050Kv brushless","esc":"Firma 150A Smart V2 (waterproof)","top_speed":"65+ mph (105+ km/h) on 6S LiPo","battery":"4S or 6S LiPo","servo":"S665 steel-geared steering servo","waterproof":"yes","version":"RTR"},"desc_ar":"شاحنة Kraton 6S V6 من Arrma بمقياس 1/8، جاهزة للتشغيل (RTR) بدفع رباعي ونظام Brushless قوي يعمل على بطاريات 4S أو 6S ويصل بها إلى سرعات تتجاوز 105 كم/ساعة. تأتي بمحرك Firma بقوة 2050Kv ووحدة تحكم Firma 150A Smart V2 المقاومة للماء، مع سيرفو توجيه معدني الجلب. تصميمها المعزز بترقيات EXB يمنحها متانة عالية للتحطيم والتسابق على مختلف التضاريس.","desc_en":"The Arrma Kraton 6S V6 is a 1/8-scale RTR 4WD monster truck with a powerful brushless system that runs on 4S or 6S LiPo, reaching speeds beyond 65+ mph (105+ km/h). It comes with a Firma 2050Kv motor, a waterproof Firma 150A Smart V2 ESC, and a steel-geared steering servo. Its EXB-reinforced construction makes it well suited to bashing and racing across varied terrain.","specSource":true,"brand":""},
+    {"id":"parts-hpi-hsp-xray","photos":["parts-wa-102-hpi-baja-parts-16-1","parts-wa-102-hpi-baja-parts-16-2","parts-wa-102-hpi-baja-parts-16-3","parts-wa-102-hpi-baja-parts-16-4","parts-wa-102-hpi-baja-parts-16-5","parts-wa-102-hpi-baja-parts-16-6","parts-wa-102-hpi-baja-parts-16-7","parts-wa-300-hpi-baja-parts-6-1","parts-wa-300-hpi-baja-parts-6-2","parts-wa-300-hpi-baja-parts-6-3","parts-wa-300-hpi-baja-parts-6-4","parts-wa-300-hpi-baja-parts-6-6","parts-wa-300-hpi-baja-parts-6-7","parts-wa-300-hpi-baja-parts-6-8","parts-wa-301-hpi-baja-parts-10-1","parts-wa-301-hpi-baja-parts-10-2","parts-wa-301-hpi-baja-parts-10-3","parts-wa-301-hpi-baja-parts-10-4","parts-wa-301-hpi-baja-parts-10-5","parts-wa-301-hpi-baja-parts-10-6","parts-wa-301-hpi-baja-parts-10-7","parts-wa-301-hpi-baja-parts-10-8","parts-wa-302-hpi-baja-parts-1","parts-wa-302-hpi-baja-parts-2","parts-wa-302-hpi-baja-parts-3","parts-wa-302-hpi-baja-parts-4","parts-wa-302-hpi-baja-parts-5","parts-wa-302-hpi-baja-parts-6","parts-wa-302-hpi-baja-parts-7","parts-wa-302-hpi-baja-parts-8","parts-wa-340-hpi-baja-parts-5-1","parts-wa-340-hpi-baja-parts-5-2","parts-wa-340-hpi-baja-parts-5-3","parts-wa-340-hpi-baja-parts-5-4","parts-wa-340-hpi-baja-parts-5-5","parts-wa-340-hpi-baja-parts-5-6","parts-wa-340-hpi-baja-parts-5-7","parts-wa-340-hpi-baja-parts-5-8","parts-wa-515-hpi-baja-parts-3-1","parts-wa-515-hpi-baja-parts-3-3","parts-wa-515-hpi-baja-parts-3-4","parts-wa-515-hpi-baja-parts-3-5","parts-wa-515-hpi-baja-parts-3-6","parts-wa-515-hpi-baja-parts-3-7","parts-wa-515-hpi-baja-parts-3-8","parts-wa-518-hpi-baja-parts-11-1","parts-wa-518-hpi-baja-parts-11-2","parts-wa-518-hpi-baja-parts-11-3","parts-wa-518-hpi-baja-parts-11-4","parts-wa-518-hpi-baja-parts-11-5","parts-wa-518-hpi-baja-parts-11-6","parts-wa-518-hpi-baja-parts-11-7","parts-wa-528-hpi-baja-parts-13-1","parts-wa-528-hpi-baja-parts-13-2","parts-wa-528-hpi-baja-parts-13-3","parts-wa-528-hpi-baja-parts-13-4","parts-wa-528-hpi-baja-parts-13-7","parts-wa-528-hpi-baja-parts-13-8","parts-wa-547-hpi-baja-parts-21-1","parts-wa-547-hpi-baja-parts-21-2","parts-wa-547-hpi-baja-parts-21-3","parts-wa-547-hpi-baja-parts-21-4","parts-wa-547-hpi-baja-parts-21-5","parts-wa-547-hpi-baja-parts-21-6","parts-wa-547-hpi-baja-parts-21-7","parts-wa-547-hpi-baja-parts-21-8","parts-wa-550-hpi-baja-parts-17-1","parts-wa-550-hpi-baja-parts-17-2","parts-wa-550-hpi-baja-parts-17-3","parts-wa-550-hpi-baja-parts-17-4","parts-wa-550-hpi-baja-parts-17-5","parts-wa-550-hpi-baja-parts-17-7","parts-wa-550-hpi-baja-parts-17-8","parts-wa-552-hpi-baja-parts-1-1","parts-wa-552-hpi-baja-parts-1-2","parts-wa-552-hpi-baja-parts-1-3","parts-wa-552-hpi-baja-parts-1-5","parts-wa-552-hpi-baja-parts-1-6","parts-wa-552-hpi-baja-parts-1-7","parts-wa-552-hpi-baja-parts-1-8","parts-wa-553-hpi-baja-parts-14-1","parts-wa-553-hpi-baja-parts-14-3","parts-wa-553-hpi-baja-parts-14-5","parts-wa-553-hpi-baja-parts-14-6","parts-wa-553-hpi-baja-parts-14-7","parts-wa-553-hpi-baja-parts-14-8","parts-wa-554-hpi-baja-parts-20-1","parts-wa-554-hpi-baja-parts-20-2","parts-wa-554-hpi-baja-parts-20-3","parts-wa-554-hpi-baja-parts-20-4","parts-wa-554-hpi-baja-parts-20-8","parts-wa-555-hpi-baja-parts-2-1","parts-wa-555-hpi-baja-parts-2-2","parts-wa-555-hpi-baja-parts-2-3","parts-wa-555-hpi-baja-parts-2-4","parts-wa-555-hpi-baja-parts-2-5","parts-wa-555-hpi-baja-parts-2-6","parts-wa-555-hpi-baja-parts-2-7","parts-wa-555-hpi-baja-parts-2-8","parts-wa-558-hpi-baja-parts-9-1","parts-wa-558-hpi-baja-parts-9-2","parts-wa-558-hpi-baja-parts-9-3","parts-wa-558-hpi-baja-parts-9-6","parts-wa-558-hpi-baja-parts-9-7"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"savage-maxx-bodies","photos":["parts-wa-304-traxxas-maxx-body-1","parts-wa-304-traxxas-maxx-body-2","parts-wa-304-traxxas-maxx-body-3"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"traxxas-m41-6s","photos":["boats-wa-306-traxxas-m41-boat-1","boats-wa-306-traxxas-m41-boat-2","boats-wa-306-traxxas-m41-boat-3"],"specs":{"top_speed":"50+ mph (80+ km/h)","radio":"TQi 2.4GHz","feature":"TSM stability management","waterproof":"yes"},"desc_ar":"قارب سباق كاتاماران من Traxxas بطول نحو 40 بوصة، يعمل بمحرك Velineon Brushless مبرد بالماء يصل بسرعته إلى أكثر من 50 ميل/ساعة (80+ كم/ساعة) على بطاريات 6S LiPo. جاهز للتشغيل (Ready-To-Race) مع نظام راديو TQi ونظام TSM لزيادة الثبات أثناء السباق، وإلكترونيات مقاومة للماء بالكامل.","desc_en":"A Traxxas catamaran race boat about 40 inches long, powered by a water-cooled Velineon brushless motor that pushes it beyond 50 mph (80+ km/h) on 6S LiPo. It is Ready-To-Race with the TQi 2.4GHz radio system, TSM stability management for extra control, and fully waterproof electronics.","specSource":true,"brand":""},
+    {"id":"bodies-110","photos":["parts-wa-318-body-1-10-3-1","parts-wa-318-body-1-10-3-2","parts-wa-318-body-1-10-3-3","parts-wa-318-body-1-10-3-4","parts-wa-318-body-1-10-3-5","parts-wa-318-body-1-10-3-6","parts-wa-318-body-1-10-3-7","parts-wa-318-body-1-10-3-8","parts-wa-319-body-1-10-2-1","parts-wa-319-body-1-10-2-2","parts-wa-319-body-1-10-2-3","parts-wa-319-body-1-10-2-4","parts-wa-319-body-1-10-2-5","parts-wa-319-body-1-10-2-6","parts-wa-319-body-1-10-2-7","parts-wa-319-body-1-10-2-8","parts-wa-519-body-1-10-4-1","parts-wa-519-body-1-10-4-2","parts-wa-519-body-1-10-4-3","parts-wa-519-body-1-10-4-4","parts-wa-519-body-1-10-4-5","parts-wa-519-body-1-10-4-6","parts-wa-519-body-1-10-4-7","parts-wa-519-body-1-10-4-8"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"plane-parts","photos":["planes-wa-321-rc-plane-parts-3-1","planes-wa-321-rc-plane-parts-3-2","planes-wa-321-rc-plane-parts-3-3","planes-wa-321-rc-plane-parts-3-4","planes-wa-321-rc-plane-parts-3-5","planes-wa-321-rc-plane-parts-3-6","planes-wa-321-rc-plane-parts-3-7","planes-wa-321-rc-plane-parts-3-8","planes-wa-322-rc-plane-parts-1-1","planes-wa-322-rc-plane-parts-1-2","planes-wa-322-rc-plane-parts-1-3","planes-wa-322-rc-plane-parts-1-4","planes-wa-322-rc-plane-parts-1-6","planes-wa-333-rc-plane-parts-1","planes-wa-333-rc-plane-parts-2"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"rc-tires","photos":["parts-wa-323-baga-5t-1","parts-wa-323-baga-5t-2","parts-wa-323-baga-5t-3","parts-wa-323-baga-5t-4","parts-wa-339-baja-5b-1","parts-wa-339-baja-5b-2","parts-wa-339-baja-5b-3","parts-wa-339-baja-5b-4"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"drift-wheels-tires-110","photos":["parts-wa-324-rc-drift-car-tires-1","parts-wa-324-rc-drift-car-tires-2","parts-wa-324-rc-drift-car-tires-3","parts-wa-324-rc-drift-car-tires-4","parts-wa-324-rc-drift-car-tires-5","parts-wa-324-rc-drift-car-tires-6","parts-wa-324-rc-drift-car-tires-7","parts-wa-324-rc-drift-car-tires-8","parts-wa-325-rc-drift-car-tires-1-4","parts-wa-325-rc-drift-car-tires-1-6","parts-wa-325-rc-drift-car-tires-1-7","parts-wa-325-rc-drift-car-tires-1-8"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"fg-16-monster-2wd","photos":["baja-wa-326-fg-1-6-26cc-1","baja-wa-326-fg-1-6-26cc-2","baja-wa-326-fg-1-6-26cc-3","baja-wa-326-fg-1-6-26cc-4","baja-wa-326-fg-1-6-26cc-5","baja-wa-326-fg-1-6-26cc-6","baja-wa-326-fg-1-6-26cc-7","baja-wa-533-rc-car-1-6-fg-26cc-1","baja-wa-533-rc-car-1-6-fg-26cc-2","baja-wa-533-rc-car-1-6-fg-26cc-3","baja-wa-533-rc-car-1-6-fg-26cc-4","baja-wa-533-rc-car-1-6-fg-26cc-5","baja-wa-533-rc-car-1-6-fg-26cc-6","baja-wa-533-rc-car-1-6-fg-26cc-7","baja-wa-533-rc-car-1-6-fg-26cc-8"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""},
+    {"id":"shock-oil-thread-lock","photos":["tools-wa-543-hudy-silconne-oil-1","tools-wa-543-hudy-silconne-oil-2","tools-wa-543-hudy-silconne-oil-4","tools-wa-543-hudy-silconne-oil-5","tools-wa-543-hudy-silconne-oil-6","tools-wa-543-hudy-silconne-oil-7","tools-wa-332-shock-oil-shock-oil-shock-oil-traxxas-4"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":"HUDY"},
+    {"id":"proboat-blackjack-42","photos":["boats-wa-336-blackjack-boat-8s-2","boats-wa-336-blackjack-boat-8s-4","boats-wa-336-blackjack-boat-8s-5"],"specs":{"motor":"Spektrum Marine 4685 4-pole, water-cooled","esc":"Spektrum 160A High Voltage Smart ESC, water-cooled","receiver":"Spektrum SR6110AT 6-channel telemetry","servo":"Spektrum S904 1/6-scale waterproof digital servo","top_speed":"55+ mph"},"desc_ar":"قارب Blackjack 42 8S من Pro Boat هو قارب سباق كاتاماران بطول 42 بوصة، يعمل بمحرك Spektrum Marine 4685 مبرد بالماء ووحدة تحكم Spektrum 160A مبردة أيضًا بالماء، ويصل بسرعته إلى أكثر من 55 ميل/ساعة على نظام 8S (بطاريتي 4S). جاهز للتشغيل بمجرد إضافة البطاريات والشاحن المناسبين، ومزود برسيفر تليمتري ذكي من Spektrum.","desc_en":"The Pro Boat Blackjack 42 8S is a 42-inch catamaran race boat with a water-cooled Spektrum Marine 4685 motor and a water-cooled Spektrum 160A Smart ESC, reaching 55+ mph on 8S power (two 4S packs). It is RTR once you add the right batteries and charger, and includes a Spektrum Smart telemetry receiver.","specSource":true,"brand":""},
+    {"id":"traxxas-maxx-v2","photos":["offroad-wa-516-traxxas-maxx-v2-3"],"specs":{"motor":"540XL brushless (5 mm shaft)","esc":"Velineon VXL-4s","top_speed":"60+ mph on 4S LiPo","suspension":"WideMaxx suspension (track widened 20 mm/side), Sledgehammer tyres","radio":"TQi 2.4GHz","version":"RTR"},"desc_ar":"شاحنة Traxxas Maxx V2 بمقياس 1/10 مزودة بتعليق WideMaxx الذي يوسع قاعدة العجلات 20 مم لكل جانب مع إطارات Sledgehammer الكبيرة. تعمل بمحرك 540XL Brushless ووحدة تحكم Velineon VXL-4s، وتصل سرعتها إلى أكثر من 60 ميل/ساعة على بطارية 4S، مع جهاز تحكم TQi 2.4 جيجاهرتز، وتأتي جاهزة للتشغيل بالكامل.","desc_en":"The Traxxas Maxx V2 is a 1/10-scale monster truck fitted with WideMaxx suspension that widens the track by 20 mm per side, paired with large Sledgehammer tyres. It runs a 540XL brushless motor and Velineon VXL-4s ESC, reaching 60+ mph on 4S LiPo, with the TQi 2.4GHz radio system, fully assembled and ready to run.","specSource":true,"brand":""},
+    {"id":"arrma-talion-exb-6s","photos":[],"specs":{"top_speed":"75+ mph (120+ km/h)","weight":"5.2 kg (no battery)","length":"473 mm","wheelbase":"411 mm","battery":"4S or 6S LiPo, up to 158 x 48 x 70 mm","chassis":"laser-etched 7075-T6 aluminium plate"},"desc_ar":"نسخة EXB الأكبر من Talion 6S بمقياس 1/7 من Arrma، جاهزة للتشغيل وقادرة على تجاوز 75 ميل/ساعة (120+ كم/ساعة). وزنها 5.2 كجم بدون بطارية، بقاعدة عجلات 411 مم وشاسيه من الألمنيوم 7075-T6 محفور بالليزر، وتقبل بطاريات 4S أو 6S LiPo، بدفع رباعي وثلاث دفرنسات.","desc_en":"The larger EXB version of the Talion 6S, a 1/7-scale RTR truggy capable of 75+ mph (120+ km/h). It weighs 5.2 kg without a battery, has a 411 mm wheelbase, a laser-etched 7075-T6 aluminium chassis plate, runs 4S or 6S LiPo, and has 4WD with three differentials.","specSource":true,"brand":""},
+    {"id":"losi-5ive-t-3","photos":["baja-wa-524-losi-5t-3-0-2","baja-wa-524-losi-5t-3-0-3","baja-wa-524-losi-5t-3-0-4","baja-wa-524-losi-5t-3-0-6","baja-wa-524-losi-5t-3-0-7"],"specs":{"engine":"35.2cc Fujiwara FJ350RC petrol (Zenoah G320-based)","radio":"Spektrum DX3 Smart w/ SR615 receiver","tires":"8.5 in Pro-Line Mirage TT on KMC wheels","shocks":"32 mm big-bore, tapered pistons","version":"RTR"},"desc_ar":"شاحنة Losi 5IVE-T 3.0 (المعروفة أيضًا باسم 5IVE-TG 3.0) بمقياس 1/5، وهي أقوى وأكبر نسخة بنزينية من عائلة 5IVE-T حتى الآن. تعمل بمحرك 35.2cc من طراز Fujiwara FJ350RC المبني على تصميم Zenoah G320، بدفع رباعي وإطارات ضخمة Pro-Line Mirage TT مقاس 8.5 بوصة، مع جهاز تحكم Spektrum DX3 Smart وممتصات صدمات كبيرة القطر 32 مم.","desc_en":"The Losi 5IVE-T 3.0 (also sold as the 5IVE-TG 3.0) is a 1/5-scale gas desert truck — the largest and most powerful gas-powered 5IVE-T to date. It runs a 35.2cc Fujiwara FJ350RC engine based on the Zenoah G320, with 4WD, massive 8.5-inch Pro-Line Mirage TT tyres, the Spektrum DX3 Smart radio, and 32 mm big-bore shocks.","specSource":true,"brand":""},
+    {"id":"traxxas-x-maxx-8s","photos":["offroad-wa-531-traxxas-x-maxx-1-5-8s-1","offroad-wa-531-traxxas-x-maxx-1-5-8s-2","offroad-wa-531-traxxas-x-maxx-1-5-8s-3"],"specs":{"motor":"1200XL, 1200 rpm/volt","top_speed":"50+ mph on 8S (30+ volts)","battery":"dual 4-cell LiPo packs (8S total, 29.6V); Traxxas 6700mAh iD packs available","version":"RTR"},"desc_ar":"شاحنة Traxxas X-Maxx الكبيرة بمقياس 1/5 ودفع رباعي، تعمل بنظام 8S (بطاريتي 4S معًا بجهد إجمالي 29.6 فولت) وتصل سرعتها إلى أكثر من 50 ميل/ساعة. محركها 1200XL يدور بمعدل 1200 دورة لكل فولت ويعطي عزمًا أكبر بفضل حجمه الكبير، وتتوفر لها بطاريات Traxxas iD بسعة 6700 مللي أمبير مخصصة لها.","desc_en":"The large Traxxas X-Maxx is a 1/5-scale 4WD monster truck running an 8S setup (two 4-cell packs totalling 29.6V) that pushes it beyond 50 mph. Its 1200XL motor spins at 1,200 rpm per volt for extra torque from its larger size, and dedicated Traxxas 6700mAh iD battery packs are available for it.","specSource":true,"brand":""},
+    {"id":"traxxas-e-revo-116","photos":["offroad-wa-557-traxxas-r-revo-1-16-1","offroad-wa-557-traxxas-r-revo-1-16-4","offroad-wa-535-traxxas-e-revo-1-16-1","offroad-wa-535-traxxas-e-revo-1-16-2","offroad-wa-535-traxxas-e-revo-1-16-3","offroad-wa-535-traxxas-e-revo-1-16-4","offroad-wa-535-traxxas-e-revo-1-16-5","offroad-wa-535-traxxas-e-revo-1-16-6","offroad-wa-535-traxxas-e-revo-1-16-7"],"specs":{"radio":"TQ 2.4GHz","battery":"6-cell 1200mAh NiMH included","length":"14 in (about half the size of the 1/10 E-Revo)","tires":"Talon tyres on 53mm Gemini wheels","version":"RTR"},"desc_ar":"شاحنة مونستر مصغرة Traxxas E-Revo بمقياس 1/16 (الاسم في القائمة الأصلية به خطأ إملائي \"r revo\" ويقصد به E-Revo)، بدفع رباعي كامل عبر عمود إدارة ودفرنسات مغلقة. تأتي جاهزة للتشغيل مع جهاز راديو TQ 2.4 جيجاهرتز وبطارية NiMH سداسية الخلايا سعة 1200 مللي أمبير.","desc_en":"A 1/16-scale Traxxas E-Revo miniature monster truck (the source name \"r revo\" is a typo for E-Revo), with full shaft-driven 4WD and sealed differentials. It comes RTR with the TQ 2.4GHz radio and a 6-cell 1200mAh NiMH battery.","specSource":true,"brand":""},
+    {"id":"arrma-parts-oils","photos":["parts-wa-545-arrma-parts-3-1","parts-wa-545-arrma-parts-3-2","parts-wa-545-arrma-parts-3-3","parts-wa-545-arrma-parts-3-4","parts-wa-545-arrma-parts-3-5","parts-wa-545-arrma-parts-3-6","parts-wa-545-arrma-parts-3-7","parts-wa-545-arrma-parts-3-8"],"specs":{},"desc_ar":"","desc_en":"","specSource":false,"brand":""}
+  ];
+  var productIndex = {};
+  window.VOLT_PRODUCTS.forEach(function (p) { productIndex[p.id] = p; });
+  CATALOG_MERGE.forEach(function (m) {
+    var p = productIndex[m.id];
+    if (!p) return;
+    p.photos = (p.photos || []).concat(m.photos);
+    p.specs = p.specs || {};
+    Object.keys(m.specs).forEach(function (k) { if (p.specs[k] == null || p.specs[k] === '') p.specs[k] = m.specs[k]; });
+    if (m.desc_ar) { p.desc_ar = m.desc_ar + CONTACT_AR; p.desc_en = m.desc_en + CONTACT_EN; }
+    if (m.specSource) p.specSource = true;
+    if (m.brand) p.brands = (p.brands || []).concat([m.brand]);
+  });
+  // chargers & batteries get their own category
+  ['batteries', 'lipo-4s-1500-100c', 'lipo-balance-charger-dual'].forEach(function (id) { if (productIndex[id]) productIndex[id].category = 'power'; });
+
+  Array.prototype.push.apply(window.VOLT_PRODUCTS, [
+    {
+      id: "arrma-mojave-grom-223s-blx-1-16-4wd-desert-truck", model: "Arrma Mojave Grom 223S BLX", brands: ["Arrma"],
+      name_ar: "شاحنة صحراوية 1/16 بدفع رباعي", name_en: "1/16 4WD Desert Truck",
+      desc_ar: "شاحنة Mojave Grom من Arrma هي شاحنة صحراوية صغيرة بمقياس 1/16 جاهزة للتشغيل بدفع رباعي، مثالية للمبتدئين والمحترفين. تصل سرعتها إلى 35+ ميل/ساعة على بطارية 2S وتتجاوز 50 ميل/ساعة على بطارية 3S، وتحتوي على نظام Dynamic Stability Control لثبات إضافي أثناء القيادة. حجمها الصغير وتصميمها المتين يجعلانها خيارًا ممتعًا وسهل الاستخدام." + CONTACT_AR,
+      desc_en: "The Arrma Mojave Grom is a small-scale 1/16 RTR 4WD desert truck suited to both beginners and experienced bashers. It reaches 35+ mph on a 2S battery and over 50 mph on 3S, and includes Dynamic Stability Control (DSC) built into its electronics for extra control. Its compact size and tough build make it an easy, fun basher." + CONTACT_EN,
+      category: "offroad", scales: ["1/16"], level: "beginner", featured: 77, inStock: true, price: null,
+      specs: {"drivetrain":"4WD","top_speed":"35+ mph on 2S LiPo, 50+ mph on 3S LiPo","feature":"Dynamic Stability Control (DSC)","version":"RTR"}, specSource: true,
+      tags: ["arrma","offroad","arrma mojave grom"],
+      photos: ["offroad-wa-002-arrma-mojave-grom-1","offroad-wa-002-arrma-mojave-grom-4","offroad-wa-002-arrma-mojave-grom-5","offroad-wa-002-arrma-mojave-grom-6","offroad-wa-002-arrma-mojave-grom-7","offroad-wa-002-arrma-mojave-grom-8"]
+    },
+    {
+      id: "arrma-kraton-4x4-4s-v2-blx-1-10-speed-monster-tr", model: "Arrma Kraton 4X4 4S V2 BLX", brands: ["Arrma"],
+      name_ar: "شاحنة مونستر 1/10 بدفع رباعي", name_en: "1/10 4WD Monster Truck",
+      desc_ar: "شاحنة Kraton 4S V2 من Arrma بمقياس 1/10، جاهزة للتشغيل بدفع رباعي، تجمع بين قوة الدفع وسهولة الاستخدام بين فئتي 3S و 6S. تعمل بمحرك Brushless بقوة 2400Kv ووحدة تحكم Spektrum Firma 120A Smart V2 المقاومة للماء، وتصل سرعتها إلى 50+ ميل/ساعة (80+ كم/ساعة). تأتي بإطارات dBoots Copperhead 2 وقاعدة عجلات 327 مم ووزن 3.63 كجم بدون بطارية." + CONTACT_AR,
+      desc_en: "The Arrma Kraton 4S V2 is a 1/10-scale RTR 4WD monster truck that sits between the 3S and 6S classes for power and ease of use. It runs a 2400Kv brushless motor with a waterproof Spektrum Firma 120A Smart V2 ESC, reaching 50+ mph (80+ km/h). It has dBoots Copperhead 2 tires, a 327 mm wheelbase and weighs 3.63 kg without a battery." + CONTACT_EN,
+      category: "offroad", scales: ["1/10"], level: "intermediate", featured: 78, inStock: true, price: null,
+      specs: {"motor":"2400Kv brushless","esc":"Spektrum Firma 120A Smart V2 waterproof (IC5/EC5)","top_speed":"50+ mph (80+ km/h)","radio":"Spektrum SLT3 3-channel 2.4GHz w/ SR315 receiver","servo":"Spektrum S662 metal-geared digital servo","tires":"dBoots Copperhead 2 LP","waterproof":"yes","version":"RTR","drivetrain":"4WD","wheelbase":"327 mm","weight":"3.63 kg (no battery)"}, specSource: true,
+      tags: ["arrma","offroad","arrma kraton 4s 1/10","arrma kraton 6s v5 1/8"],
+      photos: ["offroad-wa-303-arrma-kraton-4s-1-10-1","offroad-wa-303-arrma-kraton-4s-1-10-2","offroad-wa-303-arrma-kraton-4s-1-10-3","offroad-wa-327-arrma-kraton-6s-v5-1-8-1","offroad-wa-327-arrma-kraton-6s-v5-1-8-2","offroad-wa-327-arrma-kraton-6s-v5-1-8-3","offroad-wa-327-arrma-kraton-6s-v5-1-8-4","offroad-wa-327-arrma-kraton-6s-v5-1-8-5","offroad-wa-327-arrma-kraton-6s-v5-1-8-8"]
+    },
+    {
+      id: "traxxas-slash-4x4-vxl-1-16-brushless-short-cours", model: "Traxxas Slash 4X4 VXL 1/16", brands: ["Traxxas"],
+      name_ar: "شاحنة شورت كورس 1/16 بدفع رباعي", name_en: "1/16 4WD Short-Course Truck",
+      desc_ar: "شاحنة سباق قصيرة (Short Course) مصغرة بمقياس 1/16 من Traxxas، بدفع رباعي وإلكترونيات مقاومة للماء لتمكين القيادة في مختلف الظروف. تعمل بنظام Brushless حديث من طراز Velineon 380 مع وحدة تحكم VXL-3m، وتأتي ببطارية NiMH سداسية الخلايا. هيكلها الخفيف من النايلون وممتصات الصدمات النشطة تجعلها خيارًا ممتازًا للمبتدئين والمحترفين." + CONTACT_AR,
+      desc_en: "A small-scale 1/16 short-course truck from Traxxas with 4WD and waterproof electronics for driving in varied conditions. It uses a modern Velineon 380 brushless motor with a VXL-3m speed control, and ships with a 6-cell NiMH battery. Its lightweight nylon chassis and active suspension make it a strong choice for beginners and experienced drivers alike." + CONTACT_EN,
+      category: "offroad", scales: ["1/16"], level: "beginner", featured: 77, inStock: true, price: null,
+      specs: {"compat":"Traxxas Slash 4X4 VXL 1/16","motor":"Velineon 380 brushless","esc":"VXL-3m brushless ESC","drivetrain":"4WD","length":"14 in (356 mm)","battery":"6-cell NiMH included; compatible with 2S LiPo","waterproof":"yes","version":"RTR"}, specSource: true,
+      tags: ["traxxas","offroad","traxxas slash 1/16 brushless","traxxas 1 /16 slash body","treaxxas 1/16"],
+      photos: ["offroad-wa-305-traxxas-slash-1-16-brushless-1","offroad-wa-305-traxxas-slash-1-16-brushless-2","offroad-wa-305-traxxas-slash-1-16-brushless-3","offroad-wa-305-traxxas-slash-1-16-brushless-4","offroad-wa-305-traxxas-slash-1-16-brushless-5","offroad-wa-305-traxxas-slash-1-16-brushless-6","offroad-wa-305-traxxas-slash-1-16-brushless-7","offroad-wa-305-traxxas-slash-1-16-brushless-8","offroad-wa-334-traxxas-1-16-slash-body-1","offroad-wa-538-treaxxas-1-16-1","offroad-wa-538-treaxxas-1-16-2","offroad-wa-538-treaxxas-1-16-3","offroad-wa-538-treaxxas-1-16-5"]
+    },
+    {
+      id: "htrc-t240-duo-dual-channel-touchscreen-charger", model: "HTRC T240 Duo", brands: ["HTRC"],
+      name_ar: "شاحن ثنائي القنوات بشاشة لمس", name_en: "Dual-channel touchscreen charger",
+      desc_ar: "شاحن HTRC T240 Duo ثنائي القنوات بشاشة لمس ملونة مقاس 3.2 بوصة، يشحن نوعين مختلفين من البطاريات في نفس الوقت بقدرة تصل إلى 150 واط بالتيار المتردد (AC) أو 240 واط بالتيار المستمر (DC). يدعم أنواع بطاريات متعددة مثل LiPo و LiFe و LiHV و NiMH و NiCd و Pb، مع تيار شحن قابل للتعديل حتى 10 أمبير لكل قناة." + CONTACT_AR,
+      desc_en: "The HTRC T240 Duo is a dual-channel charger with a 3.2-inch colour touchscreen that can charge two different batteries at once, delivering up to 150W on AC power or 240W on DC. It supports LiPo, LiFe, LiHV, NiMH, NiCd and Pb chemistries, with adjustable charge current up to 10A per channel." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"output":"AC 150W (75W x2) / DC 240W (120W x2)","channels":"2 independent","charge_current":"0.1–10A per channel","compat":"LiPo/LiHV/Li-Ion/LiFe (1S–6S), NiMH/NiCd (1S–15S), Pb (2–20V)","display":"3.2-inch touchscreen","input":"AC 100–240V or DC 11–18V"}, specSource: true,
+      tags: ["htrc","power","htrc t240 duo"],
+      photos: ["power-wa-308-htrc-t240-duo-1","power-wa-308-htrc-t240-duo-2","power-wa-308-htrc-t240-duo-3","power-wa-308-htrc-t240-duo-4","power-wa-308-htrc-t240-duo-5","power-wa-308-htrc-t240-duo-6","power-wa-308-htrc-t240-duo-7","power-wa-308-htrc-t240-duo-8"]
+    },
+    {
+      id: "skyrc-q200neo-ac-dc-smart-charger", model: "SkyRC Q200neo", brands: ["SkyRC"],
+      name_ar: "شاحن ذكي رباعي المنافذ", name_en: "4-port smart charger",
+      desc_ar: "شاحن SkyRC Q200neo ذكي رباعي المنافذ، يشحن من مصدر تيار متردد (AC) بقوة 200 واط أو مباشر (DC) بقوة تصل إلى 400 واط إجمالاً، بحد أقصى 10 أمبير لكل منفذ. يتميز بموازنة خلوية دقيقة تصل إلى 800 مللي أمبير لكل خلية، ومنفذ USB-C لشحن الهواتف بتقنيتي PD و QC3.0 السريعتين." + CONTACT_AR,
+      desc_en: "The SkyRC Q200neo is a smart 4-port charger that accepts 200W AC or up to 400W DC input, with up to 10A per port. It offers precise cell balancing up to 800mA per cell and includes a USB-C output supporting PD and QC3.0 fast charging for phones and other devices." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"output":"AC 200W / DC 400W","ports":"4","per_port":"up to 10A","balance_current":"800 mA/cell","usb":"USB-C PD / QC3.0 output","input":"AC 100–240V or DC 10–30V"}, specSource: true,
+      tags: ["skyrc","power","skyrc charger q200 neo"],
+      photos: ["power-wa-309-skyrc-charger-q200-neo-1","power-wa-309-skyrc-charger-q200-neo-2"]
+    },
+    {
+      id: "skyrc-t100-twin-channel-ac-balance-charger", model: "SkyRC T100", brands: ["SkyRC"],
+      name_ar: "شاحن ثنائي القنوات بالموازنة", name_en: "Twin-channel balance charger",
+      desc_ar: "شاحن SkyRC T100 ثنائي القنوات بدائرتين مستقلتين تسمحان بشحن بطاريتين من كيمياء مختلفة في نفس الوقت (LiPo، LiFe، Li-Ion، LiHV، NiMH، NiCd، Pb). تيار الشحن قابل للتعديل من 0.1 حتى 5 أمبير، مع فيشة XT60 مدمجة وإمكانية حفظ 10 إعدادات شحن مختلفة." + CONTACT_AR,
+      desc_en: "The SkyRC T100 is a twin-channel AC charger with two independent circuits, letting you charge two different battery chemistries at once (LiPo, LiFe, Li-Ion, LiHV, NiMH, NiCd, Pb). Charge current is adjustable from 0.1 to 5A, it has a built-in XT60 connector, and it can store 10 charge profiles." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"channels":"2 independent","compat":"LiPo/LiFe/Li-Ion/LiHV (2–4S), NiMH/NiCd (6–8 cells), Pb (6/12V)","charge_current":"0.1–5.0A","connector":"built-in XT60","memory":"10 profiles"}, specSource: true,
+      tags: ["skyrc","power","skyrc charger t100"],
+      photos: ["power-wa-310-skyrc-charger-t100-1","power-wa-310-skyrc-charger-t100-2"]
+    },
+    {
+      id: "radiolink-rc4gs-v3-5-channel-transmitter-with-r6", model: "Radiolink RC4GS V3 + R6FG", brands: ["Radiolink"],
+      name_ar: "جهاز تحكم 5 قنوات مع رسيفر بجيروسكوب", name_en: "5-channel radio with gyro receiver",
+      desc_ar: "جهاز تحكم Radiolink RC4GS V3 بخمس قنوات وتردد 2.4 جيجاهرتز، بمدى تحكم يصل إلى 400 متر وذاكرة تخزن حتى 30 موديلاً. يأتي مع رسيفر R6FG سداسي القنوات بجيروسكوب مدمج لثبات إضافي، وهو مناسب لسيارات وقوارب الزحف والدرفت والباجي. يدعم التغذية من بطارية 2S–4S LiPo أو 6 بطاريات AA." + CONTACT_AR,
+      desc_en: "The Radiolink RC4GS V3 is a 5-channel 2.4GHz transmitter with a control range of up to 400 m and storage for 30 models. It ships with the 6-channel R6FG receiver, which has a built-in gyro for extra stability, and suits crawlers, drift cars, buggies and boats. It can run from a 2–4S LiPo pack or 6 AA batteries." + CONTACT_EN,
+      category: "electronics", scales: [], level: null, featured: 43, inStock: true, price: null,
+      specs: {"channels":"5","range":"400 m","frequency":"2.4GHz FHSS","model_memory":"30 models","receiver":"R6FG (6-channel, integrated gyro)","power":"4.8–15V (2–4S LiPo or 6xAA)"}, specSource: true,
+      tags: ["radiolink","electronics","radiolink rc4gs v3 5ch 2.4g rc transmitter w/ r6fg 6ch gyro radiolink rc4gs v3"],
+      photos: ["electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-1","electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-2","electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-3","electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-4","electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-5","electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-6","electronics-wa-311-radiolink-rc4gs-v3-5ch-2-4g-rc-transmitt-7"]
+    },
+    {
+      id: "radiolink-rc6gs-v3-7-channel-transmitter", model: "Radiolink RC6GS V3", brands: ["Radiolink"],
+      name_ar: "جهاز تحكم 7 قنوات", name_en: "7-channel radio",
+      desc_ar: "جهاز تحكم Radiolink RC6GS V3 احترافي بسبع قنوات وتردد 2.4 جيجاهرتز، بمدى تحكم يصل إلى 600 متر وذاكرة 30 موديلاً. يدعم رسيفرات بها جيروسكوب مدمج مثل R6FG و R7FG للحفاظ على الثبات، ومناسب لمختلف أنواع سيارات وقوارب RC من زواحف ودرفت وباجي." + CONTACT_AR,
+      desc_en: "The Radiolink RC6GS V3 is a professional 7-channel 2.4GHz transmitter with a 600 m control range and 30-model memory. It supports gyro-equipped receivers such as the R6FG/R7FG for extra stability, and suits a wide range of RC cars and boats — crawlers, drift cars and buggies alike." + CONTACT_EN,
+      category: "electronics", scales: [], level: null, featured: 43, inStock: true, price: null,
+      specs: {"channels":"7","range":"600 m","frequency":"2.4GHz FHSS","model_memory":"30 models","power":"4.8–16.8V (2–4S LiPo or 6xAA)","weight":"319 g"}, specSource: true,
+      tags: ["radiolink","electronics","radiolink rc6gs v3"],
+      photos: ["electronics-wa-312-radiolink-rc6gs-v3-1","electronics-wa-312-radiolink-rc6gs-v3-2","electronics-wa-312-radiolink-rc6gs-v3-3","electronics-wa-312-radiolink-rc6gs-v3-4","electronics-wa-312-radiolink-rc6gs-v3-5"]
+    },
+    {
+      id: "spektrum-dx3s-3-channel-transmitter", model: "Spektrum DX3S", brands: ["Spektrum"],
+      name_ar: "جهاز تحكم 3 قنوات للسيارات والقوارب", name_en: "3-channel radio for cars & boats",
+      desc_ar: "جهاز Spektrum DX3S هو جهاز تحكم راديو بثلاث قنوات للسيارات والقوارب، يعمل بتقنية DSM الموثوقة على تردد 2.4 جيجاهرتز. يدعم القياس عن بعد (Telemetry) المدمج عند استخدامه مع رسيفر متوافق، لعرض بيانات مثل حالة البطارية على الجهاز مباشرة." + CONTACT_AR,
+      desc_en: "The Spektrum DX3S is a 3-channel 2.4GHz DSM radio for cars and boats, with integrated telemetry when paired with a compatible surface receiver so you can see data like battery status directly on the transmitter." + CONTACT_EN,
+      category: "electronics", scales: [], level: null, featured: 43, inStock: true, price: null,
+      specs: {"channels":"3","technology":"2.4GHz DSM/DSM2","telemetry":"integrated (needs a telemetry-compatible surface receiver)"}, specSource: true,
+      tags: ["spektrum","electronics","spektrum dx3s"],
+      photos: ["electronics-wa-313-spektrum-dx3s-1","electronics-wa-313-spektrum-dx3s-3","electronics-wa-313-spektrum-dx3s-4","electronics-wa-313-spektrum-dx3s-5","electronics-wa-313-spektrum-dx3s-6"]
+    },
+    {
+      id: "hrb-2200mah-2s-7-4v-50c-lipo-battery", model: "HRB 2200mAh 2S 50C LiPo", brands: ["HRB"],
+      name_ar: "بطارية ليبو 2S بسعة 2200", name_en: "2S 2200mAh LiPo battery",
+      desc_ar: "بطارية ليثيوم بوليمر (LiPo) من HRB بجهد 7.4 فولت (2S) وسعة 2200 مللي أمبير، بمعدل تفريغ 50C، تزن نحو 110 جرام وتأتي بمقاس 88×34×20 مم. مناسبة لسيارات وقوارب وطائرات RC التي تحتاج طاقة موثوقة ووقت تشغيل جيد." + CONTACT_AR,
+      desc_en: "An HRB 7.4V (2S) LiPo battery with a 2200mAh capacity and a 50C discharge rating, weighing about 110 g and measuring 88 x 34 x 20 mm. It suits RC cars, boats and planes that need reliable power and a good runtime." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"2200 mAh","voltage":"7.4V (2S)","discharge":"50C continuous","weight":"~110 g","size":"88 x 34 x 20 mm"}, specSource: true,
+      tags: ["hrb","power","hrb 2200 mah 2s 7.4v 50c"],
+      photos: ["power-wa-314-hrb-2200-mah-2s-7-4v-50c-1","power-wa-314-hrb-2200-mah-2s-7-4v-50c-3","power-wa-314-hrb-2200-mah-2s-7-4v-50c-4"]
+    },
+    {
+      id: "cnhl-black-series-5000mah-6s-65c-lipo-battery", model: "CNHL Black Series 5000mAh 6S 65C", brands: ["CNHL"],
+      name_ar: "بطارية ليبو 6S بسعة 5000", name_en: "6S 5000mAh LiPo battery",
+      desc_ar: "بطارية ليثيوم بوليمر عالية الأداء من CNHL بست خلايا (6S) وجهد 22.2 فولت وسعة 5000 مللي أمبير، بمعدل تفريغ مستمر 65C يصل إلى 130C في وضع الذروة، وموصل XT90 أو EC5. مثالية للطائرات والهليكوبتر وسيارات RC والقوارب التي تحتاج طاقة قوية وموثوقة." + CONTACT_AR,
+      desc_en: "A high-performance CNHL LiPo battery with 6 cells (22.2V) and a 5000mAh capacity, rated at 65C continuous discharge (up to 130C burst), with an XT90 or EC5 plug. It suits planes, helicopters, RC cars and boats that need strong, reliable power." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"5000 mAh","voltage":"22.2V (6S)","discharge":"65C continuous / 130C burst","plug":"XT90 or EC5","weight":"~839 g","size":"56 x 51 x 144 mm"}, specSource: true,
+      tags: ["cnhl","power","cnhl 5000 mah"],
+      photos: ["power-wa-315-cnhl-5000-mah-3","power-wa-315-cnhl-5000-mah-4"]
+    },
+    {
+      id: "spektrum-smart-3s-5000mah-100c-lipo-battery-ic5", model: "Spektrum Smart 3S 5000mAh 100C", brands: ["Spektrum"],
+      name_ar: "بطارية ليبو ذكية 3S", name_en: "Smart 3S LiPo battery",
+      desc_ar: "بطارية Spektrum Smart 3S بجهد 11.1 فولت وسعة 5000 مللي أمبير ومعدل تفريغ 100C، بموصل IC5 الذكي الذي يوفر الطاقة وبيانات القياس والموازنة في فيشة واحدة دون سلك موازنة منفصل. غلافها الصلب يحمي الخلايا ويحسن تبديد الحرارة." + CONTACT_AR,
+      desc_en: "A Spektrum Smart 3S LiPo battery at 11.1V with a 5000mAh capacity and 100C discharge rating, using the Smart IC5 connector that carries both power and balance/telemetry data in a single plug — no separate balance lead needed. Its hardcase protects the cells and improves heat dissipation." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"5000 mAh","voltage":"11.1V (3S)","discharge":"100C","connector":"IC5 (Smart, data + power in one plug)","case":"hardcase"}, specSource: true,
+      tags: ["spektrum","power","spektrum 3s 5000mah 100c"],
+      photos: ["power-wa-316-spektrum-3s-5000mah-100c-1","power-wa-316-spektrum-3s-5000mah-100c-2","power-wa-316-spektrum-3s-5000mah-100c-3","power-wa-316-spektrum-3s-5000mah-100c-4"]
+    },
+    {
+      id: "1-10-scale-rc-car-model-unspecified", model: "RC Car 1/10", brands: [],
+      name_ar: "سيارة تحكم عن بعد 1/10", name_en: "1/10 RC car",
+      desc_ar: "سيارة تحكم عن بعد بمقاس 1/10 — اسألنا عن الموديل والعلامة المتاحين حاليًا." + CONTACT_AR,
+      desc_en: "A 1/10-scale RC car — ask us about the model and brand currently in stock." + CONTACT_EN,
+      category: "offroad", scales: ["1/10"], level: "intermediate", featured: 78, inStock: true, price: null,
+      specs: {},
+      tags: ["offroad","rc car 1/10"],
+      photos: ["offroad-wa-317-rc-car-1-10-1","offroad-wa-317-rc-car-1-10-2","offroad-wa-317-rc-car-1-10-3","offroad-wa-317-rc-car-1-10-4","offroad-wa-317-rc-car-1-10-5","offroad-wa-317-rc-car-1-10-6","offroad-wa-317-rc-car-1-10-7","offroad-wa-317-rc-car-1-10-8"]
+    },
+    {
+      id: "traxxas-x-maxx-body-shell", model: "Traxxas X-Maxx Body Shell", brands: ["Traxxas"],
+      name_ar: "هيكل بديل لشاحنة مونستر 1/5", name_en: "X-Maxx replacement body",
+      desc_ar: "هيكل بولي كربونات بديل لشاحنة Traxxas X-Maxx الكبيرة، قابل للطلاء بألوان وأشكال متعددة. أخبرنا بالشكل واللون الذي تفضله لنتأكد من التوفر." + CONTACT_AR,
+      desc_en: "A replacement polycarbonate body shell for the large Traxxas X-Maxx monster truck, paintable in a range of styles and colours. Tell us the style and colour you want and we will check availability." + CONTACT_EN,
+      category: "parts", scales: ["1/5"], level: null, featured: 46, inStock: true, price: null,
+      specs: {"compat":"Traxxas X-Maxx 8S"}, specSource: true,
+      tags: ["traxxas","parts","body traxxas x maxx"],
+      photos: ["parts-wa-328-body-traxxas-x-maxx-1"]
+    },
+    {
+      id: "1-5-rc-car-body-shell", model: "1/5 Body Shell", brands: [],
+      name_ar: "هيكل بمقاس 1/5", name_en: "1/5 body shell",
+      desc_ar: "هيكل بولي كربونات بمقياس 1/5 لسيارات وشاحنات الباجا الكبيرة. اسأل عن الأشكال والألوان المتاحة حاليًا." + CONTACT_AR,
+      desc_en: "A 1/5-scale polycarbonate body shell for large Baja-class cars and trucks. Ask about the shapes and colours currently in stock." + CONTACT_EN,
+      category: "parts", scales: ["1/5"], level: null, featured: 46, inStock: true, price: null,
+      specs: {},
+      tags: ["parts","body 1/5 1","body 1/5 2"],
+      photos: ["parts-wa-329-body-1-5-1-1","parts-wa-329-body-1-5-1-2","parts-wa-329-body-1-5-1-3","parts-wa-329-body-1-5-1-4","parts-wa-329-body-1-5-1-5","parts-wa-329-body-1-5-1-6","parts-wa-329-body-1-5-1-7","parts-wa-329-body-1-5-1-8","parts-wa-556-body-1-5-2-1","parts-wa-556-body-1-5-2-2","parts-wa-556-body-1-5-2-3","parts-wa-556-body-1-5-2-4","parts-wa-556-body-1-5-2-5","parts-wa-556-body-1-5-2-6","parts-wa-556-body-1-5-2-7"]
+    },
+    {
+      id: "traxxas-1200mah-7-2v-6-cell-nimh-battery-2925x", model: "Traxxas 1200mAh 7.2V NiMH (2925X)", brands: ["Traxxas"],
+      name_ar: "بطارية نيكل 7.2 فولت", name_en: "7.2V NiMH battery",
+      desc_ar: "بطارية نيكل-ميتال هيدريد (NiMH) أصلية من Traxxas بجهد 7.2 فولت وسعة 1200 مللي أمبير (6 خلايا)، بموصل Traxxas iD السهل التعرف عليه. مصممة لسيارات موديل 1/16 مثل E-Revo و Slash 4WD و Summit، وتزن نحو 145 جرام." + CONTACT_AR,
+      desc_en: "A genuine Traxxas 7.2V (6-cell) NiMH battery with a 1200mAh capacity and the easy-to-identify Traxxas iD connector. It is designed for 1/16-scale models such as the E-Revo, Slash 4WD and Summit, and weighs about 145 g." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"1200 mAh","voltage":"7.2V (6-cell)","connector":"Traxxas iD","compat":"1/16 E-Revo, 1/16 E-Revo VXL, 1/16 Slash 4WD, 1/16 Summit, 1/18 LaTrax models","length":"94 mm","width":"34 mm","height":"17 mm","weight":"145 g"}, specSource: true,
+      tags: ["traxxas","power","traxxas 1200 mah 7.2v nimh"],
+      photos: ["power-wa-330-traxxas-1200-mah-7-2v-nimh-1","power-wa-330-traxxas-1200-mah-7-2v-nimh-2"]
+    },
+    {
+      id: "pro-line-badlands-mx-m2-1-8-buggy-tyres-pre-moun", model: "Pro-Line Badlands MX M2 1/8 (PRO9067-41)", brands: ["Pro-Line"],
+      name_ar: "إطارات باجي 1/8 مركّبة على جنوط", name_en: "Pre-mounted 1/8 buggy tyres",
+      desc_ar: "إطارات Pro-Line Badlands MX بمركّب مطاط M2 لسيارات الباجي بمقياس 1/8، مركّبة مسبقًا على جنوط Velocity V2 سوداء بمقاس هكس 17 مم. ارتفاع الإطار 117 مم وعرضه 44 مم، وتصلح للأمام والخلف، وتوفر تماسكًا جيدًا على الأرض الرخوة والطينية والعشبية." + CONTACT_AR,
+      desc_en: "Pro-Line Badlands MX tyres in the M2 (medium) compound for 1/8-scale buggies, pre-mounted on black Velocity V2 wheels with a 17mm hex. They stand 117 mm tall and 44 mm wide, fit front or rear, and grip well on loose dirt, mud and grass." + CONTACT_EN,
+      category: "parts", scales: ["1/8"], level: null, featured: 46, inStock: true, price: null,
+      specs: {"compound":"M2 (medium), Pro-Line M2 race rubber","height":"117 mm (4.60 in)","width":"44 mm (1.72 in)","hex":"17 mm","mounted_on":"black Velocity V2 wheels"}, specSource: true,
+      tags: ["pro-line","parts","proline pro9067-41 1/8 badlands mx m2 front/rear buggy tires mounted 17mm black"],
+      photos: ["parts-wa-331-proline-pro9067-41-1-8-badlands-mx-m2-fr-2","parts-wa-331-proline-pro9067-41-1-8-badlands-mx-m2-fr-3","parts-wa-331-proline-pro9067-41-1-8-badlands-mx-m2-fr-4"]
+    },
+    {
+      id: "hpi-sprint-2-flux-1-10-4wd-brushless-touring-car", model: "HPI Sprint 2 Flux", brands: ["HPI"],
+      name_ar: "سيارة سياحية 1/10 بدفع رباعي", name_en: "1/10 4WD Touring Car",
+      desc_ar: "سيارة HPI Sprint 2 Flux السياحية بمقياس 1/10 ودفع رباعي بنظام سيور، جاهزة للتشغيل مع إلكترونيات مقاومة للماء بالكامل. تعمل بمحرك Brushless من طراز Flux Vektor 5900 مع وحدة تحكم Flux Vapor، وقاعدة عجلات 254 مم وطول إجمالي 431 مم. تعليقها القابل للضبط الكامل (كامبر وتو وارتفاع) يجعلها مناسبة للسباق أو القيادة الترفيهية." + CONTACT_AR,
+      desc_en: "The HPI Sprint 2 Flux is a 1/10-scale 4WD belt-driven touring car, RTR with fully waterproof electronics. It runs an HPI Flux Vektor 5900 brushless motor with a Flux Vapor ESC, a 254 mm wheelbase and 431 mm overall length. Its fully adjustable suspension (camber, toe, ride height) suits both racing and casual driving." + CONTACT_EN,
+      category: "drift", scales: ["1/10"], level: "intermediate", featured: 78, inStock: true, price: null,
+      specs: {"drivetrain":"4WD, belt-driven","motor":"HPI Flux Vektor 5900 brushless","esc":"HPI Flux Vapor waterproof ESC","length":"431 mm","width":"200 mm","wheelbase":"254 mm","height":"127 mm","radio":"2.4GHz","waterproof":"yes","version":"RTR"}, specSource: true,
+      tags: ["hpi","drift","hpi sprint 2 flux"],
+      photos: ["drift-wa-335-hpi-sprint-2-flux-1","drift-wa-335-hpi-sprint-2-flux-2","drift-wa-335-hpi-sprint-2-flux-3"]
+    },
+    {
+      id: "hpi-baja-5b-body-shell-1-5", model: "HPI Baja 5B Body Shell", brands: ["HPI"],
+      name_ar: "هيكل بديل بمقاس 1/5", name_en: "1/5 replacement body",
+      desc_ar: "هيكل بولي كربونات بديل لسيارة HPI Baja 5B بمقياس 1/5، قابل للطلاء. أخبرنا بالشكل واللون المطلوب لنتأكد من التوفر." + CONTACT_AR,
+      desc_en: "A replacement polycarbonate body shell for the 1/5-scale HPI Baja 5B, paintable to order. Tell us the style and colour you need and we will check availability." + CONTACT_EN,
+      category: "parts", scales: ["1/5"], level: null, featured: 46, inStock: true, price: null,
+      specs: {"compat":"HPI Baja 5B"},
+      tags: ["hpi","parts","body baja 5b","body 1/5 baja 5b"],
+      photos: ["parts-wa-337-body-baja-5b-1","parts-wa-337-body-baja-5b-2","parts-wa-337-body-baja-5b-3","parts-wa-337-body-baja-5b-4","parts-wa-337-body-baja-5b-5","parts-wa-337-body-baja-5b-6","parts-wa-337-body-baja-5b-8"]
+    },
+    {
+      id: "losi-1-5-dbxl-4wd-gas-desert-buggy-rtr-23cc", model: "Losi DBXL 1/5 23cc", brands: ["Losi"],
+      name_ar: "باجي 1/5 بمحرك بنزين ودفع رباعي", name_en: "1/5 Petrol 4WD Buggy",
+      desc_ar: "باجي Losi DBXL بمقياس 1/5 يعمل بمحرك بنزين 23cc يبدأ بالشد، بدفع رباعي وهيكل قوي من ألمنيوم 6061-T6 سمك 4 مم. طوله 781 مم ووزنه نحو 13 كجم، مع جهاز تحكم Spektrum DX2E ثنائي القنوات، ويوفر أكثر من 40 دقيقة تشغيل متواصل بخزان وقود كامل." + CONTACT_AR,
+      desc_en: "The Losi DBXL is a 1/5-scale gas buggy with a 23cc pull-start engine, 4WD and a rugged 4 mm 6061-T6 aluminium chassis. It is 781 mm long and weighs about 13 kg, comes with the 2-channel Spektrum DX2E radio, and runs for over 40 minutes on a full tank." + CONTACT_EN,
+      category: "baja", scales: ["1/5"], level: "pro", featured: 80, inStock: true, price: null,
+      specs: {"engine":"23cc pull-start petrol","drivetrain":"4WD","length":"781 mm (30.75 in)","weight":"13.01 kg (28.7 lb)","chassis":"4 mm 6061-T6 aluminium","radio":"Spektrum DX2E 2-channel","version":"RTR","width":"485 mm (19.1 in)","height":"311 mm (12.25 in)","wheelbase":"559 mm (22.0 in)"}, specSource: true,
+      tags: ["losi","baja","losi dbxl 1/5 23cc","losi 1/5 23cc","losi dbxl v1 1/5"],
+      photos: ["baja-wa-338-losi-dbxl-1-5-23cc-1","baja-wa-338-losi-dbxl-1-5-23cc-2","baja-wa-338-losi-dbxl-1-5-23cc-3","baja-wa-338-losi-dbxl-1-5-23cc-4","baja-wa-506-losi-dbxl-v1-1-5-3","baja-wa-506-losi-dbxl-v1-1-5-4","baja-wa-506-losi-dbxl-v1-1-5-5","baja-wa-506-losi-dbxl-v1-1-5-6","baja-wa-506-losi-dbxl-v1-1-5-7","baja-wa-506-losi-dbxl-v1-1-5-8"]
+    },
+    {
+      id: "rc-brushed-motor-generic-540-550-size", model: "RC Brushed Motor (540 / 550)", brands: [],
+      name_ar: "محرك براشد لسيارات 1/10", name_en: "Brushed motor for 1/10 cars",
+      desc_ar: "محرك RC عادي (Brushed) بمقاس شائع مناسب لسيارات 1/10، لاستبدال المحركات التالفة أو رفع كفاءة السيارة. أخبرنا بموديل سيارتك والقيمة (Turns) المطلوبة لنرشّح لك المناسب." + CONTACT_AR,
+      desc_en: "A standard brushed RC motor in a common size suited to 1/10-scale cars, for replacing a worn motor or a simple upgrade. Tell us your car model and preferred turn count and we will suggest the right one." + CONTACT_EN,
+      category: "parts", scales: [], level: null, featured: 46, inStock: true, price: null,
+      specs: {},
+      tags: ["parts","motor brushed"],
+      photos: ["parts-wa-341-motor-brushed-1","parts-wa-341-motor-brushed-2"]
+    },
+    {
+      id: "rc-battery-connectors-xt60-xt90-deans-ec3-etc", model: "Battery Connectors (XT60 / XT90 / Deans / EC3)", brands: [],
+      name_ar: "فيش وموصلات للبطاريات", name_en: "Battery plugs & connectors",
+      desc_ar: "وصلات وفيش شحن وتوصيل للبطاريات بأنواع شائعة مثل XT60 و XT90 و Deans و EC3، لتركيب أو استبدال موصلات البطاريات والشواحن. أخبرنا بالنوع المطلوب لنؤكد التوفر." + CONTACT_AR,
+      desc_en: "Battery connectors and plugs in common types such as XT60, XT90, Deans and EC3, for wiring or replacing battery and charger connectors. Tell us which type you need and we will confirm stock." + CONTACT_EN,
+      category: "electronics", scales: [], level: null, featured: 43, inStock: true, price: null,
+      specs: {},
+      tags: ["electronics","rc connector 1","rc connector 2"],
+      photos: ["electronics-wa-342-rc-connector-1-1","electronics-wa-342-rc-connector-1-2","electronics-wa-342-rc-connector-1-3","electronics-wa-342-rc-connector-1-4","electronics-wa-342-rc-connector-1-5","electronics-wa-342-rc-connector-1-6","electronics-wa-342-rc-connector-1-7","electronics-wa-517-rc-connector-2-1","electronics-wa-517-rc-connector-2-2","electronics-wa-517-rc-connector-2-3","electronics-wa-517-rc-connector-2-4","electronics-wa-517-rc-connector-2-6","electronics-wa-517-rc-connector-2-7","electronics-wa-517-rc-connector-2-8"]
+    },
+    {
+      id: "rc-boat-model-unspecified", model: "RC Boat", brands: [],
+      name_ar: "قارب تحكم عن بعد", name_en: "RC boat",
+      desc_ar: "قارب تحكم عن بعد — اسألنا عن الموديلات المتاحة حاليًا." + CONTACT_AR,
+      desc_en: "An RC boat — ask us which models are in stock." + CONTACT_EN,
+      category: "boats", scales: [], level: null, featured: 24, inStock: true, price: null,
+      specs: {},
+      tags: ["boats","rc boat"],
+      photos: ["boats-wa-505-rc-boat-1","boats-wa-505-rc-boat-2","boats-wa-505-rc-boat-3","boats-wa-505-rc-boat-4","boats-wa-505-rc-boat-5","boats-wa-505-rc-boat-6","boats-wa-505-rc-boat-7","boats-wa-505-rc-boat-8"]
+    },
+    {
+      id: "outerwears-pull-start-pre-filter-cover", model: "Outerwears Pull-Start Pre-Filter", brands: ["Outerwears"],
+      name_ar: "غطاء فلتر لمشغّل الشد", name_en: "Pull-start pre-filter cover",
+      desc_ar: "غطاء فلتر أولي (Pre-Filter) من Outerwears لجهاز التشغيل بالشد (Pull Start) في محركات البنزين لسيارات الباجا، مصنوع من شبك بوليستر مقاوم للماء والأشعة فوق البنفسجية. يتوافق مع أغلب أجهزة التشغيل بالشد من Zenoah و Chung Yang و Rovan و King Motor، ويحمي المحرك من الغبار والرمال ويمكن غسله وإعادة استخدامه." + CONTACT_AR,
+      desc_en: "An Outerwears pre-filter cover for the pull-start assembly on petrol Baja engines, made from water-repellent, UV-resistant polyester mesh. It fits most Zenoah, Chung Yang, Rovan and King Motor pull-starters, keeps dust and sand out of the engine, and is washable and reusable." + CONTACT_EN,
+      category: "tools", scales: [], level: null, featured: 26, inStock: true, price: null,
+      specs: {"material":"polyester mesh, water-repellent, UV resistant","compat":"Zenoah G230RC/G260RC/G270RC/G290RC/G320RC and Chung Yang CY23/26/27/29RC pull-starters (Rovan/KM/Taylor RC/OBR starters)"}, specSource: true,
+      tags: ["outerwears","tools","outerwears r/c pullstart"],
+      photos: ["tools-wa-507-outerwears-r-c-pullstart-1","tools-wa-507-outerwears-r-c-pullstart-3"]
+    },
+    {
+      id: "turbo-racing-c71-1-76-mini-cooper-rc-car", model: "Turbo Racing C71 1/76 Mini Cooper", brands: ["Turbo Racing"],
+      name_ar: "سيارة صغيرة جدًا بمقاس 1/76", name_en: "Tiny 1/76 RC car",
+      desc_ar: "سيارة Turbo Racing C71 بمقياس صغير جدًا 1/76 على شكل Mini Cooper، بدفع خلفي وتحكم كامل في السرعة والتوجيه عبر جهاز 2.4 جيجاهرتز رباعي القنوات. تحتوي على بطارية LiPo داخلية سعة 40 مللي أمبير تشحن عبر USB-C وتعطي حتى 30 دقيقة تشغيل، بمدى تحكم يصل إلى 30 مترًا. تأتي مع أضواء LED أمامية وخلفية وهياكل إضافية غير مطلية للتخصيص." + CONTACT_AR,
+      desc_en: "The Turbo Racing C71 is a tiny 1/76-scale Mini Cooper-styled RC car with rear-wheel drive and full proportional control via a 2.4GHz 4-channel radio. It has a built-in 40mAh LiPo battery charged over USB-C, giving up to 30 minutes of runtime, with a 30 m control range. It comes with LED head/tail lights and extra unpainted body shells for customising." + CONTACT_EN,
+      category: "drift", scales: ["1/76"], level: "beginner", featured: 77, inStock: true, price: null,
+      specs: {"drivetrain":"RWD","battery":"built-in 40 mAh LiPo, USB-C charging","control_range":"30 m","radio":"2.4GHz, 4-channel proportional","runtime":"up to 30 minutes"}, specSource: true,
+      tags: ["turbo racing","drift","turbo racing 176/ mini cooper","turbo racing 1 76 mini cooper"],
+      photos: ["drift-wa-508-turbo-racing-176-mini-cooper-1","drift-wa-508-turbo-racing-176-mini-cooper-2","drift-wa-508-turbo-racing-176-mini-cooper-3","drift-wa-508-turbo-racing-176-mini-cooper-4"]
+    },
+    {
+      id: "austarhobby-ax-3013-170mm-wheel-tyre-set-17mm-he", model: "AustarHobby AX-3013 170mm Wheels", brands: ["AustarHobby"],
+      name_ar: "عجلات وإطارات لشاحنات 1/8", name_en: "1/8 monster truck wheels & tyres",
+      desc_ar: "طقم عجلات وإطارات AustarHobby بقطر 170 مم وهكس 17 مم، متوافق مع أغلب شاحنات المونستر بمقياس 1/8 من HPI و HSP و Traxxas. خيار اقتصادي لاستبدال الإطارات المستهلكة أو رفع مظهر الشاحنة." + CONTACT_AR,
+      desc_en: "An AustarHobby 170mm wheel and tyre set with a 17mm hex, compatible with most 1/8-scale monster trucks from HPI, HSP and Traxxas. A budget-friendly option for replacing worn tyres or refreshing a truck's look." + CONTACT_EN,
+      category: "parts", scales: ["1/8"], level: null, featured: 46, inStock: true, price: null,
+      specs: {"diameter":"170 mm","hex":"17 mm","compat":"1/8 monster trucks (HPI, HSP, Traxxas)"}, specSource: true,
+      tags: ["austarhobby","parts","austarhobby 170mm wheel tires 17mm hex for 1/8 rc monster"],
+      photos: ["parts-wa-509-austarhobby-170mm-wheel-tires-17mm-hex-f-1","parts-wa-509-austarhobby-170mm-wheel-tires-17mm-hex-f-2","parts-wa-509-austarhobby-170mm-wheel-tires-17mm-hex-f-3","parts-wa-509-austarhobby-170mm-wheel-tires-17mm-hex-f-4"]
+    },
+    {
+      id: "imax-b6ac-v2-ac-dc-balance-charger", model: "iMAX B6AC V2", brands: ["iMAX"],
+      name_ar: "شاحن موازنة بمدخل كهرباء وبطارية", name_en: "AC/DC balance charger",
+      desc_ar: "نسخة iMAX B6AC V2 من الشاحن الشهير، تعمل بمصدر تيار متردد (AC 100-240 فولت) أو مستمر (DC 11-18 فولت) دون الحاجة لمصدر طاقة خارجي منفصل. يوفر حتى 50 واط شحن و 6 أمبير كحد أقصى، ويدعم موازنة الخلايا لبطاريات LiPo و Li-ion و LiFe حتى 6 خلايا وكذلك NiMH و NiCd و Pb." + CONTACT_AR,
+      desc_en: "The iMAX B6AC V2 version of the popular charger runs from either AC (100–240V) or DC (11–18V) power, without needing a separate external supply. It delivers up to 50W of charging at up to 6A and balance-charges LiPo, Li-ion and LiFe packs up to 6 cells, plus NiMH, NiCd and Pb batteries." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"output":"50W max charge / 5W max discharge","input":"AC 100–240V or DC 11–18V","charge_current":"0.1–6.0A","discharge_current":"0.1–1.0A","compat":"LiPo/Li-ion/LiFe (1–6S), NiMH/NiCd (1–15 cells), Pb (2–20V)","weight":"277 g"}, specSource: true,
+      tags: ["imax","power","imax b6ac","imax b6"],
+      photos: ["power-wa-548-imax-b6ac-1","power-wa-548-imax-b6ac-2","power-wa-548-imax-b6ac-3","power-wa-548-imax-b6ac-4","power-wa-548-imax-b6ac-5","power-wa-548-imax-b6ac-6","power-wa-548-imax-b6ac-7","power-wa-510-imax-b6-1","power-wa-510-imax-b6-2","power-wa-510-imax-b6-3"]
+    },
+    {
+      id: "arrma-typhon-4x4-tlr-tuned-1-8-race-buggy", model: "Arrma Typhon 4X4 TLR Tuned", brands: ["Arrma"],
+      name_ar: "باجي سباق 1/8 بدفع رباعي", name_en: "1/8 4WD Race Buggy",
+      desc_ar: "نسخة TLR Tuned من باجي Typhon بمقياس 1/8 من Arrma، بدفع رباعي ومجموعة نقل حركة معززة بالكامل (دفرنسات معدنية وتروس صلبة وعمود إدارة فولاذي). تحتوي على جناح خلفي قابل للضبط لتحسين الثبات عند السرعات العالية، وحامل محرك منزلق للوصول السريع. مصممة للمتحمسين المهتمين بالسباق مع متانة عالية للتحطيم." + CONTACT_AR,
+      desc_en: "The TLR Tuned version of the Arrma Typhon 1/8-scale buggy, with 4WD and a fully upgraded drivetrain — all-metal differentials, hardened gears and a steel driveshaft. It has an adjustable rear wing for high-speed stability and a sliding motor mount for quick access, aimed at bashers looking to step into racing without giving up durability." + CONTACT_EN,
+      category: "offroad", scales: ["1/8"], level: "pro", featured: 80, inStock: true, price: null,
+      specs: {"drivetrain":"4WD","tires":"dBoots Exabyte race-compound tyres","drivetrain_parts":"all-metal diff outdrives, gearbox internals and steel driveshafts","feature":"adjustable race-spec rear wing, sliding aluminium motor mount"}, specSource: true,
+      tags: ["arrma","offroad","arrma typhon tlr 1/8"],
+      photos: ["offroad-wa-511-arrma-typhon-tlr-1-8-1","offroad-wa-511-arrma-typhon-tlr-1-8-4","offroad-wa-511-arrma-typhon-tlr-1-8-5","offroad-wa-511-arrma-typhon-tlr-1-8-7","offroad-wa-511-arrma-typhon-tlr-1-8-8"]
+    },
+    {
+      id: "skyrc-e3-ac-balance-charger", model: "SkyRC e3", brands: ["SkyRC"],
+      name_ar: "شاحن موازنة صغير لبطاريات 2S · 3S", name_en: "Compact 2S–3S balance charger",
+      desc_ar: "شاحن SkyRC e3 المدمج والاقتصادي، مخصص لبطاريات LiPo من فئتي 2S و 3S، ويعمل مباشرة على التيار المتردد (AC) بدون الحاجة لمصدر طاقة خارجي. خيار بسيط وشائع للهواة ولمستخدمي معدات الإيرسوفت." + CONTACT_AR,
+      desc_en: "The compact, low-cost SkyRC e3 is an AC balance charger for 2S–3S LiPo batteries, running directly from mains power without an external supply. It is a simple, popular choice among RC hobbyists and airsoft users alike." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"compat":"LiPo 2–3S","type":"compact AC balance charger"}, specSource: true,
+      tags: ["skyrc","power","skyrc charger e3"],
+      photos: ["power-wa-514-skyrc-charger-e3-1"]
+    },
+    {
+      id: "rovan-king-motor-baja-5t-style-1-5-32cc-petrol-t", model: "Baja 5T-style 1/5 32cc (Rovan / King Motor)", brands: ["Rovan","King Motor"],
+      name_ar: "شاحنة 1/5 بمحرك بنزين 32cc", name_en: "1/5 32cc Petrol Truck",
+      desc_ar: "شاحنة على طراز HPI Baja 5T بمقياس 1/5، تعمل بمحرك بنزين ثنائي الأشواط سعة 32cc يعطي نحو 3.24 حصان عند 13000 دورة/دقيقة. طولها 970 مم وعرضها 440 مم وقاعدة عجلاتها 570 مم، ووزنها الصافي نحو 13.5 كجم، بدفع خلفي وتعليق معزز يناسب القيادة الرملية والصحراوية." + CONTACT_AR,
+      desc_en: "A Baja 5T-style 1/5-scale truck powered by a 32cc 2-stroke petrol engine producing about 3.24 hp at 13,000 rpm. It measures 970 x 440 mm with a 570 mm wheelbase and weighs about 13.5 kg net, with rear-wheel drive and reinforced suspension suited to sand and desert driving." + CONTACT_EN,
+      category: "baja", scales: ["1/5"], level: "pro", featured: 80, inStock: true, price: null,
+      specs: {"engine":"32cc 2-stroke petrol (38 mm bore x 28 mm stroke)","drivetrain":"RWD","dimensions":"970 x 440 x 340 mm (L x W x H)","wheelbase":"570 mm","weight":"13.5 kg net","output":"3.24 HP @ 13,000 rpm"}, specSource: true,
+      tags: ["rovan","baja","baha 5t 1/5 32cc"],
+      photos: ["baja-wa-520-baha-5t-1-5-32cc-5"]
+    },
+    {
+      id: "arrma-talion-6s-blx-1-8-4wd-truggy", model: "Arrma Talion 6S BLX 1/8", brands: ["Arrma"],
+      name_ar: "تراغي 1/8 بدفع رباعي", name_en: "1/8 4WD Truggy",
+      desc_ar: "تراغي Talion 6S من Arrma بمقياس 1/8، جاهزة للتشغيل بدفع رباعي، تجمع بين طابع الباجي والشاحنة. تعمل بمحرك Brushless بقوة 2050Kv مع وحدة تحكم BLX185، وتصل سرعتها إلى أكثر من 70 ميل/ساعة (113+ كم/ساعة) على بطارية 6S." + CONTACT_AR,
+      desc_en: "The Arrma Talion 6S BLX is a 1/8-scale RTR 4WD truggy — a blend of buggy and truck styling. It runs a 2050Kv brushless motor with a BLX185 ESC, reaching over 70 mph (113+ km/h) on 6S LiPo." + CONTACT_EN,
+      category: "offroad", scales: ["1/8"], level: "pro", featured: 80, inStock: true, price: null,
+      specs: {"motor":"2050Kv brushless","esc":"BLX185 (IC5/EC5 connectors)","top_speed":"70+ mph (113+ km/h)","drivetrain":"4WD","version":"RTR"}, specSource: true,
+      tags: ["arrma","offroad","arrma talion 6s"],
+      photos: ["offroad-wa-521-arrma-talion-6s-2","offroad-wa-521-arrma-talion-6s-3"]
+    },
+    {
+      id: "4s-5200mah-120c-lipo-battery", model: "4S 5200mAh 120C LiPo", brands: [],
+      name_ar: "بطارية ليبو 4S بسعة 5200", name_en: "4S 5200mAh LiPo battery",
+      desc_ar: "بطارية ليثيوم بوليمر بجهد 14.8 فولت (4S) وسعة 5200 مللي أمبير ومعدل تفريغ عالٍ 120C، مناسبة للسيارات والشاحنات القوية التي تحتاج تيارًا عاليًا. العلامة التجارية غير محددة في القائمة الأصلية." + CONTACT_AR,
+      desc_en: "A 14.8V (4S) LiPo battery with a 5200mAh capacity and a high 120C discharge rating, suited to powerful cars and trucks that draw heavy current. The brand was not specified in the source listing." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"5200 mAh","voltage":"14.8V (4S)","discharge":"120C"},
+      tags: ["power","5200 mah 120c 14.8v 4s"],
+      photos: ["power-wa-523-5200-mah-120c-14-8v-4s-1","power-wa-523-5200-mah-120c-14-8v-4s-2","power-wa-523-5200-mah-120c-14-8v-4s-3","power-wa-523-5200-mah-120c-14-8v-4s-4","power-wa-523-5200-mah-120c-14-8v-4s-5"]
+    },
+    {
+      id: "1-10-rc-formula-1-car", model: "RC Formula Car 1/10", brands: [],
+      name_ar: "سيارة فورمولا 1/10 للطرق الممهدة", name_en: "1/10 Formula on-road car",
+      desc_ar: "سيارة فورمولا للتحكم عن بعد بمقاس 1/10 للطرق الممهدة — اسألنا عن الموديل المتاح." + CONTACT_AR,
+      desc_en: "A 1/10-scale RC Formula on-road car — ask us about the model in stock." + CONTACT_EN,
+      category: "drift", scales: ["1/10"], level: "intermediate", featured: 78, inStock: true, price: null,
+      specs: {},
+      tags: ["drift","f1 1/10"],
+      photos: ["drift-wa-526-f1-1-10-1","drift-wa-526-f1-1-10-2","drift-wa-526-f1-1-10-3","drift-wa-526-f1-1-10-4","drift-wa-526-f1-1-10-6","drift-wa-526-f1-1-10-7"]
+    },
+    {
+      id: "spektrum-smart-4s-5000mah-100c-lipo-battery-ic5", model: "Spektrum Smart 4S 5000mAh 100C", brands: ["Spektrum"],
+      name_ar: "بطارية ليبو ذكية 4S", name_en: "Smart 4S LiPo battery",
+      desc_ar: "بطارية Spektrum Smart 4S بجهد 14.8 فولت وسعة 5000 مللي أمبير ومعدل تفريغ 100C، بموصل IC5 الذكي الذي يحمل الطاقة وبيانات الموازنة معًا دون سلك منفصل. تخزّن البطارية بيانات مثل عدد الشحن والتفريغ وسجل الأعطال لمتابعة حالتها." + CONTACT_AR,
+      desc_en: "A Spektrum Smart 4S LiPo battery at 14.8V with a 5000mAh capacity and 100C discharge rating, using the Smart IC5 connector that carries power and balance data together without a separate lead. The battery logs data such as charge/discharge cycles and fault history to track its health." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"5000 mAh","voltage":"14.8V (4S)","discharge":"100C","connector":"IC5 (Smart, data + power in one plug)","case":"hardcase"}, specSource: true,
+      tags: ["spektrum","power","spektrum 4s 5000mah 100c"],
+      photos: ["power-wa-527-spektrum-4s-5000mah-100c-1","power-wa-527-spektrum-4s-5000mah-100c-2","power-wa-527-spektrum-4s-5000mah-100c-3"]
+    },
+    {
+      id: "dynamite-350mah-2s-7-4v-lipo-battery-ph2-0", model: "Dynamite 350mAh 2S LiPo (PH2.0)", brands: ["Dynamite"],
+      name_ar: "بطارية ليبو صغيرة 2S لسيارات الزحف المصغّرة", name_en: "Small 2S LiPo for micro crawlers",
+      desc_ar: "بطارية Dynamite صغيرة بجهد 7.4 فولت (2S) وسعة 350 مللي أمبير بموصل PH2.0، مصممة خصيصًا لسيارات الزحف الصغيرة مثل Axial SCX24 وما شابهها من الموديلات المصغرة." + CONTACT_AR,
+      desc_en: "A small Dynamite battery at 7.4V (2S) with a 350mAh capacity and a PH2.0 connector, designed for micro crawlers such as the Axial SCX24 and similar small-scale models." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"350 mAh","voltage":"7.4V (2S)","connector":"PH2.0","length":"55.56 mm","width":"28.57 mm","use":"Axial SCX24 and similar micro crawlers"}, specSource: true,
+      tags: ["dynamite","power","dynamite 350mah 2s 7.4v lipo battery"],
+      photos: ["power-wa-529-dynamite-350mah-2s-7-4v-lipo-battery-1"]
+    },
+    {
+      id: "pineal-model-1-8-body-shell-sg-ck01-for-sg-801-8", model: "Pineal Model SG-CK01 1/8 Body", brands: ["Pineal Model"],
+      name_ar: "هيكل بديل بمقاس 1/8", name_en: "1/8 replacement body",
+      desc_ar: "هيكل بلاستيك بديل (كود SG-CK01) لسيارات Pineal Model من طراز SG-801 و SG-802 و SG-803 بمقياس 1/8، بطول 475 مم وعرض 210 مم وقاعدة عجلات 325 مم، ووزن نحو 500 جرام." + CONTACT_AR,
+      desc_en: "A replacement plastic body shell (SG-CK01) for the Pineal Model SG-801, SG-802 and SG-803 1/8-scale cars, measuring 475 x 210 mm with a 325 mm wheelbase and weighing about 500 g." + CONTACT_EN,
+      category: "parts", scales: ["1/8"], level: null, featured: 46, inStock: true, price: null,
+      specs: {"length":"475 mm","width":"210 mm","wheelbase":"325 mm","weight":"~500 g","compat":"Pineal Model SG-801 / SG-802 / SG-803"}, specSource: true,
+      tags: ["pineal model","parts","pineal model 1/8 car body shell for sg-801/802/803"],
+      photos: ["parts-wa-530-pineal-model-1-8-car-body-shell-for-sg-8-2","parts-wa-530-pineal-model-1-8-car-body-shell-for-sg-8-3","parts-wa-530-pineal-model-1-8-car-body-shell-for-sg-8-4","parts-wa-530-pineal-model-1-8-car-body-shell-for-sg-8-5","parts-wa-530-pineal-model-1-8-car-body-shell-for-sg-8-6"]
+    },
+    {
+      id: "cnhl-racing-series-5200mah-lipo-battery", model: "CNHL Racing Series 5200mAh", brands: ["CNHL"],
+      name_ar: "بطارية ليبو بسعة 5200", name_en: "5200mAh LiPo battery",
+      desc_ar: "بطارية CNHL من سلسلة Racing بسعة 5200 مللي أمبير ومعدل تفريغ 90C مستمر (يصل إلى 180C في الذروة)، بموصل EC5. تتوفر بعدة تكوينات من 3S حتى 6S، لذا يرجى تحديد عدد الخلايا (الجهد) المطلوب عند الطلب." + CONTACT_AR,
+      desc_en: "A CNHL Racing Series LiPo battery with a 5200mAh capacity and a 90C continuous discharge rating (up to 180C burst), with an EC5 plug. It is available in several configurations from 3S to 6S, so please specify the cell count (voltage) you need when ordering." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"capacity":"5200 mAh","discharge":"90C continuous / 180C burst","plug":"EC5","available_configs":"3S (11.1V), 4S (14.8V), 5S (18.5V) and 6S (22.2V)"},
+      tags: ["cnhl","power","cnhl 5200 mah"],
+      photos: ["power-wa-534-cnhl-5200-mah-1","power-wa-534-cnhl-5200-mah-2","power-wa-534-cnhl-5200-mah-3","power-wa-534-cnhl-5200-mah-5"]
+    },
+    {
+      id: "traxxas-ez-peak-plus-4s-charger-2981", model: "Traxxas EZ-Peak Plus 4S (2981)", brands: ["Traxxas"],
+      name_ar: "شاحن 4S بالتعرّف التلقائي على البطارية", name_en: "4S charger with battery auto-detect",
+      desc_ar: "شاحن Traxxas EZ-Peak Plus 4S (كود 2981) بقدرة 75 واط وتيار شحن يصل إلى 8 أمبير، يشحن بطاريات NiMH (5-8 خلايا) و LiPo من 2S حتى 4S. يحتوي على نظام Traxxas iD الذي يتعرف تلقائيًا على البطارية ويضبط إعدادات الشحن المناسبة، مع وضع تخزين بضغطة زر واحدة." + CONTACT_AR,
+      desc_en: "The Traxxas EZ-Peak Plus 4S charger (part 2981) delivers 75W at up to 8A, charging NiMH (5–8 cell) and 2S–4S LiPo batteries. It uses the Traxxas iD system to automatically detect the battery and configure the correct charge settings, with a one-button storage mode." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {"output":"75W, 8A","compat":"NiMH (5–8 cell) & LiPo 2S–4S","features":"Traxxas iD auto battery detection, one-button storage mode, built-in balance port"}, specSource: true,
+      tags: ["traxxas","power","traxxas 2981 - ez-peak plus 4s charger"],
+      photos: ["power-wa-536-traxxas-2981-ez-peak-plus-4s-charger-1"]
+    },
+    {
+      id: "xray-1-10-electric-on-road-touring-pan-car-exact", model: "Xray 1/10 On-Road Touring Car", brands: ["Xray"],
+      name_ar: "سيارة سباق سياحية 1/10", name_en: "1/10 On-road Touring Car",
+      desc_ar: "سيارة سباق سياحية بمقاس 1/10 للطرق الممهدة من XRAY — اسألنا عن الموديل المتاح." + CONTACT_AR,
+      desc_en: "A 1/10-scale on-road touring race car from XRAY — ask us about the exact model in stock." + CONTACT_EN,
+      category: "drift", scales: ["1/10"], level: "intermediate", featured: 78, inStock: true, price: null,
+      specs: {},
+      tags: ["xray","drift","x ray 1/10"],
+      photos: ["drift-wa-539-x-ray-1-10-1","drift-wa-539-x-ray-1-10-2","drift-wa-539-x-ray-1-10-3","drift-wa-539-x-ray-1-10-4","drift-wa-539-x-ray-1-10-5","drift-wa-539-x-ray-1-10-6","drift-wa-539-x-ray-1-10-7","drift-wa-539-x-ray-1-10-8"]
+    },
+    {
+      id: "arrma-fireteam-6s-blx-1-7-4wd-buggy", model: "Arrma Fireteam 6S BLX 1/7", brands: ["Arrma"],
+      name_ar: "باجي 1/7 بدفع رباعي", name_en: "1/7 4WD Buggy",
+      desc_ar: "باجي Fireteam 6S بمقياس 1/7 من Arrma، جاهز للتشغيل بدفع رباعي وقاعدة عجلات طويلة ومسار عجلات عريض لثبات أفضل. يصل سرعته إلى أكثر من 60 ميل/ساعة (96+ كم/ساعة)، وهو أول مركبة أوف رود من Arrma تحتوي على فرامل يد ميكانيكية، مع إطارات dBoots Fireteam متعددة الاستخدامات." + CONTACT_AR,
+      desc_en: "The Arrma Fireteam 6S is a 1/7-scale RTR 4WD buggy with an extra-long wheelbase and wide track for dynamic handling. It reaches 60+ mph (96+ km/h) and is the first Arrma off-road vehicle to include a mechanical handbrake, riding on multi-terrain dBoots Fireteam tyres." + CONTACT_EN,
+      category: "offroad", scales: ["1/7"], level: "pro", featured: 80, inStock: true, price: null,
+      specs: {"top_speed":"60+ mph (96+ km/h)","drivetrain":"4WD","feature":"mechanical handbrake (first for an Arrma off-road vehicle)","tires":"dBoots Fireteam multi-terrain","version":"RTR"}, specSource: true,
+      tags: ["arrma","offroad","arrma fireteam  1/7","arrma fireteam 1/7"],
+      photos: ["offroad-wa-540-arrma-fireteam-1-7-1","offroad-wa-540-arrma-fireteam-1-7-2","offroad-wa-540-arrma-fireteam-1-7-3","offroad-wa-540-arrma-fireteam-1-7-4","offroad-wa-540-arrma-fireteam-1-7-5","offroad-wa-540-arrma-fireteam-1-7-6","offroad-wa-540-arrma-fireteam-1-7-7","offroad-wa-540-arrma-fireteam-1-7-8"]
+    },
+    {
+      id: "spektrum-smart-s150-ac-dc-charger-model-assumed", model: "Spektrum Smart Charger", brands: ["Spektrum"],
+      name_ar: "شاحن ذكي", name_en: "Smart charger",
+      desc_ar: "شاحن ذكي من Spektrum لبطاريات LiPo · Li-ion · LiHV — اسألنا عن الطراز المتاح." + CONTACT_AR,
+      desc_en: "A Spektrum Smart charger for LiPo, Li-ion and LiHV packs — ask us which model is in stock." + CONTACT_EN,
+      category: "power", scales: [], level: null, featured: 44, inStock: true, price: null,
+      specs: {},
+      tags: ["spektrum","power","spektrum charger"],
+      photos: ["power-wa-542-spektrum-charger-1","power-wa-542-spektrum-charger-2","power-wa-542-spektrum-charger-4"]
+    },
+    {
+      id: "rc-car-led-light-kit", model: "RC Car LED Light Kit", brands: [],
+      name_ar: "طقم إضاءة للسيارات", name_en: "LED light kit",
+      desc_ar: "طقم إضاءة LED لسيارات التحكم عن بعد، لإضافة أضواء أمامية وخلفية واقعية. أخبرنا بمقاس وموديل سيارتك لنرشّح لك الطقم المناسب." + CONTACT_AR,
+      desc_en: "An LED lighting kit for RC cars, adding realistic front and rear lights. Tell us your car's size and model and we will suggest the right kit." + CONTACT_EN,
+      category: "parts", scales: [], level: null, featured: 46, inStock: true, price: null,
+      specs: {},
+      tags: ["parts","rc car led"],
+      photos: ["parts-wa-544-rc-car-led-1","parts-wa-544-rc-car-led-2","parts-wa-544-rc-car-led-3","parts-wa-544-rc-car-led-4","parts-wa-544-rc-car-led-5","parts-wa-544-rc-car-led-6","parts-wa-544-rc-car-led-7","parts-wa-544-rc-car-led-8"]
+    },
+    {
+      id: "traxxas-velineon-vxl-8s-waterproof-esc", model: "Traxxas Velineon VXL-8S ESC", brands: ["Traxxas"],
+      name_ar: "منظم سرعة مقاوم للماء 4S–8S", name_en: "Waterproof 4S–8S ESC",
+      desc_ar: "وحدة تحكم Traxxas Velineon VXL-8S المقاومة للماء، تدعم بطاريات من 4S حتى 8S (بحد أقصى 33.6 فولت)، وهي نفس الوحدة المستخدمة في شاحنة X-Maxx و XRT. تحتوي على مروحة تبريد مدمجة، ومخرج BEC بقوة 6 فولت و 10 أمبير مستمر (20 أمبير ذروة)، وتزن 215.5 جرامًا." + CONTACT_AR,
+      desc_en: "The Traxxas Velineon VXL-8S is a waterproof ESC supporting 4S to 8S LiPo (up to 33.6V), the same unit used in the X-Maxx and XRT. It has a built-in cooling fan, a 6V BEC rated at 10A continuous (20A peak), and weighs 215.5 g." + CONTACT_EN,
+      category: "electronics", scales: [], level: null, featured: 43, inStock: true, price: null,
+      specs: {"input":"4S/6S/8S LiPo (max 33.6V)","bec":"6.0V, 10A continuous / 20A peak","waterproof":"yes (sealed case with O-rings)","weight":"215.5 g","size":"58 x 72 x 46 mm","connectors":"Traxxas 6.5mm bullet motor connectors"}, specSource: true,
+      tags: ["traxxas","electronics","traxxas esc 8s"],
+      photos: ["electronics-wa-549-traxxas-esc-8s-1"]
+    }
+  ]);
 
   /* ---------- Level shortcuts: typical first models listed first (then the rest by weight) ---------- */
   window.VOLT_LEVEL_ORDER = {

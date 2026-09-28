@@ -122,7 +122,8 @@
     <symbol id="i-cat-boats" viewBox="0 0 24 24"><path d="M2.5 14.5h19l-2.7 4.3a1.8 1.8 0 0 1-1.5.8H6.9a1.8 1.8 0 0 1-1.6-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m6.5 14.5 2.2-4.2h6.6l3.4 4.2M11 10.3V7.5h3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-cat-electronics" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M15.5 8 18 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="9" cy="14.2" r="2.1" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15" cy="14.2" r="2.1" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.4-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z" fill="currentColor"/></symbol>
-    <symbol id="i-cat-parts" viewBox="0 0 24 24"><rect x="3" y="7" width="15.5" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M21 10.5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11.6 8.8 8.8 12.4h3l-1.1 3 3.3-4h-3.1z" fill="currentColor"/></symbol>
+    <symbol id="i-cat-power" viewBox="0 0 24 24"><rect x="3" y="7" width="15.5" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M21 10.5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M11.6 8.8 8.8 12.4h3l-1.1 3 3.3-4h-3.1z" fill="currentColor"/></symbol>
+    <symbol id="i-cat-parts" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 3.5v2.3M12 18.2v2.3M20.5 12h-2.3M5.8 12H3.5M18 6l-1.6 1.6M7.6 16.4 6 18M18 18l-1.6-1.6M7.6 7.6 6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="12" r="6.6" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
   </svg>
 
   <!-- =====================================================================
@@ -353,14 +354,14 @@
               </span>
             </a>
           </li>
-          <li class="cat-tile cat-tile--banner" data-reveal style="--d:1">
+          <li class="cat-tile" data-reveal style="--d:1">
             <a href="#shop" data-set-category="parts">
               <img src="assets/img/shop/thumb/shop-081.jpg" width="600" height="450" loading="lazy" decoding="async" alt="">
               <span class="cat-tile__icon" aria-hidden="true"><svg class="icon"><use href="#i-cat-parts"/></svg></span>
               <span class="cat-tile__arrow" aria-hidden="true"><svg class="icon dir-icon"><use href="#i-arrow"/></svg></span>
               <span class="cat-tile__text">
-                <span class="cat-tile__name" data-i18n="cat.parts">قطع غيار وبطاريات</span>
-                <span class="cat-tile__tag" data-i18n="cat.parts.tag">قطع غيار، إطارات، هياكل وبطاريات</span>
+                <span class="cat-tile__name" data-i18n="cat.parts">قطع غيار</span>
+                <span class="cat-tile__tag" data-i18n="cat.parts.tag">قطع غيار، إطارات، هياكل وموتورات</span>
                 <span class="cat-tile__count" data-cat-count="parts"></span>
               </span>
             </a>
@@ -386,6 +387,18 @@
                 <span class="cat-tile__name" data-i18n="cat.electronics">أجهزة تحكم وإلكترونيات</span>
                 <span class="cat-tile__tag" data-i18n="cat.electronics.tag">أجهزة تحكم ورسيفرات ووحدات تليمتري</span>
                 <span class="cat-tile__count" data-cat-count="electronics"></span>
+              </span>
+            </a>
+          </li>
+          <li class="cat-tile cat-tile--wide-m" data-reveal style="--d:4">
+            <a href="#shop" data-set-category="power">
+              <img src="assets/img/shop/thumb/wa-308-htrc-t240-duo-1.jpg" width="600" height="450" loading="lazy" decoding="async" alt="">
+              <span class="cat-tile__icon" aria-hidden="true"><svg class="icon"><use href="#i-cat-power"/></svg></span>
+              <span class="cat-tile__arrow" aria-hidden="true"><svg class="icon dir-icon"><use href="#i-arrow"/></svg></span>
+              <span class="cat-tile__text">
+                <span class="cat-tile__name" data-i18n="cat.power">شواحن وبطاريات</span>
+                <span class="cat-tile__tag" data-i18n="cat.power.tag">شواحن ذكية وبطاريات ليبو ونيكل</span>
+                <span class="cat-tile__count" data-cat-count="power"></span>
               </span>
             </a>
           </li>
@@ -533,6 +546,7 @@
             <button type="button" class="chip gchip" data-gallery-filter="drift" aria-pressed="false"><span data-i18n="gallery.drift">درفت ورالي</span> <small data-gallery-count="drift"></small></button>
             <button type="button" class="chip gchip" data-gallery-filter="planes" aria-pressed="false"><span data-i18n="gallery.planes">طائرات</span> <small data-gallery-count="planes"></small></button>
             <button type="button" class="chip gchip" data-gallery-filter="parts" aria-pressed="false"><span data-i18n="gallery.parts">قطع غيار</span> <small data-gallery-count="parts"></small></button>
+            <button type="button" class="chip gchip" data-gallery-filter="power" aria-pressed="false"><span data-i18n="gallery.power">شواحن وبطاريات</span> <small data-gallery-count="power"></small></button>
             <button type="button" class="chip gchip" data-gallery-filter="tools" aria-pressed="false"><span data-i18n="gallery.tools">عدد وأدوات</span> <small data-gallery-count="tools"></small></button>
             <button type="button" class="chip gchip" data-gallery-filter="electronics" aria-pressed="false"><span data-i18n="gallery.electronics">أجهزة تحكم وإلكترونيات</span> <small data-gallery-count="electronics"></small></button>
             <button type="button" class="chip gchip" data-gallery-filter="boats" aria-pressed="false"><span data-i18n="gallery.boats">قوارب</span> <small data-gallery-count="boats"></small></button>
@@ -558,7 +572,21 @@
           <h2 class="section-title" id="videosTitle" data-i18n="videos.title">فيديو من المحل</h2>
           <p class="section-sub" data-i18n="videos.sub">لقطات قصيرة لسيارات من المحل وهي تعمل — اضغط على أي فيديو لمشاهدته كاملًا بالصوت.</p>
         </header>
+        <div class="gallery__filters video__filters" role="group" data-i18n-aria="videos.filterLabel" aria-label="تصفية الفيديوهات">
+          <button type="button" class="chip gchip" data-video-filter="all" aria-pressed="true"><span data-i18n="videos.f.all">الكل</span> <small data-video-count="all"></small></button>
+          <button type="button" class="chip gchip" data-video-filter="baja" aria-pressed="false"><span data-i18n="videos.f.baja">باجا</span> <small data-video-count="baja"></small></button>
+          <button type="button" class="chip gchip" data-video-filter="offroad" aria-pressed="false"><span data-i18n="videos.f.offroad">أوف رود</span> <small data-video-count="offroad"></small></button>
+          <button type="button" class="chip gchip" data-video-filter="drift" aria-pressed="false"><span data-i18n="videos.f.drift">درفت</span> <small data-video-count="drift"></small></button>
+          <button type="button" class="chip gchip" data-video-filter="boats" aria-pressed="false"><span data-i18n="videos.f.boats">قوارب</span> <small data-video-count="boats"></small></button>
+          <button type="button" class="chip gchip" data-video-filter="shop" aria-pressed="false"><span data-i18n="videos.f.shop">المحل</span> <small data-video-count="shop"></small></button>
+        </div>
         <ul class="video-grid" id="videoGrid"></ul>
+        <div class="gallery__more">
+          <button class="btn btn--ghost btn--skew" type="button" id="videosMore" hidden>
+            <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+            <span id="videosMoreLabel">عرض المزيد</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -922,7 +950,8 @@
             <li><a href="#shop" data-set-category="offroad" data-i18n="cat.offroad">أوف رود</a></li>
             <li><a href="#shop" data-set-category="planes" data-i18n="cat.planes">طائرات فوم للتدريب</a></li>
             <li><a href="#shop" data-set-category="drift" data-i18n="cat.drift">درفت ورالي</a></li>
-            <li><a href="#shop" data-set-category="parts" data-i18n="cat.parts">قطع غيار وبطاريات</a></li>
+            <li><a href="#shop" data-set-category="power" data-i18n="cat.power">شواحن وبطاريات</a></li>
+            <li><a href="#shop" data-set-category="parts" data-i18n="cat.parts">قطع غيار</a></li>
             <li><a href="#shop" data-set-category="tools" data-i18n="cat.tools">عدد وأدوات</a></li>
             <li><a href="#shop" data-set-category="electronics" data-i18n="cat.electronics">أجهزة تحكم وإلكترونيات</a></li>
             <li><a href="#shop" data-set-category="boats" data-i18n="cat.boats">قوارب</a></li>

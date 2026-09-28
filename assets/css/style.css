@@ -1047,7 +1047,7 @@ html[lang="ar"] .hero__title { line-height: 1.25; font-size: clamp(2.6rem, 1.2re
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(to top, rgba(8, 9, 11, .96) 4%, rgba(8, 9, 11, .45) 52%, rgba(8, 9, 11, .08)),
+    linear-gradient(to top, rgba(8, 9, 11, .92) 0%, rgba(8, 9, 11, .65) 45%, rgba(8, 9, 11, .15) 100%),
     linear-gradient(120deg, rgba(212, 255, 58, .12), transparent 40%);
 }
 .cat-tile > a:hover,
@@ -1096,15 +1096,19 @@ html[lang="ar"] .hero__title { line-height: 1.25; font-size: clamp(2.6rem, 1.2re
   transform: rotate(calc(-45deg * var(--dir)));
 }
 
-.cat-tile__text { display: flex; flex-direction: column; gap: 2px; }
+.cat-tile__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+/* icons sit in their own top band (inset + 44px + 12px); text always starts below it */
+.cat-tile > a { padding-top: calc(clamp(14px, 2vw, 22px) + 44px + 12px); }
 .cat-tile__name {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(1.15rem, 1rem + .6vw, 1.5rem);
+  font-size: clamp(1.15rem, 5vw, 1.6rem);
   line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .7), 0 0 14px rgba(0, 0, 0, .45);
 }
 
-.cat-tile__tag { font-size: .88rem; color: var(--c-text-2); line-height: 1.5; }
+.cat-tile__tag { font-size: .88rem; color: #D5DAE2; line-height: 1.5; text-shadow: 0 1px 2px rgba(0, 0, 0, .75); }
 .cat-tile__count {
   margin-top: 8px;
   align-self: flex-start;
@@ -2973,7 +2977,7 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 @media (min-width: 900px) {
   .cat-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-auto-rows: 230px;
+    grid-auto-rows: minmax(230px, auto);
   }
   .cat-tile--lead { grid-column: span 2; grid-row: span 2; min-height: 0; }
   .cat-tile--tall { grid-row: span 2; }
@@ -3683,14 +3687,18 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 .credits__list a { color: var(--c-volt); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---------- Videos ("In action") ---------- */
-.video-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
-@media (min-width: 700px) { .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-/* 4 clips → 2 × 2 from tablet up (large enough to read the preview) */
-@media (min-width: 1024px) { .video-grid { gap: 22px; } }
+/* masonry (like the photo gallery): landscape 16:9, portrait 4:5, square 1:1 cards sit together tidily */
+.video-grid { columns: 1; column-gap: 16px; }
+@media (min-width: 700px) { .video-grid { columns: 2; } }
+@media (min-width: 1100px) { .video-grid { columns: 3; column-gap: 20px; } }
+.vcard { break-inside: avoid; margin-bottom: 16px; }
+.video__filters { margin-bottom: 18px; }
 .vcard__btn { display: block; width: 100%; text-align: start; border-radius: 18px; border: 1px solid var(--c-line); background: var(--c-surface); overflow: hidden; transition: border-color .25s, transform .3s var(--ease-out), box-shadow .3s; }
 .vcard__btn:hover, .vcard__btn:focus-visible { border-color: rgba(212, 255, 58, .55); transform: translateY(-3px); box-shadow: 0 20px 44px -26px rgba(212, 255, 58, .45); }
 /* 16:9 box + cover: crops the black bars of portrait files that carry a landscape picture */
 .vcard__media { position: relative; display: block; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+.vcard--portrait .vcard__media { aspect-ratio: 4 / 5; }
+.vcard--square .vcard__media { aspect-ratio: 1 / 1; }
 .vcard__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 .vcard__play { position: absolute; inset: 0; margin: auto; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%; background: rgba(8, 9, 11, .62); border: 1px solid rgba(255, 255, 255, .28); color: var(--c-volt); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: transform .3s var(--ease-out), background .3s; }
 .vcard__play .icon { width: 24px; height: 24px; margin-inline-start: 3px; }
@@ -3707,6 +3715,24 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 .vplayer__title { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; }
 .vplayer__desc { color: var(--c-text-2); font-size: .9rem; }
 .modal__dialog--video .modal__close { z-index: 3; background: rgba(8, 9, 11, .7); }
+/* portrait / square clips: full height, never cropped */
+.modal__dialog--video.is-portrait { width: min(520px, calc(100% - 24px)); }
+.modal__dialog--video.is-square { width: min(680px, calc(100% - 24px)); }
+.modal__dialog--video.is-portrait .vplayer { aspect-ratio: auto; height: min(74vh, 820px); }
+.modal__dialog--video.is-square .vplayer { aspect-ratio: 1 / 1; max-height: 74vh; }
+.modal__dialog--video.is-portrait .vplayer video,
+.modal__dialog--video.is-square .vplayer video { object-fit: contain; }
+
+/* ---------- Product videos: card badge + quick-view slide ---------- */
+.video-badge { position: absolute; z-index: 2; bottom: 10px; inset-inline-start: 10px; display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(8, 9, 11, .8); border: 1px solid rgba(212, 255, 58, .5); color: var(--c-volt); font-size: .72rem; font-weight: 700; pointer-events: none; }
+.video-badge .icon { width: 11px; height: 11px; }
+.qv__video { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; background: #000; }
+.qv__video--portrait, .qv__video--square { object-fit: contain; }
+.qv__video[hidden], .qv__sound[hidden], #qvMainImg[hidden] { display: none; }
+.qv__sound { position: absolute; z-index: 3; bottom: 12px; inset-inline-start: 12px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(8, 9, 11, .82); border: 1px solid rgba(255, 255, 255, .25); color: var(--c-text); font-size: .8rem; font-weight: 700; }
+.qv__sound .icon { width: 12px; height: 12px; color: var(--c-volt); }
+.qv__thumb--video { position: relative; }
+.qv__thumb--video .icon { position: absolute; inset: 0; margin: auto; width: 18px; height: 18px; color: #fff; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .8)); }
 
 /* ---------- Two numbers: WhatsApp catalog card, labelled footer numbers ---------- */
 .cta-card--wa .cta-card__sub { font-family: "Chakra Petch", sans-serif; font-weight: 700; letter-spacing: .02em; color: var(--c-text); }
@@ -3718,6 +3744,10 @@ html[lang="en"] .footer__label { text-transform: uppercase; letter-spacing: .14e
 .empty-state__link { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-weight: 600; color: var(--c-text-2); text-decoration: underline; text-underline-offset: 3px; }
 .empty-state__link .icon { width: 18px; height: 18px; color: #25D366; }
 .empty-state__link:hover { color: #25D366; }
+
+/* ---------- Catalog merge: 8 category tiles, spec source note ---------- */
+@media (max-width: 899px) { .cat-tile--wide-m { grid-column: span 2; } }
+.qv__spec-src { margin-top: 8px; font-size: .74rem; color: var(--c-text-3); }
 
 /* ==========================================================================
    21. Reduced motion — disable animations & smooth scrolling

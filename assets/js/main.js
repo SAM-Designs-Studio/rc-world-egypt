@@ -121,6 +121,9 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     videoGrid: $('#videoGrid'),
     videoModal: $('#videoModal'),
     vpVideo: $('#vpVideo'),
+    vpDialog: $('#videoModal .modal__dialog'),
+    videosMore: $('#videosMore'),
+    videosMoreLabel: $('#videosMoreLabel'),
     vpTitle: $('#vpTitle'),
     vpDesc: $('#vpDesc'),
     vpProduct: $('#vpProduct'),
@@ -339,11 +342,24 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     return String(v);
   }
 
-  const HIGHLIGHT_KEYS = ['power', 'drive', 'cells', 'hull', 'build', 'channels', 'system', 'plug', 'wing', 'sizes', 'extras', 'compat', 'version', 'radio', 'use'];
+  const HIGHLIGHT_KEYS = ['power', 'engine', 'drive', 'drivetrain', 'cells', 'capacity', 'voltage', 'hull', 'build', 'channels', 'output', 'system', 'plug', 'wing', 'sizes', 'extras', 'compat', 'version', 'radio', 'use', 'motor'];
   const SPEC_ICON = {
     power: 'i-bolt', drive: 'i-gauge', cells: 'i-cat-parts', version: 'i-wrench', build: 'i-check',
-    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler', sizes: 'i-ruler', hull: 'i-cat-boats', radio: 'i-cat-electronics', system: 'i-cat-electronics', plug: 'i-bolt'
+    channels: 'i-cat-planes', wing: 'i-cat-planes', extras: 'i-gauge', compat: 'i-check', use: 'i-pin', scale: 'i-ruler', sizes: 'i-ruler', hull: 'i-cat-boats', radio: 'i-cat-electronics', system: 'i-cat-electronics', plug: 'i-bolt',
+    engine: 'i-bolt', drivetrain: 'i-gauge', capacity: 'i-cat-power', voltage: 'i-bolt', output: 'i-bolt', motor: 'i-bolt'
   };
+  /** Spec label: dictionary entry (may hold <bdi>), otherwise the key humanized ("top_speed" → "Top speed"). */
+  const specLabel = (k) => (lookup('spec.' + k) != null ? t('spec.' + k) : bdi(String(k).replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase())));
+  /** Plain text → HTML; in Arabic, runs of Latin text (model names, units) are isolated with <bdi dir="ltr">. */
+  const LATIN_RUN = /[A-Za-z][A-Za-z0-9.,+\-\/°×%:'’ ]*[A-Za-z0-9%]|[A-Za-z]/g; // parentheses stay in the RTL flow (correct mirroring)
+  function isoHTML(text) {
+    const str = String(text || '');
+    if (state.lang !== 'ar') return esc(str);
+    let out = '';
+    let last = 0;
+    str.replace(LATIN_RUN, (m, off) => { out += esc(str.slice(last, off)) + '<bdi dir="ltr">' + esc(m) + '</bdi>'; last = off + m.length; return m; });
+    return out + esc(str.slice(last));
+  }
   const highlights = (p, n) => HIGHLIGHT_KEYS.filter((k) => p.specs && p.specs[k] != null).slice(0, n || 2);
 
   function specChipsHTML(p, n) {
@@ -437,6 +453,8 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     shown: PAGE_SIZE,
     gFilter: 'all',
     gShown: GALLERY_PAGE,
+    vFilter: 'all',
+    vShown: 6,
     lbList: [],
     lbIndex: 0,
     formPrefilled: false
@@ -839,6 +857,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
           '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
           imgTag(img, 'width="' + img.tw + '" height="' + img.th + '" loading="lazy" decoding="async" alt="' + esc(pLabel(p)) + '"') +
           (p.level ? '<span class="level-tag level--' + p.level + '">' + esc(t('level.' + p.level)) + '</span>' : '') +
+          videoBadgeHTML(p) +
           (count > 1 ? '<span class="photo-count" aria-hidden="true"><svg class="icon"><use href="#i-camera"/></svg>' + fmt(count) + '</span>' : '') +
           '<button class="pcard__quick" type="button" data-quick="' + p.id + '">' +
             '<svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg><span>' + esc(t('card.quick')) + '</span>' +
@@ -960,20 +979,28 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   let qvId = null;
   let qvQty = 1;
   let qvImg = 0;
+  let qvOnVideo = false;
 
   function openQuickView(id, trigger) {
     if (!byId.has(id)) return;
     qvId = id;
     qvQty = 1;
     qvImg = 0;
+    qvOnVideo = productVideos.has(id);
     renderQuickView();
-    Overlay.open(el.quickView, { trigger: trigger });
+    pausePreviews();
+    Overlay.open(el.quickView, {
+      trigger: trigger,
+      onOpen() { if (qvOnVideo) showQvVideo(); },
+      onClose() { const vid = qvVideoEl(); if (vid) { try { vid.pause(); } catch (e) { /* ignore */ } } initVideoPreviews(); }
+    });
   }
 
+  const QV_MAX_IMAGES = 24;
   function renderQuickView() {
     const p = byId.get(qvId);
     if (!p) return;
-    const imgs = pImages(p);
+    const imgs = pImages(p).slice(0, QV_MAX_IMAGES);
     const unavailable = maxQty(p) === 0;
     const main = imgs[clamp(qvImg, 0, imgs.length - 1)];
     // [label key, cell HTML] — type-level facts only
@@ -982,12 +1009,15 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
       .concat(pScales(p).length ? [['scale', bdi(pScales(p).join(' · '))]] : [])
       .concat(p.level ? [['level', esc(t('level.' + p.level))]] : [])
       .concat(Object.keys(p.specs || {}).map((k) => [k, ltrHTML(specValue(p.specs[k]))]))
-      .map((r) => '<tr><th scope="row">' + esc(t('spec.' + r[0])) + '</th><td>' + r[1] + '</td></tr>')
+      .map((r) => '<tr><th scope="row">' + specLabel(r[0]) + '</th><td>' + r[1] + '</td></tr>')
       .join('');
-    const thumbs = imgs.length > 1
+    const pv = (productVideos.get(p.id) || [])[0];
+    const onVideo = !!pv && qvOnVideo;
+    const thumbs = imgs.length + (pv ? 1 : 0) > 1
       ? '<div class="qv__thumbs" role="group" aria-label="' + esc(t('qv.photos')) + '">' +
+          (pv ? '<button type="button" class="qv__thumb qv__thumb--video" data-qv-video aria-pressed="' + (onVideo ? 'true' : 'false') + '" aria-label="' + esc(t('videos.badge')) + '"><img src="' + esc(pv.poster) + '" width="1280" height="720" loading="lazy" decoding="async" alt=""><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></button>' : '') +
           imgs.map((im, i) =>
-            '<button type="button" class="qv__thumb" data-qv-img="' + i + '" aria-pressed="' + (i === qvImg ? 'true' : 'false') + '" aria-label="' + esc(t('qv.thumb', { n: i + 1 })) + '">' +
+            '<button type="button" class="qv__thumb" data-qv-img="' + i + '" aria-pressed="' + (!onVideo && i === qvImg ? 'true' : 'false') + '" aria-label="' + esc(t('qv.thumb', { n: i + 1 })) + '">' +
               '<img src="' + esc(im.thumb || im.src) + '" width="' + im.tw + '" height="' + im.th + '" loading="lazy" decoding="async" alt=""></button>'
           ).join('') +
         '</div>'
@@ -997,10 +1027,12 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
       '<div class="qv__gallery">' +
         '<div class="qv__media">' +
           '<svg class="media-fallback" aria-hidden="true"><use href="#i-cat-' + p.category + '"/></svg>' +
-          imgTag(main, 'id="qvMainImg" width="' + main.fw + '" height="' + main.fh + '" alt="' + esc(pLabel(p)) + '"', true) +
+          (pv ? '<video id="qvVideo" class="qv__video qv__video--' + vShape(pv) + '" muted loop playsinline preload="none" poster="' + esc(pv.poster) + '" src="' + esc(pv.src) + '" aria-label="' + esc(vTitleText(pv) + ' — ' + vDesc(pv)) + '"' + (onVideo ? '' : ' hidden') + '></video>' +
+            '<button type="button" class="qv__sound" data-qv-sound' + (onVideo ? '' : ' hidden') + '><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg><span>' + esc(t('videos.soundOn')) + '</span></button>' : '') +
+          imgTag(main, 'id="qvMainImg"' + (onVideo ? ' hidden' : '') + ' width="' + main.fw + '" height="' + main.fh + '" alt="' + esc(pLabel(p)) + '"', true) +
           '<span class="qv__scan" aria-hidden="true"></span>' +
         '</div>' +
-        '<p class="qv__credit" id="qvCredit"' + (main.credit ? '' : ' hidden') + '>' + creditLine(main) + '</p>' +
+        '<p class="qv__credit" id="qvCredit"' + (main.credit && !onVideo ? '' : ' hidden') + '>' + creditLine(main) + '</p>' +
         thumbs +
       '</div>' +
       '<div class="qv__body">' +
@@ -1008,7 +1040,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
         '<h2 class="qv__title" id="qvTitle">' + pModelHTML(p) + '</h2>' +
         '<p class="qv__type">' + esc(pType(p)) + '</p>' +
         priceAskHTML(p, 'price-ask--lg') +
-        '<p class="qv__desc">' + esc(pDesc(p)) + '</p>' +
+        '<p class="qv__desc">' + isoHTML(pDesc(p)) + '</p>' +
         '<div class="qv__buy">' +
           '<div class="qty" role="group" aria-label="' + esc(t('qv.qty')) + '">' +
             '<button type="button" data-qv-dec aria-label="' + esc(t('qv.dec')) + '"><svg class="icon" aria-hidden="true"><use href="#i-minus"/></svg></button>' +
@@ -1023,8 +1055,11 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
           '<li><svg class="icon" aria-hidden="true"><use href="#i-truck"/></svg>' + esc(t('qv.perk2')) + '</li>' +
           '<li><svg class="icon" aria-hidden="true"><use href="#i-cash"/></svg><span>' + esc(t('qv.perk3')) + '</span>' + CIB_XS + '</li>' +
         '</ul>' +
-        '<h3 class="qv__specs-title">' + esc(t('qv.specs')) + '</h3>' +
-        '<table class="specs-table"><tbody>' + rows + '</tbody></table>' +
+        (Object.keys(p.specs || {}).length
+          ? '<h3 class="qv__specs-title">' + esc(t('qv.specs')) + '</h3>' +
+            '<table class="specs-table"><tbody>' + rows + '</tbody></table>' +
+            (p.specSource ? '<p class="qv__spec-src">' + esc(t('specs.source')) + '</p>' : '')
+          : '') +
       '</div>';
     updateQvQty();
   }
@@ -1032,8 +1067,10 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   function setQvImage(i) {
     const p = byId.get(qvId);
     if (!p) return;
-    const imgs = pImages(p);
+    const imgs = pImages(p).slice(0, QV_MAX_IMAGES);
     qvImg = clamp(i, 0, imgs.length - 1);
+    qvOnVideo = false;
+    hideQvVideo();
     const im = imgs[qvImg];
     const main = $('#qvMainImg', el.qvContent);
     if (main) { main.src = im.src || im.thumb; main.width = im.fw; main.height = im.fh; }
@@ -1319,7 +1356,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     if (!p) return;
     const photo = FEATURED.photo && photoByKey.get(FEATURED.photo);
     el.dealName.innerHTML = pModelHTML(p) + '<span class="deal__type">' + esc(pType(p)) + '</span>';
-    el.dealDesc.textContent = pDesc(p);
+    el.dealDesc.innerHTML = isoHTML(pDesc(p));
     el.dealSpecs.innerHTML = specChipsHTML(p, 4);
     el.dealPrice.innerHTML = priceAskHTML(p, 'price-ask--lg');
     if (photo) {
@@ -1503,11 +1540,17 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   }
 
   /* ======================================================================
-     14a. Videos — muted 8-second previews while in view; full player on tap
+     14a. Videos — filter chips, muted 8-second previews while in view,
+          full player on tap, product-video badges + quick-view slides
      ====================================================================== */
   const PREVIEW_SECONDS = 8;
+  const VIDEO_PAGE = 6;
   const vTime = (sec) => Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2);
   const vDesc = (v) => (v.desc && (v.desc[state.lang] || v.desc.en)) || '';
+  /** Brand/model strings are isolated with <bdi>; { ar, en } titles are trusted markup. */
+  const vTitleHTML = (v) => (typeof v.title === 'string' ? bdi(v.title) : (v.title[state.lang] || v.title.en || ''));
+  const vTitleText = (v) => plain(vTitleHTML(v));
+  const vShape = (v) => (v.orientation === 'portrait' || v.orientation === 'square' ? v.orientation : 'landscape');
   let videoIO = null;
   let currentVideo = null;
 
@@ -1522,8 +1565,8 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   }
 
   function videoCardHTML(v) {
-    const label = tt('videos.play', { x: iso(v.title) + ' — ' + vDesc(v) + ' (' + vTime(v.duration) + ')' });
-    return '<li class="vcard">' +
+    const label = tt('videos.play', { x: vTitleText(v) + ' — ' + vDesc(v) + ' (' + vTime(v.duration) + ')' });
+    return '<li class="vcard vcard--' + vShape(v) + '">' +
       '<button type="button" class="vcard__btn" data-video="' + esc(v.id) + '" aria-label="' + esc(label) + '">' +
         '<span class="vcard__media">' +
           // no src until the card is on screen: nothing downloads before that (preload="none" + poster)
@@ -1531,14 +1574,33 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
           '<span class="vcard__play" aria-hidden="true"><svg class="icon"><use href="#i-play"/></svg></span>' +
           '<span class="vcard__time" aria-hidden="true">' + vTime(v.duration) + '</span>' +
         '</span>' +
-        '<span class="vcard__text"><span class="vcard__title">' + bdi(v.title) + '</span><span class="vcard__desc">' + esc(vDesc(v)) + '</span></span>' +
+        '<span class="vcard__text"><span class="vcard__title">' + vTitleHTML(v) + '</span><span class="vcard__desc">' + esc(vDesc(v)) + '</span></span>' +
       '</button></li>';
   }
 
-  function renderVideos() {
+  const videoList = () => VIDEOS.filter((v) => state.vFilter === 'all' || v.category === state.vFilter);
+
+  function renderVideos(focusFrom) {
     if (!el.videoGrid) return;
-    el.videoGrid.innerHTML = VIDEOS.map(videoCardHTML).join('');
+    const list = videoList();
+    const shown = list.slice(0, state.vShown);
+    el.videoGrid.innerHTML = shown.map(videoCardHTML).join('');
+    const remaining = list.length - shown.length;
+    if (el.videosMore) {
+      el.videosMore.hidden = remaining <= 0;
+      el.videosMoreLabel.textContent = t('gallery.more', { n: fmt(Math.min(VIDEO_PAGE, remaining)) });
+    }
+    $$('[data-video-filter]').forEach((b) => b.setAttribute('aria-pressed', b.dataset.videoFilter === state.vFilter ? 'true' : 'false'));
+    $$('[data-video-count]').forEach((n) => {
+      const c = n.dataset.videoCount;
+      n.textContent = fmt(c === 'all' ? VIDEOS.length : VIDEOS.filter((v) => v.category === c).length);
+    });
     initVideoPreviews();
+    if (focusFrom != null) {
+      const first = el.videoGrid.children[focusFrom];
+      const b = first && $('.vcard__btn', first);
+      if (b) b.focus({ preventScroll: false });
+    }
   }
 
   function pausePreviews() { $$('.vcard__video', el.videoGrid).forEach((vid) => { try { vid.pause(); } catch (e) { /* ignore */ } }); }
@@ -1550,7 +1612,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     videoIO = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const vid = entry.target;
-        if (entry.isIntersecting && Overlay.current !== el.videoModal) {
+        if (entry.isIntersecting && Overlay.current !== el.videoModal && Overlay.current !== el.quickView) {
           if (!vid.getAttribute('src')) vid.setAttribute('src', vid.dataset.src);
           const p = vid.play();
           if (p && p.catch) p.catch(() => { /* autoplay refused → poster stays */ });
@@ -1568,7 +1630,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   function renderVideoMeta() {
     const v = currentVideo;
     if (!v) return;
-    el.vpTitle.innerHTML = bdi(v.title);
+    el.vpTitle.innerHTML = vTitleHTML(v);
     el.vpDesc.textContent = vDesc(v) + ' · ' + vTime(v.duration);
     const p = byId.get(v.product);
     el.vpProduct.hidden = !p;
@@ -1582,6 +1644,11 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     renderVideoMeta();
     const vid = el.vpVideo;
     pausePreviews();
+    // portrait / square clips: full height, never cropped (object-fit: contain)
+    if (el.vpDialog) {
+      el.vpDialog.classList.toggle('is-portrait', vShape(v) === 'portrait');
+      el.vpDialog.classList.toggle('is-square', vShape(v) === 'square');
+    }
     vid.poster = v.poster;
     vid.src = v.src;
     vid.muted = false;
@@ -1597,6 +1664,58 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
         initVideoPreviews(); // resume the previews that are in view
       }
     });
+  }
+
+  /* ---------- Product videos: badge on the card + first slide in quick view ---------- */
+  const productVideos = new Map();
+  VIDEOS.forEach((v) => {
+    if (!v.product || !byId.has(v.product)) return;
+    if (!productVideos.has(v.product)) productVideos.set(v.product, []);
+    productVideos.get(v.product).push(v);
+  });
+  const videoBadgeHTML = (p) => (productVideos.has(p.id)
+    ? '<span class="video-badge" aria-hidden="true"><svg class="icon"><use href="#i-play"/></svg>' + esc(t('videos.badge')) + '</span>' : '');
+
+  function qvVideoEl() { return $('#qvVideo', el.qvContent); }
+
+  /** Show the product video slide (muted inline; "Tap for sound" unmutes). */
+  function showQvVideo() {
+    const vid = qvVideoEl();
+    if (!vid) return;
+    qvOnVideo = true;
+    vid.hidden = false;
+    const img = $('#qvMainImg', el.qvContent);
+    if (img) img.hidden = true;
+    const snd = $('[data-qv-sound]', el.qvContent);
+    if (snd) snd.hidden = !vid.muted;
+    const credit = $('#qvCredit', el.qvContent);
+    if (credit) credit.hidden = true;
+    $$('.qv__thumb', el.qvContent).forEach((b) => b.setAttribute('aria-pressed', b.hasAttribute('data-qv-video') ? 'true' : 'false'));
+    if (canAutoplayPreviews() || !vid.muted) {
+      try { const p = vid.play(); if (p && p.catch) p.catch(() => { /* poster stays */ }); } catch (e) { /* ignore */ }
+    }
+  }
+
+  function hideQvVideo() {
+    const vid = qvVideoEl();
+    if (!vid) return;
+    try { vid.pause(); } catch (e) { /* ignore */ }
+    vid.hidden = true;
+    const snd = $('[data-qv-sound]', el.qvContent);
+    if (snd) snd.hidden = true;
+    const img = $('#qvMainImg', el.qvContent);
+    if (img) img.hidden = false;
+  }
+
+  function qvSoundOn() {
+    const vid = qvVideoEl();
+    if (!vid) return;
+    vid.muted = false;
+    vid.setAttribute('controls', '');
+    const snd = $('[data-qv-sound]', el.qvContent);
+    if (snd) snd.hidden = true;
+    try { const p = vid.play(); if (p && p.catch) p.catch(() => { /* ignore */ }); } catch (e) { /* ignore */ }
+    try { vid.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
   }
 
   /* ======================================================================
@@ -1914,6 +2033,9 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
       const gItem = tgt.closest('[data-lb-index]');
       if (gItem) { openLightbox(Number(gItem.dataset.lbIndex), gItem); return; }
 
+      const vFilter = tgt.closest('[data-video-filter]');
+      if (vFilter) { state.vFilter = vFilter.dataset.videoFilter; state.vShown = VIDEO_PAGE; renderVideos(); return; }
+
       const vBtn = tgt.closest('[data-video]');
       if (vBtn) { openVideo(vBtn.dataset.video, vBtn); return; }
 
@@ -1991,6 +2113,8 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     el.qvContent.addEventListener('click', (e) => {
       const p = byId.get(qvId);
       if (!p) return;
+      if (e.target.closest('[data-qv-video]')) { showQvVideo(); return; }
+      if (e.target.closest('[data-qv-sound]') || e.target.closest('#qvVideo')) { if (qvVideoEl() && qvVideoEl().muted) { qvSoundOn(); return; } }
       const thumb = e.target.closest('[data-qv-img]');
       if (thumb) { setQvImage(Number(thumb.dataset.qvImg)); return; }
       if (e.target.closest('[data-qv-dec]')) { qvQty = Math.max(1, qvQty - 1); updateQvQty(); }
@@ -2043,6 +2167,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
 
     // Gallery + lightbox
     el.galleryMore.addEventListener('click', galleryMore);
+    if (el.videosMore) el.videosMore.addEventListener('click', () => { const from = state.vShown; state.vShown += VIDEO_PAGE; renderVideos(from); });
     el.lbPrev.addEventListener('click', () => lbGo(-1));
     el.lbNext.addEventListener('click', () => lbGo(1));
     initLightboxGestures();

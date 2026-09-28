@@ -23,8 +23,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/monster-truck-night-hero-shot-vertical.mp4',
     poster: 'assets/video/monster-truck-night-hero-shot-vertical.jpg',
     duration: 49, orientation: 'portrait', category: 'offroad',
-    title: { ar: 'شاحنة مونستر', en: 'Monster Truck' },
-    desc: { ar: 'لقطة ليلية مميزة', en: 'Night hero shot' },
+    title: { ar: 'مونستر تراك', en: 'Monster Truck' },
+    desc: { ar: 'لقطة ليلية', en: 'Night hero shot' },
     product: ''
   },
   {
@@ -32,8 +32,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/proboat-style-boat-and-truck-water-splash.mp4',
     poster: 'assets/video/proboat-style-boat-and-truck-water-splash.jpg',
     duration: 59, orientation: 'square', category: 'boats',
-    title: { ar: 'قارب وشاحنة مونستر', en: 'RC Boat &amp; Monster Truck' },
-    desc: { ar: 'أكشن على الماء', en: 'Water action' },
+    title: { ar: 'لانش ومونستر تراك', en: 'RC Boat &amp; Monster Truck' },
+    desc: { ar: 'أكشن في المية', en: 'Water action' },
     product: 'proboat-blackjack-42'
   },
   {
@@ -42,7 +42,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/shop-hpi-savage-x-unboxing.jpg',
     duration: 45, orientation: 'landscape', category: 'shop',
     title: 'HPI Savage X',
-    desc: { ar: 'فتح الصندوق داخل المحل', en: 'Unboxing at the shop' },
+    desc: { ar: 'فتح الكرتونة في المحل', en: 'Unboxing at the shop' },
     product: ''
   },
   {
@@ -51,7 +51,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/arrma-kraton-6s-speed-run.jpg',
     duration: 54, orientation: 'landscape', category: 'offroad',
     title: 'Arrma Kraton 6S',
-    desc: { ar: 'تجربة سرعة على الطريق بمقاس 1/8', en: '1/8 · speed run' },
+    desc: { ar: 'تجربة سرعة 1/8 على الأسفلت', en: '1/8 · speed run' },
     product: 'arrma-kraton-6s-v6'
   },
   {
@@ -59,8 +59,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/baja-buggy-villa-lawn-run.mp4',
     poster: 'assets/video/baja-buggy-villa-lawn-run.jpg',
     duration: 41, orientation: 'landscape', category: 'baja',
-    title: { ar: 'باجي بمقاس 1/5', en: '1/5 Baja Buggy' },
-    desc: { ar: 'جولة في حديقة فيلا', en: 'Villa lawn run' },
+    title: { ar: 'باجي 1/5', en: '1/5 Baja Buggy' },
+    desc: { ar: 'لفة في جنينة فيلا', en: 'Villa lawn run' },
     product: ''
   },
   {
@@ -69,7 +69,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/mst-drift-mustang.jpg',
     duration: 40, orientation: 'landscape', category: 'drift',
     title: 'MST 1/10 Drift — Mustang',
-    desc: { ar: 'سيارة درفت 1/10 بإضاءة كاملة', en: '1/10 drift car with full lights' },
+    desc: { ar: 'عربية درفت 1/10 بإضاءة كاملة', en: '1/10 drift car with full lights' },
     product: 'mst-110-drift'
   },
   {
@@ -78,7 +78,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/arrma-kraton-daytime-street-run.jpg',
     duration: 26, orientation: 'landscape', category: 'offroad',
     title: 'Arrma Kraton',
-    desc: { ar: 'تجربة نهارية في الشارع', en: 'Daytime street run' },
+    desc: { ar: 'تجربة في الشارع بالنهار', en: 'Daytime street run' },
     product: 'arrma-kraton-6s-v6'
   },
   {
@@ -86,8 +86,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/drift-car-green-underglow-night-run.mp4',
     poster: 'assets/video/drift-car-green-underglow-night-run.jpg',
     duration: 55, orientation: 'landscape', category: 'drift',
-    title: { ar: 'سيارة درفت 1/10', en: '1/10 Drift Car' },
-    desc: { ar: 'إضاءة خضراء في جولة ليلية', en: 'Green underglow night run' },
+    title: { ar: 'عربية درفت 1/10', en: '1/10 Drift Car' },
+    desc: { ar: 'لفة بالليل بإضاءة خضراء تحت العربية', en: 'Green underglow night run' },
     product: '' // the manifest hinted the 1/14 drift car, but the clip is a 1/10 car → no link
   },
   {
@@ -96,7 +96,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/losi-obr-road-run.jpg',
     duration: 33, orientation: 'landscape', category: 'baja',
     title: 'Losi 1/5 OBR',
-    desc: { ar: 'تجربة على الطريق', en: 'Road run' },
+    desc: { ar: 'تجربة على الأسفلت', en: 'Road run' },
     product: 'losi-obr-15'
   },
   {
@@ -104,8 +104,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/monster-truck-airborne-jump-vertical.mp4',
     poster: 'assets/video/monster-truck-airborne-jump-vertical.jpg',
     duration: 11, orientation: 'portrait', category: 'offroad',
-    title: { ar: 'شاحنة مونستر', en: 'Monster Truck' },
-    desc: { ar: 'قفزة في الهواء', en: 'Airborne jump' },
+    title: { ar: 'مونستر تراك', en: 'Monster Truck' },
+    desc: { ar: 'نطة في الهوا', en: 'Airborne jump' },
     product: ''
   },
   {
@@ -114,7 +114,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/shop-arrma-losi-promoto-mx-display.jpg',
     duration: 41, orientation: 'landscape', category: 'shop',
     title: 'Arrma & Losi ProMoto-MX',
-    desc: { ar: 'عرض المنتجات داخل المحل', en: 'Shop display' },
+    desc: { ar: 'المعروضات في المحل', en: 'Shop display' },
     product: 'losi-promoto-mx'
   },
   {
@@ -122,8 +122,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/baja-buggy-night-donuts.mp4',
     poster: 'assets/video/baja-buggy-night-donuts.jpg',
     duration: 11, orientation: 'portrait', category: 'baja',
-    title: { ar: 'باجي بمقاس 1/5', en: '1/5 Baja Buggy' },
-    desc: { ar: 'دورانات ليلية', en: 'Night donuts' },
+    title: { ar: 'باجي 1/5', en: '1/5 Baja Buggy' },
+    desc: { ar: 'لف دونات بالليل', en: 'Night donuts' },
     product: ''
   },
   {
@@ -132,7 +132,7 @@ window.VOLT_VIDEOS = [
     poster: 'assets/video/losi-obr-mini-cooper.jpg',
     duration: 25, orientation: 'landscape', category: 'baja',
     title: 'Losi 1/5 OBR Mini Cooper',
-    desc: { ar: 'نسخة بهيكل كلاسيكي على الطريق', en: 'Classic-body version on the road' },
+    desc: { ar: 'ببودي كلاسيك على الأسفلت', en: 'Classic-body version on the road' },
     product: 'losi-obr-15'
   },
   {
@@ -140,8 +140,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/monster-truck-led-night-bash-closeup.mp4',
     poster: 'assets/video/monster-truck-led-night-bash-closeup.jpg',
     duration: 56, orientation: 'landscape', category: 'offroad',
-    title: { ar: 'شاحنة شورت كورس من <bdi dir="ltr">HPI</bdi>', en: 'HPI Short-Course Truck' },
-    desc: { ar: 'باش ليلي بإضاءة ملوّنة', en: 'LED night bash' },
+    title: { ar: 'عربية شورت كورس من <bdi dir="ltr">HPI</bdi>', en: 'HPI Short-Course Truck' },
+    desc: { ar: 'باش بالليل بإضاءة ملوّنة', en: 'LED night bash' },
     product: '' // hinted the HPI RS4 (a touring car) — the clip shows a short-course truck → no link
   },
   {
@@ -149,8 +149,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/shop-mini-drift-track-demo.mp4',
     poster: 'assets/video/shop-mini-drift-track-demo.jpg',
     duration: 45, orientation: 'landscape', category: 'shop',
-    title: { ar: 'درفت مصغّر', en: 'Mini Drift' },
-    desc: { ar: 'تجربة مضمار الدرفت داخل المحل', en: 'In-store track demo' },
+    title: { ar: 'ميني درفت', en: 'Mini Drift' },
+    desc: { ar: 'تجربة على تراك الدرفت في المحل', en: 'In-store track demo' },
     product: 'mini-drift-124'
   },
   {
@@ -158,8 +158,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/red-jeep-body-monster-truck-closeup.mp4',
     poster: 'assets/video/red-jeep-body-monster-truck-closeup.jpg',
     duration: 53, orientation: 'landscape', category: 'offroad',
-    title: { ar: 'شاحنة مونستر بهيكل <bdi dir="ltr">Jeep</bdi>', en: 'Jeep-Body Monster Truck' },
-    desc: { ar: 'لقطات قريبة ليلية', en: 'Night close-up' },
+    title: { ar: 'مونستر تراك ببودي <bdi dir="ltr">Jeep</bdi>', en: 'Jeep-Body Monster Truck' },
+    desc: { ar: 'لقطات قريبة بالليل', en: 'Night close-up' },
     product: ''
   },
   {
@@ -167,8 +167,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/baja-buggy-lineup-hpi-rally-truck.mp4',
     poster: 'assets/video/baja-buggy-lineup-hpi-rally-truck.jpg',
     duration: 27, orientation: 'landscape', category: 'baja',
-    title: { ar: 'سيارات باجا وشاحنة رالي <bdi dir="ltr">HPI</bdi>', en: 'Baja Buggies &amp; HPI Rally Truck' },
-    desc: { ar: 'صف ليلي في لقاء الهواة', en: 'Night lineup at a meetup' },
+    title: { ar: 'عربيات باجي وعربية رالي <bdi dir="ltr">HPI</bdi>', en: 'Baja Buggies &amp; HPI Rally Truck' },
+    desc: { ar: 'تجمّع هواة بالليل', en: 'Night lineup at a meetup' },
     product: 'hpi-wr8'
   },
   {
@@ -176,7 +176,7 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/shortcourse-truck-street-run-chase.mp4',
     poster: 'assets/video/shortcourse-truck-street-run-chase.jpg',
     duration: 25, orientation: 'landscape', category: 'offroad',
-    title: { ar: 'شاحنة شورت كورس', en: 'Short-Course Truck' },
+    title: { ar: 'عربية شورت كورس', en: 'Short-Course Truck' },
     desc: { ar: 'تجربة في الشارع', en: 'Street run' },
     product: ''
   },
@@ -185,8 +185,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/shop-rc-meetup-race-day-aerial.mp4',
     poster: 'assets/video/shop-rc-meetup-race-day-aerial.jpg',
     duration: 50, orientation: 'landscape', category: 'shop',
-    title: { ar: 'لقاء هواة التحكم عن بعد', en: 'RC Meetup' },
-    desc: { ar: 'يوم سباق بلقطة جوية', en: 'Race day, aerial view' },
+    title: { ar: 'تجمّع هواة الريموت كنترول', en: 'RC Meetup' },
+    desc: { ar: 'يوم سباق بتصوير جوي', en: 'Race day, aerial view' },
     product: ''
   },
   {
@@ -194,8 +194,8 @@ window.VOLT_VIDEOS = [
     src: 'assets/video/offroad-night-session-two-trucks.mp4',
     poster: 'assets/video/offroad-night-session-two-trucks.jpg',
     duration: 24, orientation: 'landscape', category: 'offroad',
-    title: { ar: 'جلسة باش ليلية', en: 'Night Bash Session' },
-    desc: { ar: 'شاحنتان بإضاءة ليلية', en: 'Two trucks' },
+    title: { ar: 'باش بالليل', en: 'Night Bash Session' },
+    desc: { ar: 'عربيتين بإضاءة ليلية', en: 'Two trucks' },
     product: ''
   }
 ];

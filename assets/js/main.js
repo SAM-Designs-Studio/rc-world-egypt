@@ -562,7 +562,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
   function initScrollSpy() {
     if (!('IntersectionObserver' in window)) return;
     const links = $$('.nav__link, .mnav a');
-    const ids = ['home', 'categories', 'shop', 'gallery', 'videos', 'deals', 'levels', 'about', 'contact'];
+    const ids = ['home', 'categories', 'shop', 'gallery', 'videos', 'deals', 'levels', 'about', 'maintenance', 'contact'];
     const spy = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -1383,15 +1383,15 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     'Shop': '', 'Rc car': '', '': '',
     'Losi 12s': 'Losi 12S',
     'parts Hpi Arrma Traxxas': ['قطع غيار ' + L('HPI · Arrma · Traxxas'), 'HPI · Arrma · Traxxas parts'],
-    'Rc car 1/10 drift': ['سيارة درفت بمقاس ' + L('1/10'), '1/10 drift car'],
+    'Rc car 1/10 drift': ['عربية درفت ' + L('1/10'), '1/10 drift car'],
     'Fg 1/5': 'FG 1/5',
     'Fg': 'FG',
     'Rofun baja 5t 1/5 32cc': 'Rofun Baja 5T 1/5 32cc',
-    'fg 1/6 monster truck 2wd': ['شاحنة مونستر ' + L('FG 1/6 2WD'), 'FG 1/6 monster truck 2WD'],
+    'fg 1/6 monster truck 2wd': ['مونستر تراك ' + L('FG 1/6 2WD'), 'FG 1/6 monster truck 2WD'],
     'Traxxas x maxx 8s 1/5': 'Traxxas X-Maxx 8S',
     'X macc 8s': 'Traxxas X-Maxx 8S',
     'Arrma talion exb 1/7 6s 75mph': 'Arrma Talion EXB 6S 1/7',
-    'hpi savage body traxxas maxx': ['هياكل ' + L('HPI Savage · Traxxas Maxx'), 'HPI Savage · Traxxas Maxx bodies'],
+    'hpi savage body traxxas maxx': ['بودي ' + L('HPI Savage · Traxxas Maxx'), 'HPI Savage · Traxxas Maxx bodies'],
     'For sale traxxas maxx v2': 'Traxxas Maxx V2',
     'Arrma MOJAVE 6S 1/7': 'Arrma Mojave 6S 1/7',
     'Arrma Mojave exb 1/7': 'Arrma Mojave EXB 1/7',
@@ -1404,46 +1404,46 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     'Losi 1/4 Promoto-MX Motorcycle RTR with Battery and Charger': 'Losi Promoto-MX 1/4',
     'New for sale traxxas 4tec 1/10 drift': 'Traxxas 4-Tec Drift 1/10',
     'rc car 1/10 mst drift': 'MST 1/10 Drift',
-    '1/10 Drift On Road Tires': ['إطارات درفت وأون رود بمقاس ' + L('1/10'), '1/10 drift & on-road tires'],
+    '1/10 Drift On Road Tires': ['كاوتش درفت وأون رود ' + L('1/10'), '1/10 drift & on-road tires'],
     'Hpi rs4': 'HPI RS4',
     'Hpi wr8': 'HPI WR8',
-    'New for sale 1/10 body': ['هيكل بمقاس ' + L('1/10'), '1/10 body'],
-    'rc plane engine for sael': ['محركات طائرات', 'RC plane engines'],
-    'rc plane parts for sael': ['قطع غيار طائرات', 'RC plane parts'],
-    'rc plane parts': ['قطع غيار طائرات', 'RC plane parts'],
-    'rc plane accessories': ['إكسسوارات طائرات', 'RC plane accessories'],
+    'New for sale 1/10 body': ['بودي ' + L('1/10'), '1/10 body'],
+    'rc plane engine for sael': ['موتورات طيارات', 'RC plane engines'],
+    'rc plane parts for sael': ['قطع غيار طيارات', 'RC plane parts'],
+    'rc plane parts': ['قطع غيار طيارات', 'RC plane parts'],
+    'rc plane accessories': ['إكسسوارات طيارات', 'RC plane accessories'],
     'Hpi Hsp Xray thunder tiger kyosho Rovan King motor parts': ['قطع غيار ' + L('HPI · HSP · Xray · Thunder Tiger · Kyosho · Rovan · King Motor'), 'HPI · HSP · Xray · Thunder Tiger · Kyosho · Rovan · King Motor parts'],
     'Hpi Hsp Xray thunder tiger kyosho': ['قطع غيار ' + L('HPI · HSP · Xray · Thunder Tiger · Kyosho'), 'HPI · HSP · Xray · Thunder Tiger · Kyosho parts'],
     'arrma parts': ['قطع غيار ' + L('Arrma'), 'Arrma parts'],
-    'Rc Tires 1/5 1/8 1/10 1/16': ['إطارات بمقاسات ' + L('1/5 · 1/8 · 1/10 · 1/16'), 'Tires 1/5 · 1/8 · 1/10 · 1/16'],
+    'Rc Tires 1/5 1/8 1/10 1/16': ['كاوتش مقاسات ' + L('1/5 · 1/8 · 1/10 · 1/16'), 'Tires 1/5 · 1/8 · 1/10 · 1/16'],
     'Proline badlands 1/5 x maxx': 'Pro-Line Badlands · X-Maxx',
     'battery': ['بطاريات', 'Batteries'],
-    'Body': ['هياكل', 'Bodies'],
+    'Body': ['بودي', 'Bodies'],
     'Hex drivers 1.5-3.0 mm': ['مفكات سداسية ' + L('1.5–3.0 mm'), 'Hex drivers 1.5–3.0 mm'],
     'Hex driver set': ['طقم مفكات سداسية', 'Hex driver set'],
     'Driver set': ['طقم مفكات', 'Driver set'],
     'CellMeter 8': 'CellMeter 8',
     'Digital tachometer': ['عدّاد لفات رقمي', 'Digital tachometer'],
-    'Glow plug driver': ['مفتاح شمعات جلو', 'Glow plug driver'],
-    'Glow igniter': ['مشعل شمعات جلو', 'Glow igniter'],
+    'Glow plug driver': ['مفتاح بوجيهات جلو', 'Glow plug driver'],
+    'Glow igniter': ['ولّاعة بوجيهات جلو', 'Glow igniter'],
     'Charge leads': ['أسلاك شحن متعددة', 'Multi charge leads'],
     'Servo extension leads': ['وصلات تمديد سيرفو', 'Servo extension leads'],
-    'Curved body scissors': ['مقص هياكل منحني', 'Curved body scissors'],
-    'Plane accessories': ['إكسسوارات طائرات', 'RC plane accessories'],
-    'Plane wheels': ['عجلات طائرات', 'Plane wheels'],
-    'Spinners': ['سبينرات للمراوح', 'Propeller spinners'],
-    'Fuel tubing': ['خراطيم وقود', 'Fuel tubing'],
-    'Fuel tanks': ['خزانات وقود', 'Fuel tanks'],
-    'Glow plugs': ['شمعات جلو', 'Glow plugs'],
-    'Control horns & hinges': ['قرون تحكم ومفصلات', 'Control horns & hinges'],
-    'Pushrods & linkages': ['أذرع ووصلات تحكم', 'Pushrods & linkages'],
+    'Curved body scissors': ['مقص بودي منحني', 'Curved body scissors'],
+    'Plane accessories': ['إكسسوارات طيارات', 'RC plane accessories'],
+    'Plane wheels': ['عجل طيارات', 'Plane wheels'],
+    'Spinners': ['سبينر للمراوح', 'Propeller spinners'],
+    'Fuel tubing': ['خراطيم بنزين', 'Fuel tubing'],
+    'Fuel tanks': ['تنكات بنزين', 'Fuel tanks'],
+    'Glow plugs': ['بوجيهات جلو', 'Glow plugs'],
+    'Control horns & hinges': ['هورنات ومفصلات', 'Control horns & hinges'],
+    'Pushrods & linkages': ['دراعات ووصلات', 'Pushrods & linkages'],
     'Linkage hardware': ['مسامير ووصلات', 'Linkage hardware'],
     'Traxxas M41': 'Traxxas M41 6S',
-    'FG 1/6 Monster Truck': ['شاحنة مونستر ' + L('FG 1/6'), 'FG 1/6 monster truck'],
-    'Panther touring car': ['سيارة سياحية ' + L('Panther'), 'Panther touring car'],
-    'DDM petrol engine': ['محرك بنزين ' + L('DDM'), 'DDM petrol engine'],
-    '2-stroke glow plane engines': ['محركات طائرات جلو ثنائية الأشواط', '2-stroke glow plane engines'],
-    'Traxxas TQi transmitter': ['جهاز تحكم ' + L('Traxxas TQi'), 'Traxxas TQi transmitter']
+    'FG 1/6 Monster Truck': ['مونستر تراك ' + L('FG 1/6'), 'FG 1/6 monster truck'],
+    'Panther touring car': ['عربية تورينج ' + L('Panther'), 'Panther touring car'],
+    'DDM petrol engine': ['موتور بنزين ' + L('DDM'), 'DDM petrol engine'],
+    '2-stroke glow plane engines': ['موتورات طيارات جلو تو ستروك', '2-stroke glow plane engines'],
+    'Traxxas TQi transmitter': ['ريموت ' + L('Traxxas TQi'), 'Traxxas TQi transmitter']
   };
   function photoCaptionHTML(g) {
     const c = Object.prototype.hasOwnProperty.call(CAPTIONS, g.title) ? CAPTIONS[g.title] : g.title;
@@ -1943,6 +1943,33 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     });
   }
 
+  /** About stats: count up once when they scroll into view (data-count-view = target, data-count-from = start). */
+  function initViewCounters() {
+    const nodes = $$('[data-count-view]');
+    if (!nodes.length || reduceMotion.matches || !window.requestAnimationFrame || !('IntersectionObserver' in window)) return;
+    const animate = (node) => {
+      const target = Number(node.dataset.countView) || 0;
+      const from = Number(node.dataset.countFrom) || 0;
+      const duration = 1400;
+      let t0 = null;
+      const step = (now) => {
+        if (t0 === null) t0 = now;
+        const k = Math.min(1, (now - t0) / duration);
+        node.textContent = String(Math.round(from + (target - from) * (1 - Math.pow(1 - k, 3))));
+        if (k < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        animate(entry.target);
+      });
+    }, { threshold: 0.5 });
+    nodes.forEach((node) => { node.textContent = String(Number(node.dataset.countFrom) || 0); io.observe(node); });
+  }
+
   /* ======================================================================
      17. Language switching (instant, no reload, remembered)
      ====================================================================== */
@@ -2193,6 +2220,7 @@ const BANK_DETAILS = { bankName: 'CIB', accountName: 'Hamdy Shawky Alfahim', acc
     initTilt();
     initReveal();
     initCountUp();
+    initViewCounters();
     onScroll();
     root.classList.add('is-ready');
     // Shared link such as #shop?level=beginner → open the same filtered view

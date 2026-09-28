@@ -65,13 +65,6 @@ window.SHOP_PHOTOS = [
   "thumb": "assets/img/shop/thumb/shop-010.jpg"
  },
  {
-  "id": "011",
-  "cat": "shop",
-  "post": "Losi 12s",
-  "full": "assets/img/shop/full/shop-011.jpg",
-  "thumb": "assets/img/shop/thumb/shop-011.jpg"
- },
- {
   "id": "007",
   "cat": "shop",
   "post": "Losi 12s",
@@ -1290,32 +1283,11 @@ window.SHOP_PHOTOS = [
   "thumb": "assets/img/shop/thumb/parts-149.jpg"
  },
  {
-  "id": "pa01",
-  "cat": "tools",
-  "post": "Hex drivers 1.5-3.0 mm",
-  "full": "assets/img/shop/full/tools-pa01.jpg",
-  "thumb": "assets/img/shop/thumb/tools-pa01.jpg"
- },
- {
-  "id": "pa03",
-  "cat": "tools",
-  "post": "Hex driver set",
-  "full": "assets/img/shop/full/tools-pa03.jpg",
-  "thumb": "assets/img/shop/thumb/tools-pa03.jpg"
- },
- {
   "id": "pa06",
   "cat": "tools",
   "post": "Driver set",
   "full": "assets/img/shop/full/tools-pa06.jpg",
   "thumb": "assets/img/shop/thumb/tools-pa06.jpg"
- },
- {
-  "id": "pa05",
-  "cat": "tools",
-  "post": "CellMeter 8",
-  "full": "assets/img/shop/full/tools-pa05.jpg",
-  "thumb": "assets/img/shop/thumb/tools-pa05.jpg"
  },
  {
   "id": "pa14",
@@ -1358,20 +1330,6 @@ window.SHOP_PHOTOS = [
   "post": "Curved body scissors",
   "full": "assets/img/shop/full/tools-pa27.jpg",
   "thumb": "assets/img/shop/thumb/tools-pa27.jpg"
- },
- {
-  "id": "pa02",
-  "cat": "planes",
-  "post": "Plane accessories",
-  "full": "assets/img/shop/full/planes-pa02.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pa02.jpg"
- },
- {
-  "id": "pa04",
-  "cat": "planes",
-  "post": "Plane wheels",
-  "full": "assets/img/shop/full/planes-pa04.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pa04.jpg"
  },
  {
   "id": "pa22",
@@ -1673,41 +1631,6 @@ window.SHOP_PHOTOS = [
   "post": "LiPo 4S 1500mAh 100C",
   "full": "assets/img/shop/full/parts-n15.jpg",
   "thumb": "assets/img/shop/thumb/parts-n15.jpg"
- },
- {
-  "id": "pe01",
-  "cat": "planes",
-  "post": "2-stroke glow plane engines",
-  "full": "assets/img/shop/full/planes-pe01.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pe01.jpg"
- },
- {
-  "id": "pe02",
-  "cat": "planes",
-  "post": "2-stroke glow plane engines",
-  "full": "assets/img/shop/full/planes-pe02.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pe02.jpg"
- },
- {
-  "id": "pe03",
-  "cat": "planes",
-  "post": "2-stroke glow plane engines",
-  "full": "assets/img/shop/full/planes-pe03.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pe03.jpg"
- },
- {
-  "id": "pe04",
-  "cat": "planes",
-  "post": "2-stroke glow plane engines",
-  "full": "assets/img/shop/full/planes-pe04.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pe04.jpg"
- },
- {
-  "id": "pe05",
-  "cat": "planes",
-  "post": "2-stroke glow plane engines",
-  "full": "assets/img/shop/full/planes-pe05.jpg",
-  "thumb": "assets/img/shop/thumb/planes-pe05.jpg"
  },
  {
   "id": "pe06",
@@ -4739,13 +4662,6 @@ window.SHOP_PHOTOS = [
   "post": "Traxxas X-Maxx 8S",
   "full": "assets/img/shop/full/wa-531-traxxas-x-maxx-1-5-8s-2.jpg",
   "thumb": "assets/img/shop/thumb/wa-531-traxxas-x-maxx-1-5-8s-2.jpg"
- },
- {
-  "id": "wa-531-traxxas-x-maxx-1-5-8s-3",
-  "cat": "offroad",
-  "post": "Traxxas X-Maxx 8S",
-  "full": "assets/img/shop/full/wa-531-traxxas-x-maxx-1-5-8s-3.jpg",
-  "thumb": "assets/img/shop/thumb/wa-531-traxxas-x-maxx-1-5-8s-3.jpg"
  },
  {
   "id": "wa-534-cnhl-5200-mah-1",
